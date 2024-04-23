@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+        .product-images {
+            position: relative;
+        }
+
+        .main-image img {
+            width: 400px; /* Adjust as needed */
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .main-image:hover img {
+            transform: scale(1.5); /* Adjust the zoom level as needed */
+            transform-origin: 50% 50%; /* Zoom from the center */
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="product-images">
+        <div class="main-image" id="main-image">
+            <img src="/assets/images/productImages/1712569494988-One plus 11 5G.png" alt="Product Image">
+        </div>
+    </div>
+    
+    
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainImageContainer = document.getElementById('main-image');
+
+            mainImageContainer.addEventListener('mousemove', function(event) {
+                const rect = mainImageContainer.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                const image = mainImageContainer.querySelector('img');
+                const scale = 1.1; // Adjust the zoom level as needed
+                const offsetX = (x / rect.width) * 100;
+                const offsetY = (y / rect.height) * 100;
+                image.style.transformOrigin = `${offsetX}% ${offsetY}%`;
+            });
+        });
+
+
+    </script>
+</body>
+</html>
+

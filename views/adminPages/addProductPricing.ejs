@@ -1,0 +1,71 @@
+<%- include('../adminLayouts/header.ejs') %>
+
+<%- include('../adminLayouts/pageHeader.ejs') %>
+
+<section class="content-main">
+    <div class="row">
+        <div class="col-9">
+            <div class="content-header">
+                <h2 class="content-title">Add New Product</h2>
+                <div>
+                    <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
+                    <button class="btn btn-md rounded font-sm hover-up">Add +</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row gx-5">
+                        <aside class="col-lg-3 border-end">
+                            <nav class="nav nav-pills flex-column mb-4">
+                                <a class="nav-link" aria-current="page" href="/admin/addproduct">General</a>
+                                <a class="nav-link active" href="#">Pricing</a>
+                                <a class="nav-link" href="/admin/addproductImages">Images</a>
+                                <a class="nav-link" href="/admin/addproductRelatedproducts">Related items</a>
+                            </nav>
+                        </aside>
+                        <div class="col-lg-9">
+                            <section class="content-body p-xl-4">
+                                <form>
+                                    <div class="row mb-4">
+                                        <label class="col-lg-3 col-form-label">Price*</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" placeholder="Enter price" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-4">
+                                        <label class="col-lg-3 col-form-label">Discount</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" placeholder="Enter discount" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-4">
+                                        <label class="col-lg-3 col-form-label">Sale Price</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" placeholder="Enter sale price" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-4">
+                                        <div class="col-lg-3"></div>
+                                        <div class="col-lg-9">
+                                            <button class="btn btn-primary" type="submit">Continue to next</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </section>
+                            <!-- content-body .// -->
+                        </div>
+                        <!-- col.// -->
+                    </div>
+                    <!-- row.// -->
+                </div>
+                <!-- card body end// -->
+            </div>
+        </div>
+    </div>  
+</section>
+
+<%- include('../adminLayouts/pageFooter.ejs') %>
+
+<%- include('../adminLayouts/footer.ejs') %>

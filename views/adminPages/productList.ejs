@@ -1,0 +1,139 @@
+    
+    <%- include('../adminLayouts/header.ejs') %>
+
+        <%- include('../adminLayouts/pageHeader.ejs') %>
+    
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Products List</h2>
+                    </div>
+                    <div>
+                        <a href="#" class="btn btn-light rounded font-md">Export</a>
+                        <a href="#" class="btn btn-light rounded font-md">Import</a>
+                        <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Create new</a>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <header class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
+                                <select class="form-select">
+                                    <% for (let i = 0; i < categories.length; i++) { %>
+                                        <option><%= categories[i].name %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-6">
+                                <input type="date" value="02.05.2021" class="form-control" />
+                            </div>
+                            <div class="col-md-2 col-6">
+                                <select class="form-select">
+                                    <option selected>Status</option>
+                                    <option>Active</option>
+                                    <option>Disabled</option>
+                                    <option>Show all</option>
+                                </select>
+                            </div>
+                        </div>
+                    </header>
+                    <!-- card-header end// -->
+                    <div class="card-body">
+                        <% if (product.length == 0) { %>
+                            <p> There has no Products Available </p>
+                        <% } else { %>
+                            <% for (let i = 0; i < product.length; i++) { %>
+                            <article class="itemlist">
+                                <div class="row align-items-center">
+                                    <div class="col-lg-2 col-sm-2 col-6 flex-grow-1 col-name">
+                                        <a class="itemside" href="#">
+                                            <div class="left">
+                                                <img src="/assets/images/productImages/<%=product[i].product_image[0] %>" class="img-sm img-thumbnail" alt="<%=product[i].product_image[0] %>" />
+                                            </div>
+                                            <div class="info">
+                                                <h6 class="mb-0"><%= product[i].name %></h6>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-2 col-4 col-price"><span><%= product[i].category %></span></div>
+                                    <div class="col-lg-2 col-sm-2 col-4 col-price"><span>₹ <%= product[i].price %></span></div>
+                                    <div class="col-lg-2 col-sm-2 col-4 col-status">
+                                        <% if (product[i].is_hide == 0) { %>
+                                            <span class="badge rounded-pill alert-success">Active</span>
+                                        <% } else { %>
+                                            <span class="badge rounded-pill alert-danger">In Active</span>
+                                        <% } %>
+                                    </div>
+                                    <div class="col-lg-1 col-sm-2 col-4 col-date">
+                                        <span><%= product[i].
+                                            created_at.getDate()+ '-'+ product[i].
+                                            created_at.getMonth() + '-' + product[i].
+                                            created_at.getFullYear() %></span>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
+                                        <a href="/admin/editproduct?id=<%= product[i]._id %>" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
+                                        <% if (product[i].is_hide == 0) { %>
+                                            <a class="btn btn-sm font-sm btn-outline-danger rounded" onclick="activeOrInactive('<%= product[i]._id %>')">Unlist</a>
+                                        <% } else { %>
+                                            <a class="btn btn-sm font-sm btn-outline-success rounded" onclick="activeOrInactive('<%= product[i]._id %>')">list</a>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <!-- row .// -->
+                            </article>
+                            <% } %>
+                        <% } %>
+                    </div>
+                    <!-- card-body end// -->
+                </div>
+                <!-- card end// -->
+                <div class="pagination-area mt-30 mb-50">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                            <li class="page-item"><a class="page-link" href="#">02</a></li>
+                            <li class="page-item"><a class="page-link" href="#">03</a></li>
+                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                            <li class="page-item"><a class="page-link" href="#">16</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </section>
+            <!-- content-main end// -->
+
+        <%- include('../adminLayouts/pageFooter.ejs') %>
+
+        <script>
+            function activeOrInactive(productId) {
+
+                fetch('/admin/productlist', { // Corrected URL to include userId in the route
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ productId: productId }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if(data.message == 'Failed') {
+                        console.log('user Not Found')
+                    } else {
+                        window.location.reload();
+                    };
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+            };
+        </script>
+
+    <%- include('../adminLayouts/footer.ejs') %>

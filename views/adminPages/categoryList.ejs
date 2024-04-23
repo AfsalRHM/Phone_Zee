@@ -1,0 +1,125 @@
+    
+<%- include('../adminLayouts/header.ejs') %>
+
+    <%- include('../adminLayouts/pageHeader.ejs') %>
+
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Categories</h2>
+                        <p>Add, edit or delete a category</p>
+                    </div>
+                    <div>
+                        <input type="text" placeholder="Search Categories" class="form-control bg-white" />
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <form method="post">
+                                    <div class="mb-4">
+                                        <label for="product_name" class="form-label">Name</label>
+                                        <input type="text" placeholder="Type here" class="form-control" name="categoryName" />
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Description</label>
+                                        <textarea placeholder="Type here" class="form-control" name="categoryDescription"></textarea>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">Create category</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <% if (typeof message !== 'undefined') { %>
+                                                <p style="color: red;" class="d-inline-flex p-2 " ><%= message %>*</p>
+                                            <% } %>
+                                            <tr>
+                                                <th>SI No.</th>
+                                                <th>Name</th>
+                                                <th>Description</th>
+                                                <th>No. of Products</th>
+                                                <th>Status</th>
+                                                <th class="text-end">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% for(let i = 0; i < categories.length; i++) { %>
+                                            <tr>
+                                                <td><%= i + 1 %></td>
+                                                <td><b><%= categories[i].name %></b></td>
+                                                <td><%= categories[i].description %></td>
+                                                <td><%= i * 7 %></td>
+                                                <% if (categories[i].is_hide == 0) { %>
+                                                    <td><span class="badge rounded-pill alert-success">Active</span></td>
+                                                <% } else { %>
+                                                    <td><span class="badge rounded-pill alert-danger">In Active</span></td>
+                                                <% } %>
+                                                <td class="text-end ">
+                                                    <div class="dropdown">
+                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" href="#">View detail</a>
+                                                            <a class="dropdown-item" href="/admin/editcategory?id=<%= categories[i]._id %>">Edit info</a>
+                                                            <% if (categories[i].is_hide == 0) { %>
+                                                                <a class="dropdown-item text-danger" onclick="activeOrInactive('<%= categories[i]._id %>')">Hide</a>
+                                                            <% } else { %>
+                                                                <a class="dropdown-item text-success" onclick="activeOrInactive('<%= categories[i]._id %>')">Show</a>  
+                                                            <% } %>
+                                                            <a class="dropdown-item text-danger" href="#">Delete</a>
+                                                        </div>
+                                                    </div>
+                                                    <!-- dropdown //end -->
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- .col// -->
+                        </div>
+                        <!-- .row // -->
+                    </div>
+                    <!-- card body .// -->
+                </div>
+                <!-- card .// -->
+            </section>
+            <!-- content-main end// -->
+           
+        <%- include('../adminLayouts/pageFooter.ejs') %>
+
+        <script>
+            function activeOrInactive(categoryId) {
+        
+                fetch('/admin/categorylist', { // Corrected URL to include userId in the route
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ categoryId: categoryId }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if(data.message == 'Failed') {
+                        console.log('user Not Found')
+                    } else {
+                        window.location.reload();
+                    };
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            };
+        </script>
+
+    <%- include('../adminLayouts/footer.ejs') %>

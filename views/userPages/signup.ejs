@@ -1,0 +1,171 @@
+<%- include('../userLayouts/header.ejs') %>
+
+
+    <div class="page-wrapper">
+
+		<header class="header">
+    
+			<div class="header-middle sticky-header">
+				<div class="container">
+					<div class="header-left">
+						<button class="mobile-menu-toggler">
+							<span class="sr-only">Toggle mobile menu</span>
+							<i class="icon-bars"></i>
+						</button>
+		
+						<a href="/" class="logo">
+							<img src="assets/images/logo.png" alt="Molla Logo" width="105" height="25">
+						</a>
+		
+						<nav class="main-nav">
+							<ul class="menu sf-arrows">
+								<li class="megamenu-container ">
+									<a href="/" >Home</a>
+								</li>
+								<li class="megamenu-container <%
+								if (typeof activeShopMessage !== 'undefined') {
+									%>
+									<%=activeShopMessage %>
+									<%
+								}
+							%> ">
+									<a href="category" >Shop</a>
+								</li>
+								<li class="<%
+								if (typeof activeMoreMessage !== 'undefined') {
+									%>
+									<%=activeMoreMessage %>
+									<%
+								}
+							%> " >
+									<a href="#" class="sf-with-ul">more</a> 
+		
+									<ul>
+										<li>
+											<a href="about" >About</a>
+										</li>
+										<li>
+											<a href="contact" >Contact</a>
+										</li>
+										<li><a href="faq">FAQs</a></li>
+									</ul>
+								</li>
+							</ul><!-- End .menu -->
+						</nav><!-- End .main-nav -->
+					</div><!-- End .header-left -->
+		
+					<div class="header-right">
+							<div class="wishlist">
+								<a href="login" title="Wishlist">
+									<h4 class="Personal-Login btn btn-danger" style="margin: 0px; border-radius: 100px;">Log in</h4>
+								</a>
+							</div><!-- End .compare-dropdown -->
+					</div><!-- End .header-right -->
+				</div><!-- End .container -->
+			</div><!-- End .header-middle -->
+		</header><!-- End .header -->
+        <main class="main">
+            <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Login</li>
+                    </ol>
+                </div><!-- End .container -->
+            </nav><!-- End .breadcrumb-nav -->
+
+            <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url('assets/images/backgrounds/login-bg.jpg')">
+            	<div class="container">
+            		<div class="form-box">
+            			<div class="form-tab">
+	            			<ul class="nav nav-pills nav-fill" role="tablist">
+							    <li class="nav-item">
+							        <a class="nav-link active" id="register-tab-2" data-toggle="tab" href="#register-2" role="tab" aria-controls="register-2" aria-selected="true">Register</a>
+							    </li>
+							</ul>
+							<div class="tab-content">
+							    <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
+							    	<form action="" method="post">
+										<% if (typeof message !== 'undefined') { %>
+											<p style="color: red;" class="d-inline-flex p-2 " ><%= message %>*</p>
+										<% } %>
+                                        <div class="form-group">
+							    			<label for="signin-mobile-2">User Name *</label>
+							    			<input type="text" <% if (typeof userLiveData !== 'undefined') { %>
+												value="<%- userLiveData.name %>" 
+											<% } %> 
+											class="form-control" id="signin-mobile-2" name="userName" >
+							    		</div><!-- End .form-group -->
+
+							    		<div class="form-group">
+							    			<label for="register-email-2">Email address *</label>
+							    			<input type="email" <% if (typeof userLiveData !== 'undefined') { %>
+												value="<%- userLiveData.email %>" 
+											<% } %>  
+											class="form-control" id="register-email-2" name="userEmail" >
+							    		</div><!-- End .form-group -->
+
+                                        <div class="form-group">
+							    			<label for="signin-mobile-2">Mobile number *</label>
+							    			<input type="text" <% if (typeof userLiveData !== 'undefined') { %>
+												value="<%- userLiveData.number %>" 
+											<% } %>  
+											class="form-control" id="signin-mobile-2" name="userMobile" >
+							    		</div><!-- End .form-group -->
+
+							    		<div class="form-group">
+							    			<label for="register-password-2">Password *</label>
+							    			<input type="password" class="form-control" id="register-password-2" name="userPassword" >
+							    		</div><!-- End .form-group -->
+
+                                        <div class="form-group">
+							    			<label for="Confirm-password-2">Confirm Password *</label>
+							    			<input type="password" class="form-control" id="Confirm-password-2" name="confirmPassword" >
+							    		</div><!-- End .form-group -->
+
+							    		<div class="form-footer">
+							    			<button type="submit" class="btn btn-outline-primary-2" >
+			                					<span>SIGN UP</span>
+			            						<i class="icon-long-arrow-right"></i>
+			                				</button>
+
+			                				<div class="custom-control custom-checkbox">
+												<input type="checkbox" class="custom-control-input" id="register-policy-2" required>
+												<label class="custom-control-label" for="register-policy-2">I agree to the <a href="#">privacy policy</a> *</label>
+											</div><!-- End .custom-checkbox -->
+							    		</div><!-- End .form-footer -->
+                                        <div class="text-center border-bottom pb-2">Already have an Account?<a href="login">Log in</a></div>
+							    	</form>
+							    	<div class="form-choice">
+								    	<p class="text-center mt-2">or sign in with</p>
+								    	<div class="row">
+								    		<div class="col-sm-6">
+								    			<a href="/auth/google" class="btn btn-login btn-g">
+								    				<i class="icon-google"></i>
+								    				Login With Google
+								    			</a>
+								    		</div><!-- End .col-6 -->
+								    		<div class="col-sm-6">
+								    			<a href="/auth/facebook" class="btn btn-login  btn-f">
+								    				<i class="icon-facebook-f"></i>
+								    				Login With Facebook
+								    			</a>
+								    		</div><!-- End .col-6 -->
+								    	</div><!-- End .row -->
+							    	</div><!-- End .form-choice -->
+							    </div><!-- .End .tab-pane -->
+							</div><!-- End .tab-content -->
+						</div><!-- End .form-tab -->
+            		</div><!-- End .form-box -->
+            	</div><!-- End .container -->
+            </div><!-- End .login-page section-bg -->
+        </main><!-- End .main -->
+
+        <%- include('../userLayouts/pageFooter.ejs') %>
+
+    </div><!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+    
+<%- include('../userLayouts/footer.ejs') %>

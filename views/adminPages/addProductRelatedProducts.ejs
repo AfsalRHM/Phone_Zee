@@ -1,0 +1,82 @@
+<%- include('../adminLayouts/header.ejs') %>
+
+<%- include('../adminLayouts/pageHeader.ejs') %>
+
+<section class="content-main">
+    <div class="row">
+        <div class="col-9">
+            <div class="content-header">
+                <h2 class="content-title">Related Items</h2>
+                <div>
+                    <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
+                    <button class="btn btn-md rounded font-sm hover-up">Add +</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row gx-5">
+                        <aside class="col-lg-3 border-end">
+                            <nav class="nav nav-pills flex-column mb-4">
+                                <a class="nav-link" aria-current="page" href="/admin/addproduct">General</a>
+                                <a class="nav-link" href="/admin/addproductPrice">Pricing</a>
+                                <a class="nav-link" href="/admin/addproductImages">Images</a>
+                                <a class="nav-link active" href="#">Related items</a>
+                            </nav>
+                        </aside>
+                        <div class="col-lg-9">
+                            <section class="content-body p-xl-4">
+                                <form>
+                                    <div class="row mb-4">
+                                        <label class="col-lg-3 col-form-label">Search Related Items</label>
+                                        <div class="col-lg-9 d-flex">
+                                            <input type="text" placeholder="Search product name" name="search" class="form-control">
+                                            <button type="submit" class="btn btn-secondary" style="height: 2.6rem;">search</button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        Products :
+                                    </div><br><br>
+                                    <div class="row mb-4">
+                                        <label class="col-lg-3 col-form-label">Select Related Items</label>
+                                        <div class="col-lg-9">
+                                            <div class="row mb-3">
+                                                <div class="col-lg-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="item1" id="relatedItem1">
+                                                        <label class="form-check-label" for="relatedItem1">Related Item 1</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="item2" id="relatedItem2">
+                                                        <label class="form-check-label" for="relatedItem2">Related Item 2</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>                                                                             
+                                    </div>
+                                    <div class="row mb-4">
+                                        <div class="col-lg-3"></div>
+                                        <div class="col-lg-9">
+                                            <button class="btn btn-primary" type="submit">Continue to next</button>
+                                        </div>
+                                    </div>
+                                </form>                                
+                            </section>
+                            <!-- content-body .// -->
+                        </div>
+                        <!-- col.// -->
+                    </div>
+                    <!-- row.// -->
+                </div>
+                <!-- card body end// -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../adminLayouts/pageFooter.ejs') %>
+
+<%- include('../adminLayouts/footer.ejs') %>

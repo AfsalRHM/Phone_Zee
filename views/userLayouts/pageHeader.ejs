@@ -1,0 +1,94 @@
+<header class="header">
+    
+    <div class="header-middle sticky-header">
+        <div class="container">
+            <div class="header-left">
+                <button class="mobile-menu-toggler">
+                    <span class="sr-only">Toggle mobile menu</span>
+                    <i class="icon-bars"></i>
+                </button>
+
+                <a href="/" class="logo">
+                    <img src="assets/images/logo.png" alt="Molla Logo" width="105" height="25">
+                </a>
+
+                <nav class="main-nav">
+                    <ul class="menu sf-arrows">
+                        <li class="megamenu-container ">
+                            <a href="/" >Home</a>
+                        </li>
+                        <li class="megamenu-container <%
+                        if (typeof activeShopMessage !== 'undefined') {
+                            %>
+                            <%=activeShopMessage %>
+                            <%
+                        }
+                    %> ">
+                            <a href="category" >Shop</a>
+                        </li>
+                        <li class="<%
+                        if (typeof activeMoreMessage !== 'undefined') {
+                            %>
+                            <%=activeMoreMessage %>
+                            <%
+                        }
+                    %> " >
+                            <a href="#" class="sf-with-ul">more</a> 
+
+                            <ul>
+                                <li>
+                                    <a href="about" >About</a>
+                                </li>
+                                <li>
+                                    <a href="contact" >Contact</a>
+                                </li>
+                                <li><a href="faq">FAQs</a></li>
+                            </ul>
+                        </li>
+                    </ul><!-- End .menu -->
+                </nav><!-- End .main-nav -->
+            </div><!-- End .header-left -->
+
+            <div class="header-right">
+                <% if (typeof loginOrCart.user_id == 'undefined') {
+                    %>
+                    <div class="wishlist">
+                        <a href="login" title="Wishlist">
+                            <h4 class="Personal-Login btn btn-danger" style="margin: 0px; border-radius: 100px;">Log in</h4>
+                        </a>
+                    </div><!-- End .compare-dropdown -->
+                    <%
+                } else {
+                    %>
+                    <div class="header-right">
+                        <div class="dropdown compare-dropdown">
+                            <a href="wishlist" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" data-display="static" title="Compare Products" aria-label="Compare Products">
+                                <i class="bi bi-person" ></i>
+                            </a>
+        
+                        </div><!-- End .compare-dropdown -->
+                        <div class="dropdown cart-dropdown">
+                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                <i class="icon-shopping-cart"></i>
+                                <span class="cart-count">2</span>
+                            </a>
+        
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <div class="dropdown-cart-action">
+                                    <a href="cart" class="btn btn-primary">View Cart</a>
+                                    <a href="checkout" class="btn btn-outline-primary-2"><span>Checkout</span><i class="icon-long-arrow-right"></i></a>
+                                </div><!-- End .dropdown-cart-total -->
+                            </div><!-- End .dropdown-menu -->
+                        </div><!-- End .cart-dropdown -->
+                        <div class="dropdown compare-dropdown">
+                            <a href="profile" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" data-display="static" title="Compare Products" aria-label="Compare Products">
+                                <i class="fa-solid fa-user"></i>
+                            </a>
+        
+                        </div><!-- End .compare-dropdown -->
+                    </div><!-- End .header-right -->
+                <% } %>
+            </div><!-- End .header-right -->
+        </div><!-- End .container -->
+    </div><!-- End .header-middle -->
+</header><!-- End .header -->

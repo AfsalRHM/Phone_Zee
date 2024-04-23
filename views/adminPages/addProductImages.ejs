@@ -1,0 +1,102 @@
+<%- include('../adminLayouts/header.ejs') %>
+
+<%- include('../adminLayouts/pageHeader.ejs') %>
+
+<section class="content-main">
+    <div class="row">
+        <div class="col-9">
+            <div class="content-header">
+                <h2 class="content-title">Add New Product</h2>
+                <div>
+                    <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
+                    <button class="btn btn-md rounded font-sm hover-up">Add +</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row gx-5">
+                        <aside class="col-lg-3 border-end">
+                            <nav class="nav nav-pills flex-column mb-4">
+                                <a class="nav-link" aria-current="page" href="/admin/addproduct">General</a>
+                                <a class="nav-link" href="/admin/addproductPrice">Pricing</a>
+                                <a class="nav-link active" href="#">Images</a>
+                                <a class="nav-link" href="/admin/addproductRelatedproducts">Related items</a>
+                            </nav>
+                        </aside>
+                        <div class="col-lg-9">
+                            <section class="content-main">
+                                <div class="content-header">
+                                    <h2 class="content-title">Add Images</h2>
+                                    <p>Upload up to 4 images for the product</p>
+                                </div>
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="image1" class="form-label">Image 1</label>
+                                                    <input type="file" class="form-control" id="image1" accept="image/*" onchange="previewImage(event, 'image-preview-1')" />
+                                                    <div id="image-preview-1" class="mt-3"></div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="image2" class="form-label">Image 2</label>
+                                                    <input type="file" class="form-control" id="image2" accept="image/*" onchange="previewImage(event, 'image-preview-2')" />
+                                                    <div id="image-preview-2" class="mt-3"></div>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="image3" class="form-label">Image 3</label>
+                                                    <input type="file" class="form-control" id="image3" accept="image/*" onchange="previewImage(event, 'image-preview-3')" />
+                                                    <div id="image-preview-3" class="mt-3"></div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="image4" class="form-label">Image 4</label>
+                                                    <input type="file" class="form-control" id="image4" accept="image/*" onchange="previewImage(event, 'image-preview-4')" />
+                                                    <div id="image-preview-4" class="mt-3"></div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-center">
+                                                <button type="submit" class="btn btn-primary col-md-3 justify-content-center">Upload</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </section>
+                            <!-- content-body .// -->
+                        </div>
+                        <!-- col.// -->
+                    </div>
+                    <!-- row.// -->
+                </div>
+                <!-- card body end// -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../adminLayouts/pageFooter.ejs') %>
+
+<script>
+    function previewImage(event, previewId) {
+        const previewContainer = document.getElementById(previewId);
+        previewContainer.innerHTML = ''; // Clear previous preview
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const img = document.createElement('img');
+                img.src = reader.result;
+                img.className = 'img-fluid img-thumbnail';
+                previewContainer.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+
+
+<%- include('../adminLayouts/footer.ejs') %>

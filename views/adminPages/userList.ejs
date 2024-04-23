@@ -1,0 +1,181 @@
+    
+    <%- include('../adminLayouts/header.ejs') %>
+
+        <%- include('../adminLayouts/pageHeader.ejs') %>
+
+            <section class="content-main">
+                <div class="content-header">
+                    <h2 class="content-title">Users</h2>
+                    <div>
+                        <a href="#" class="btn btn-primary"><i class="material-icons md-plus"></i> Create new</a>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <header class="card-header">
+                        <div class="row gx-3">
+                            <div class="col-lg-4 col-md-6 me-auto">
+                                <form class="d-flex">
+                                    <input type="text" placeholder="Search..." name="search" class="form-control">
+                                    <button type="submit" class="btn btn-secondary ">search</button>
+                                </form>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-6">
+                                <select class="form-select">
+                                    <option>Show all</option>
+                                    <option>Blocked</option>
+                                    <option>Active</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-6">
+                                <select class="form-select">
+                                    <option>Show 20</option>
+                                    <option>Show 30</option>
+                                    <option>Show 40</option>
+                                </select>
+                            </div>
+                        </div>
+                    </header>
+                    <!-- card-header end// -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <% if (users.length == 0) { %>
+                                    <p> There has no Users Available</p>
+                                <% } else { %>
+                                    <thead>
+                                        <tr>
+                                            <th>SI No.</th>
+                                            <th>User</th>
+                                            <th>Email</th>
+                                            <th>Status</th>
+                                            <th>Registered</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for(let i = 0; i < users.length; i++) { %>
+                                        <tr>
+                                            <td><%= i+1 %></td>
+                                            <td width="40%">
+                                                <a href="#" class="itemside">
+                                                    <div class="info pl-3">
+                                                        <h6 class="mb-0 title"><%= users[i].name %></h6>
+                                                    </div>
+                                                </a>
+                                            </td>
+                                            <td><%= users[i].email %></td>
+                                            <% if (users[i].is_blocked == 0) { %>
+                                            <td><span class="badge rounded-pill alert-success">Active</span></td>
+                                            <% } else { %>
+                                            <td><span class="badge rounded-pill alert-danger">Blocked</span></td>
+                                            <% } %>
+                                            <td><%= users[i].
+                                                created_at.getDate()+ '-'+ users[i].
+                                                created_at.getMonth() + '-' + users[i].
+                                                created_at.getFullYear() %>
+                                            </td>
+                                            <% if (users[i].is_blocked == 0) { %>
+                                                <td><button class="btn btn-outline-danger" onclick="blockOrActive('<%= users[i]._id %>')" >Block</button></td>
+                                            <% } else { %>
+                                                <td><button class="btn btn-outline-success" onclick="blockOrActive('<%= users[i]._id %>')" >Un Block</button></td>
+                                            <% } %>
+                                        </tr>
+                                        <% } %>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                            <!-- table-responsive.// -->
+                        </div>
+                    </div>
+                    <!-- card-body end// -->
+                </div>
+                <!-- card end// -->
+                <div class="pagination-area mt-15 mb-50">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                            <li class="page-item"><a class="page-link" href="#">02</a></li>
+                            <li class="page-item"><a class="page-link" href="#">03</a></li>
+                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                            <li class="page-item"><a class="page-link" href="#">16</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </section>
+            <!-- content-main end// -->
+            
+        <!-- <script>
+
+
+            function blockOrActive(userId) {
+                console.log("*******userId***********",userId)
+
+                fetch('/blockUser', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body:JSON.stringify({userId:userId}),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Update the button text and appearance based on the response
+                    const button = document.querySelector(`button[data-user-id="${userId}"]`);
+                    if (data.is_blocked === 1) {
+                        button.innerText = 'Unblock';
+                        button.classList.remove('btn-outline-danger');
+                        button.classList.add('btn-outline-success');
+                    } else {
+                        button.innerText = 'Block';
+                        button.classList.remove('btn-outline-success');
+                        button.classList.add('btn-outline-danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            };
+        
+        </script>         -->
+      
+        
+        <%- include('../adminLayouts/pageFooter.ejs') %>
+ 
+        <script>
+            function blockOrActive(userId) {
+        
+                fetch('/admin/userlist', { // Corrected URL to include userId in the route
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId: userId }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if(data.message == 'Failed') {
+                        console.log('user Not Found')
+                    } else {
+                        window.location.reload();
+                    };
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            };
+        </script>
+
+    <%- include('../adminLayouts/footer.ejs') %>

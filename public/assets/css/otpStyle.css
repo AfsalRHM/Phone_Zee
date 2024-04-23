@@ -1,0 +1,87 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  .container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 400px;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  p {
+    font-size: 14px;
+    color: #888;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .otp-fields {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .otp-fields input {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+  
+  .otp-fields input:focus {
+    outline: none;
+    border-color: #28a745;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .button-container button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .button-container button:hover {
+    background-color: #33b655;
+  }
+  
+  .button-container a {
+    color: #28a745;
+    text-decoration: none;
+  }
+  
+  .button-container a:hover {
+    text-decoration: underline;
+  }
+
+  .button-container {
+    display: flex; /* Enable flexbox layout */
+    flex-direction: column; /* Stack buttons vertically */
+    align-items: center; /* Center buttons horizontally */
+    gap: 1.5em; /* Add spacing between buttons (optional) */
+  }
+  

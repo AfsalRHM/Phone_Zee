@@ -1,0 +1,181 @@
+
+<%- include('../adminLayouts/header.ejs') %>
+
+<%- include('../adminLayouts/pageHeader.ejs') %>
+
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Edit Product</h2>
+                    <div>
+                        <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row gx-5">
+                            <aside class="col-lg-3 border-end">
+                                <nav class="nav nav-pills flex-column mb-4">
+                                    <a class="nav-link active" aria-current="page" href="#">General</a>
+                                    <!-- <a class="nav-link" href="/admin/addproductPrice">Pricing</a>
+                                    <a class="nav-link" href="/admin/addproductImages">Images</a>
+                                    <a class="nav-link" href="/admin/addproductRelatedproducts">Related items</a> -->
+                                </nav>
+                            </aside>
+                            <div class="col-lg-9">
+                                <section class="content-body p-xl-4">
+                                    <form method="post" enctype="multipart/form-data">
+                                        <% if (typeof message !== 'undefined') { %>
+											<p style="color: red;" class="d-inline-flex p-2 " ><%= message %>*</p>
+										<% } %>
+                                        <div class="row mb-4">
+                                            <label class="col-lg-3 col-form-label">Product name*</label>
+                                            <div class="col-lg-9">
+                                                <input type="text" name="productName" class="form-control" value="<%- product.name %>" placeholder="Type here" />
+                                            </div>
+                                            <!-- col.// -->
+                                        </div>
+                                        <!-- row.// -->
+                                        <div class="row mb-4">
+                                            <label class="col-lg-3 col-form-label">Description*</label>
+                                            <div class="col-lg-9">
+                                                <textarea class="form-control" name="productDescription" placeholder="Type here" rows="4"><%- product.description %></textarea>
+                                            </div>
+                                            <!-- col.// -->
+                                        </div>
+                                        <!-- row.// -->
+                                        <div class="row mb-4">
+                                            <label class="col-lg-3 col-form-label">Category*</label>
+                                            <div class="col-lg-4">
+                                                <select class="form-select" name="productCategory">
+                                                    <% for (let i = 0; i < categories.length; i++) { %>
+                                                        <% if (categories[i].name === product.category) { %>
+                                                            <option selected ><%= categories[i].name %></option>
+                                                        <% } else { %>
+                                                            <option><%= categories[i].name %></option>
+                                                        <% } %>
+                                                    <% } %>
+                                                </select>
+                                                <!-- <select multiple size="4" name="productCategory" class="form-control select-multiple">
+                                                    <% for(let i = 0; i < categories.length; i++) { %>
+                                                        <option><%= categories[i].name %></option>
+                                                    <% } %>
+                                                </select> -->
+                                            </div>
+                                            <!-- col.// -->
+                                        </div>
+                                        <div class="row mb-4">
+                                            <label class="col-lg-3 col-form-label">Price*</label>
+                                            <div class="col-lg-9">
+                                                <input type="number" name="productPrice" value="<%- product.price %>" class="form-control" placeholder="Type here" />
+                                            </div>
+                                            <!-- col.// -->
+                                        </div>
+                                        <div class="row mb-4">
+                                            <label class="col-lg-3 col-form-label">Stock*</label>
+                                            <div class="col-lg-9">
+                                                <input type="number" name="productstock" value="<%- product.stock %>" class="form-control" placeholder="Type here" />
+                                            </div>
+                                            <!-- col.// -->
+                                        </div>
+                                        <div class="row mb-4">
+                                            <label class="col-lg-3 col-form-label">Add images(4 max)*</label>
+                                            <div class="col-lg-9">
+                                                <input type="file" accept=".png, .jpeg, .jpg" value="<%= product.product_image %>" name="image_1" class="form-control" placeholder="Type here" onchange="previewImage(event, 'image-preview-1')" multiple/>
+                                                <div id="image-preview-1" class="mt-3">
+                                                    <% for(let i = 0; i < product.product_image.length; i++) { %>
+                                                        <img src="/assets/images/productImages/<%= product.product_image[i] %>" style="width: 100px;" class="img-fluid img-thumbnail" />
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                            <!-- col.// -->
+                                        </div>
+                                        <!-- row.// -->
+                                        <div class="row mb-4">
+                                            <label class="col-lg-3 col-form-label">Related tags</label>
+                                            <div class="col-lg-4">
+                                                <input type="text" class="form-control" value="<%- product.tags %>" placeholder="Type" />
+                                            </div>
+                                            <!-- col.// -->
+                                        </div>
+                                        <!-- row.// -->
+                                        <br />
+                                        <input type="hidden" name="id" value="<%= product._id %>">
+                                        <button class="btn btn-primary" type="submit" >Edit Product</button>
+                                    </form>
+                                </section>
+                                <!-- content-body .// -->
+                            </div>
+                            <!-- col.// -->
+                        </div>
+                        <!-- row.// -->
+                    </div>
+                    <!-- card body end// -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <%- include('../adminLayouts/pageFooter.ejs') %>
+
+    <script>
+        function previewImage(event, previewId) {
+            const previewContainer = document.getElementById(previewId);
+            previewContainer.innerHTML = ''; // Clear previous preview
+            const files = event.target.files;
+
+            const WIDTH = 100;
+
+            // Check if files exist
+            if (files && files.length <= 4) {
+                // Iterate over each file
+                for (let i = 0; i < Math.min(files.length, 4); i++) {
+                    const file = files[i];
+                    const reader = new FileReader();
+
+                    // Read the file as a data URL
+                    reader.readAsDataURL(file);
+
+                    // When the file is loaded, create an image element and append it to the preview container
+                    reader.onload = (event) => {
+                        let image_url = event.target.result;
+
+                        let image = document.createElement("img");
+                        image.src = image_url;
+
+                        // previewContainer.appendChild(image);
+
+                        image.onload = (e) => {
+                            let canvas = document.createElement("canvas");
+                            let ratio = WIDTH / e.target.width;
+                            canvas.width = WIDTH;
+                            canvas.height = e.target.height * ratio;
+
+                            const context = canvas.getContext("2d");
+                            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+                            let new_image_url = context.canvas.toDataURL("image/jpeg", 90);
+
+                            let newImage = document.createElement("img");
+                            newImage.style.margin = "10px";
+                            newImage.src = new_image_url;
+
+                            previewContainer.appendChild(newImage);
+                        }
+                    };
+                }
+            } else {
+                // Display an error message if the maximum number of files is exceeded
+                let alertMessage = document.createElement("p");
+                alertMessage.style.color = "red";
+                alertMessage.innerHTML = "Maximum 4 files allowed*."
+                previewContainer.appendChild(alertMessage);
+                event.target.value = ''; // Clear the file input field
+            }
+        }
+    </script>
+
+<%- include('../adminLayouts/footer.ejs') %>

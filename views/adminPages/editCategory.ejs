@@ -1,0 +1,42 @@
+<%- include('../adminLayouts/header.ejs') %>
+
+<%- include('../adminLayouts/pageHeader.ejs') %>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Edit Category</h2>
+            <p>Update the category details</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row justify-content-center">
+                <div class="col-md-6"> <!-- Adjust the width as needed -->
+                    <form method="post" action="/admin/editcategory?id=<%=category._id%>">
+                        <div class="mb-4">
+                            <label for="category_name" class="form-label">Name</label>
+                            <input type="text" class="form-control" name="categoryName" value="<%= category.name %>" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="categoryDescription"><%= category.description %></textarea>
+                        </div>
+                        <input type="hidden" name="id" value="<%= category._id %>">
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Update category</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- .row // -->
+        </div>
+        <!-- card body .// -->
+    </div>
+    <!-- card .// -->
+</section>
+<!-- content-main end// -->
+
+<%- include('../adminLayouts/pageFooter.ejs') %>
+
+<%- include('../adminLayouts/footer.ejs') %>
