@@ -50,6 +50,7 @@ user_route.get('/checkout', userAuth.isLogin, userBlocked.isBlocked, userControl
 user_route.get('/contact', userController.loadContact);
 user_route.get('/404', userController.loadErrorPage);
 user_route.get('/logout', userController.userLogout);
+user_route.get('/addAddress', userAuth.isLogin, userBlocked.isBlocked, userController.loadAddAddress);
 user_route.get('/test', userController.loadTestPage);
 
 user_route.get('/resendOTP', userController.resendOtp);
@@ -94,6 +95,7 @@ user_route.get('/facebookFailure', userController.failureFacebookLogin);
 user_route.post('/register', userController.insertUser);
 user_route.post('/login', userController.userLogin);
 user_route.post('/otp', userController.validateOTP);
+user_route.post('/addAddress', userController.insertAddress);
 
 
 module.exports = user_route;

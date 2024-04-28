@@ -124,58 +124,60 @@
     <script>
         function previewImage(event, previewId) {
             const previewContainer = document.getElementById(previewId);
-            previewContainer.innerHTML = ''; // Clear previous preview
             const files = event.target.files;
-
+    
             const WIDTH = 100;
-
+            const MAX_IMAGES = 4;
+    
             // Check if files exist
-            if (files && files.length <= 4) {
+            if (files) {
+                // Check if adding files would exceed the maximum number of images
+                if (previewContainer.children.length >= MAX_IMAGES) {
+                    // Display an error message if the maximum number of images is exceeded
+                    let alertMessage = document.createElement("p");
+                    alertMessage.style.color = "red";
+                    alertMessage.innerHTML = "Maximum " + MAX_IMAGES + " files allowed*."
+                    previewContainer.appendChild(alertMessage);
+                    event.target.value = ''; // Clear the file input field
+                    return;
+                }
                 // Iterate over each file
-                for (let i = 0; i < Math.min(files.length, 4); i++) {
+                for (let i = 0; i < Math.min(files.length, MAX_IMAGES - previewContainer.children.length); i++) {
                     const file = files[i];
                     const reader = new FileReader();
-
+    
                     // Read the file as a data URL
                     reader.readAsDataURL(file);
-
+    
                     // When the file is loaded, create an image element and append it to the preview container
                     reader.onload = (event) => {
                         let image_url = event.target.result;
-
+    
                         let image = document.createElement("img");
                         image.src = image_url;
-
-                        // previewContainer.appendChild(image);
-
+    
                         image.onload = (e) => {
                             let canvas = document.createElement("canvas");
                             let ratio = WIDTH / e.target.width;
                             canvas.width = WIDTH;
                             canvas.height = e.target.height * ratio;
-
+    
                             const context = canvas.getContext("2d");
                             context.drawImage(image, 0, 0, canvas.width, canvas.height);
-
+    
                             let new_image_url = context.canvas.toDataURL("image/jpeg", 90);
-
+    
                             let newImage = document.createElement("img");
                             newImage.style.margin = "10px";
                             newImage.src = new_image_url;
-
+    
                             previewContainer.appendChild(newImage);
                         }
                     };
                 }
-            } else {
-                // Display an error message if the maximum number of files is exceeded
-                let alertMessage = document.createElement("p");
-                alertMessage.style.color = "red";
-                alertMessage.innerHTML = "Maximum 4 files allowed*."
-                previewContainer.appendChild(alertMessage);
-                event.target.value = ''; // Clear the file input field
             }
         }
     </script>
+    
 
 <%- include('../adminLayouts/footer.ejs') %>

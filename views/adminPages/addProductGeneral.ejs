@@ -116,61 +116,70 @@
             <%- include('../adminLayouts/pageFooter.ejs') %>
         
             <script>
-                    function previewImage(event, previewId) {
-                        const previewContainer = document.getElementById(previewId);
-                        previewContainer.innerHTML = ''; // Clear previous preview
-                        const files = event.target.files;
-
-                        const WIDTH = 100;
-
-                        // Check if files exist
-                        if (files && files.length <= 4) {
-                            // Iterate over each file
-                            for (let i = 0; i < Math.min(files.length, 4); i++) {
-                                const file = files[i];
-                                const reader = new FileReader();
-
-                                // Read the file as a data URL
-                                reader.readAsDataURL(file);
-
-                                // When the file is loaded, create an image element and append it to the preview container
-                                reader.onload = (event) => {
-                                    let image_url = event.target.result;
-
-                                    let image = document.createElement("img");
-                                    image.src = image_url;
-
-                                    // previewContainer.appendChild(image);
-
-                                    image.onload = (e) => {
-                                        let canvas = document.createElement("canvas");
-                                        let ratio = WIDTH / e.target.width;
-                                        canvas.width = WIDTH;
-                                        canvas.height = e.target.height * ratio;
-
-                                        const context = canvas.getContext("2d");
-                                        context.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-                                        let new_image_url = context.canvas.toDataURL("image/jpeg", 90);
-
-                                        let newImage = document.createElement("img");
-                                        newImage.style.margin = "10px";
-                                        newImage.src = new_image_url;
-
-                                        previewContainer.appendChild(newImage);
-                                    }
+                function previewImage(event, previewId) {
+                    const previewContainer = document.getElementById(previewId);
+                    previewContainer.innerHTML = ''; // Clear previous preview
+                    const files = event.target.files;
+            
+                    const WIDTH = 100;
+            
+                    // Check if files exist
+                    if (files && files.length <= 4) {
+                        // Iterate over each file
+                        for (let i = 0; i < Math.min(files.length, 4); i++) {
+                            const file = files[i];
+                            const reader = new FileReader();
+            
+                            // Read the file as a data URL
+                            reader.readAsDataURL(file);
+            
+                            // When the file is loaded, create an image element and append it to the preview container
+                            reader.onload = (event) => {
+                                let image_url = event.target.result;
+            
+                                let image = document.createElement("img");
+                                image.src = image_url;
+            
+                                // Create a container div for each image
+                                let imageContainer = document.createElement("div");
+                                imageContainer.style.display = "inline-block";
+                                imageContainer.style.position = "relative"; // Make position relative for absolute positioning of delete button
+                                imageContainer.style.width = "100px"; // Set fixed width
+                                imageContainer.style.height = "100px"; // Set fixed height
+            
+                                // Create a delete button
+                                let deleteButton = document.createElement("button");
+                                deleteButton.innerText = "Delete";
+                                // deleteButton.style.position = "absolute";
+                                deleteButton.style.bottom = "5px"; // Positioned at the bottom
+                                deleteButton.style.left = "50%"; // Center horizontally
+                                deleteButton.style.transform = "translateX(50%)"; // Center horizontally
+                                deleteButton.style.backgroundColor = "red"; // Button color
+                                deleteButton.style.color = "white"; // Text color
+                                deleteButton.style.borderRadius = "5px"; // Border radius
+                                deleteButton.onclick = function () {
+                                    // Remove the image and the container div when delete button is clicked
+                                    imageContainer.remove();
                                 };
-                            }
-                        } else {
-                            // Display an error message if the maximum number of files is exceeded
-                            let alertMessage = document.createElement("p");
-                            alertMessage.style.color = "red";
-                            alertMessage.innerHTML = "Maximum 4 files allowed*."
-                            previewContainer.appendChild(alertMessage);
-                            event.target.value = ''; // Clear the file input field
+            
+                                // Append image and delete button to the container div
+                                imageContainer.appendChild(image);
+                                imageContainer.appendChild(deleteButton);
+            
+                                previewContainer.appendChild(imageContainer);
+                            };
                         }
+                    } else {
+                        // Display an error message if the maximum number of files is exceeded
+                        let alertMessage = document.createElement("p");
+                        alertMessage.style.color = "red";
+                        alertMessage.innerHTML = "Maximum 4 files allowed*."
+                        previewContainer.appendChild(alertMessage);
+                        event.target.value = ''; // Clear the file input field
                     }
-
+                }
             </script>
+            
+            
 
         <%- include('../adminLayouts/footer.ejs') %>

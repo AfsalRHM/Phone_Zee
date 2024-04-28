@@ -1,0 +1,75 @@
+<%- include('../userLayouts/header.ejs') %>
+
+<div class="page-wrapper">
+    <%- include('../userLayouts/pageHeader.ejs') %>
+
+    <main class="main">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/profile">My Account</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add Address</li>
+                </ol>
+            </div><!-- End .container -->
+        </nav><!-- End .breadcrumb-nav -->
+
+        <div class="page-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h2 class="card-title mb-2">Add New Address</h2>
+                                <form method="post" id="add-address-form">
+                                    <% if (typeof errorMessage !== 'undefined') { %>
+                                        <p style="color: red;" class="d-inline-flex p-2 " ><%= errorMessage %>*</p>
+                                    <% } %>
+                                    <div class="form-group">
+                                        <label for="name" style="color: #333;">Name*</label>
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter your Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mobileNumber" style="color: #333;">10-digit mobile number*</label>
+                                        <input type="tel" class="form-control" id="mobileNumber" name="mobileNumber" placeholder="Enter a valid mobile number">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="pincode" style="color: #333;">Pin Code*</label>
+                                        <input type="text" class="form-control" id="pincode" name="pincode" placeholder="Enter your Pin Code">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locality" style="color: #333;">Locality*</label>
+                                        <input type="text" class="form-control" id="locality" name="locality" placeholder="Enter your Locality">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="city" style="color: #333;">City/District/Town*</label>
+                                        <input type="text" class="form-control" id="city" name="city" placeholder="Enter your City/District/Town">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="state" style="color: #333;">State*</label>
+                                        <input type="text" class="form-control" id="state" name="state" placeholder="Enter your State">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="landmark" style="color: #333;">Landmark(optional)</label>
+                                        <input type="text" class="form-control" id="landmark" name="landmark" placeholder="Enter a Landmark (optional)">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mobileNumber2" style="color: #333;">Alternate phone(optional)</label>
+                                        <input type="tel" class="form-control" id="mobileNumber2" name="mobileNumber2" placeholder="Enter an Alternate Phone (optional)">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Add Address</button>
+                                </form>
+                            </div><!-- End .card-body -->
+                        </div><!-- End .card -->
+                    </div><!-- End .col-md-6 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .page-content -->
+    </main><!-- End .main -->
+
+    <%- include('../userLayouts/pageFooter.ejs') %>
+</div><!-- End .page-wrapper -->
+
+<button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+<%- include('../userLayouts/footer.ejs') %>

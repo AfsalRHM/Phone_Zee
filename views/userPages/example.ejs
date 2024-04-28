@@ -3,56 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Address Selection - Checkout Theme</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Theme CSS -->
     <style>
-
-        .product-images {
-            position: relative;
+        /* Additional styles specific to the checkout theme */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
-
-        .main-image img {
-            width: 400px; /* Adjust as needed */
-            height: auto;
-            transition: transform 0.3s ease;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
-
-        .main-image:hover img {
-            transform: scale(1.5); /* Adjust the zoom level as needed */
-            transform-origin: 50% 50%; /* Zoom from the center */
+        .address-item {
+            margin-bottom: 10px;
         }
-
+        .btn-save {
+            margin-top: 20px;
+        }
     </style>
-
 </head>
 <body>
+    <div class="container">
+        <h2>Select Address</h2>
 
-    <div class="product-images">
-        <div class="main-image" id="main-image">
-            <img src="/assets/images/productImages/1712569494988-One plus 11 5G.png" alt="Product Image">
+        <!-- Address checkboxes -->
+        <div class="address-item">
+            <input type="checkbox" id="address1" name="address1">
+            <label for="address1">Address 1</label>
         </div>
+
+        <div class="address-item">
+            <input type="checkbox" id="address2" name="address2">
+            <label for="address2">Address 2</label>
+        </div>
+
+        <div class="address-item">
+            <input type="checkbox" id="address3" name="address3">
+            <label for="address3">Address 3</label>
+        </div>
+
+        <div class="address-item">
+            <input type="checkbox" id="address4" name="address4">
+            <label for="address4">Address 4</label>
+        </div>
+
+        <div class="address-item">
+            <input type="checkbox" id="address5" name="address5">
+            <label for="address5">Address 5</label>
+        </div>
+
+        <!-- Save button -->
+        <button class="btn btn-primary btn-save" onclick="saveAddress()">Save</button>
     </div>
-    
-    
 
+    <!-- Bootstrap JS (optional if needed for functionality) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- JavaScript function to save selected addresses -->
     <script>
+        function saveAddress() {
+            // Get all checkboxes
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            var selectedAddresses = [];
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const mainImageContainer = document.getElementById('main-image');
-
-            mainImageContainer.addEventListener('mousemove', function(event) {
-                const rect = mainImageContainer.getBoundingClientRect();
-                const x = event.clientX - rect.left;
-                const y = event.clientY - rect.top;
-                const image = mainImageContainer.querySelector('img');
-                const scale = 1.1; // Adjust the zoom level as needed
-                const offsetX = (x / rect.width) * 100;
-                const offsetY = (y / rect.height) * 100;
-                image.style.transformOrigin = `${offsetX}% ${offsetY}%`;
+            // Loop through checkboxes to find selected ones
+            checkboxes.forEach(function(checkbox) {
+                if (checkbox.checked) {
+                    selectedAddresses.push(checkbox.name); // Push the address name to the array
+                }
             });
-        });
 
-
+            // Display selected addresses (for demonstration)
+            if (selectedAddresses.length > 0) {
+                alert('Selected addresses: ' + selectedAddresses.join(', '));
+            } else {
+                alert('Please select at least one address.');
+            }
+        }
     </script>
 </body>
 </html>
-

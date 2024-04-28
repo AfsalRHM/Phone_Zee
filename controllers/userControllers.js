@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const Product = require('../models/productModel');
 const Category = require('../models/categoryModel');
+const Address = require('../models/addressModel');
 
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer');
@@ -132,6 +133,7 @@ const successGoogleLogin = async (req, res) => {
 
                 if (userData) {
                     req.session.user_id = userData._id;
+                    req.session.user_email = req.user.email;
                     res.redirect('/');
                 } else {
                     res.render('login', {validationMessage: 'User Not Added', loginOrCart: req.session});
@@ -293,8 +295,10 @@ const loadProduct = async (req, res) => {
 
 const loadCheckout = async (req, res) => {
     try {
+
+        const addressData = await Address.find({user: req.session.user_id});
         
-        res.render('checkout', {pageTitle: 'checkout | PhoneZee', loginOrCart: req.session});
+        res.render('checkout', {pageTitle: 'checkout | PhoneZee', loginOrCart: req.session, address: addressData});
 
     } catch (error) {
         console.log(error.message);
@@ -354,8 +358,10 @@ const loadWishlist = async (req, res) => {
 const loadProfile = async (req, res) => {
     try {
         
+        const addressData = await Address.find({user: req.session.user_id});
         const userData = await User.findOne({_id: req.session.user_id});
-        res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData});
+
+        res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData });
 
     } catch (error) {
         res.render('404');
@@ -549,12 +555,75 @@ const userLogout = async (req, res) => {
     };
 };
 
+/*****************      To load the Add Address page     *********************/
+
+const loadAddAddress = async (req, res) => {
+    try {
+
+        const addressData = await Address.find({user: req.session.user_id});
+        const userData = await User.findOne({_id: req.session.user_id});
+
+        if (addressData.length < 5) {
+
+            res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session });
+
+        } else {
+            res.render('profile#tab-address', {addressPageMessage: 'Maximum Address Reached', loginOrCart: req.session, user: userData, address: addressData  });
+        }
+
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
+/*****************      To Insert the Address     *********************/
+
+const insertAddress = async (req, res) => {
+    try {
+
+        const address = new Address ({
+            user: req.session.user_id,
+            name: req.body.name,
+            mobileNumber: req.body.mobileNumber,
+            pincode: req.body.pincode,
+            locality: req.body.locality,
+            city: req.body.city,
+            state: req.body.state,
+            landmark: req.body.landmark,
+            mobileNumber2: req.body.mobileNumber2            
+        });
+
+        if (!address.name.trim() ) {
+            res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, errorMessage: 'Please Enter You Name' });
+        } else if (req.body.mobileNumber.length != 10 ) {
+            return res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, errorMessage: 'Please Enter a Valid Mobile Number' });
+        } else if (req.body.pincode.length != 6 ) {
+            return res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, errorMessage: 'Please Enter a Valid Pincode' });
+        } else if (!address.locality.trim() ) {
+            return res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, errorMessage: 'Please Enter Locality' });
+        } else if (!address.city.trim() ) {
+            return res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, errorMessage: 'Please Enter City' });
+        } else if (!address.state.trim() ) {
+            return res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, errorMessage: 'Please Enter State' });
+        } else {
+
+            await address.save();
+
+            res.redirect('/profile')
+
+        };
+
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
 /*****************      To load the testing page     *********************/
 
 const loadTestPage = async (req, res) => {
     try {
 
-        res.render('example');
+        res.render('example', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session  });
 
     } catch (error) {
         console.log(error.message);
@@ -585,5 +654,8 @@ module.exports = {
     loadTestPage,
     validateOTP,
     userLogout,
-    resendOtp
+    resendOtp,
+    loadAddAddress,
+    insertAddress,
+
 };

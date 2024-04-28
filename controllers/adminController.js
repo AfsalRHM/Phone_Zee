@@ -100,7 +100,7 @@ const insertProduct = async (req, res) => {
 
         const productImages = [];
 
-        for (let i = 0; i <= 4; i++) {
+        for (let i = 0; i < 4; i++) {
             if (req.files[i]) {
                 productImages.push(req.files[i].filename);
             }
@@ -309,12 +309,17 @@ const updateProduct = async (req, res) => {
             res.render('editProduct',{message: 'Enter a Valid Price', product: product, categories: categoryData});
         } else {
 
-            let productImages = [];
-            for (let i = 0; i <= 4; i++) {
-                if (req.files && req.files[i]) {
-                // Sanitize filename (if necessary)
-                productImages.push(req.files[i].filename);
-                }
+            let productImages = product.product_image; // Initialize with existing images
+
+            // Handle newly uploaded images
+            if (req.files && req.files.length > 0) {
+                const newImages = req.files.map(file => file.filename);
+                productImages = [...productImages, ...newImages]; // Concatenate existing and new images
+            }
+
+            // Ensure not more than 4 images are saved
+            if (productImages.length > 4) {
+                productImages = productImages.slice(0, 4);
             }
     
             const updatedData = {
