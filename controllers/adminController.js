@@ -342,7 +342,7 @@ const updateProduct = async (req, res) => {
     }
 };
     
-
+/******      To load Category list Page      ******/
 
 const loadCategoryList = async (req, res) => {
     try {

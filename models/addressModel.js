@@ -7,10 +7,6 @@ const addressSchema = new mongoose.Schema({
         required: true,
         ref: 'User'
     },
-    // user: {
-    //     type: String,
-    //     require: true
-    // },
     name: {
         type: String,
         required: true
@@ -40,7 +36,7 @@ const addressSchema = new mongoose.Schema({
         default: 0
     },
     mobileNumber2: {
-        type: String,
+        type: Number,
         default: 0
     },
     created_at: {

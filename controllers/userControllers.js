@@ -596,6 +596,14 @@ const insertAddress = async (req, res) => {
             mobileNumber2: req.body.mobileNumber2            
         });
 
+        if (address.landmark == '') {
+            address.landmark = null;
+        }
+
+        if (address.mobileNumber2 == '') {
+            address.mobileNumber2 = null;
+        }
+
         if (!address.name.trim() ) {
             res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, errorMessage: 'Please Enter You Name' });
         } else if (req.body.mobileNumber.length != 10 ) {
@@ -621,7 +629,105 @@ const insertAddress = async (req, res) => {
     };
 };
 
-/*****************      To add product to cart     *********************/
+/*****************      To Load Edit Address Page      *********************/
+
+const loadEditAddress =  async (req, res) => {
+    try {
+
+        const addressId = req.query.id;
+
+        const addressData = await Address.findById({_id: addressId})
+
+        res.render('editAddress', {pageTitle: 'PhoneZee | Edit Your Address', loginOrCart: req.session, address: addressData });
+
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
+/*****************      To Load Edit Address Page      *********************/
+
+const updateAddress =  async (req, res) => {
+    try {
+
+        const addressId = req.query.id;
+
+        const addressData = await Address.findById({_id: addressId})
+
+        const address = {
+            user: req.session.user_id,
+            name: req.body.name,
+            mobileNumber: req.body.mobileNumber,
+            pincode: req.body.pincode,
+            locality: req.body.locality,
+            city: req.body.city,
+            state: req.body.state,
+            landmark: req.body.landmark,
+            mobileNumber2: req.body.mobileNumber2,
+        };
+
+        if (address.landmark == '') {
+            address.landmark = null
+        }
+        if (address.mobileNumber2 == '') {
+            address.mobileNumber2 = null
+        }
+
+        if (!address.name.trim() ) {
+            res.render('editAddress', {pageTitle: 'PhoneZee | Edit Your Address', loginOrCart: req.session, errorMessage: 'Please Enter You Name', address: addressData });
+        } else if (req.body.mobileNumber.length != 10 ) {
+            res.render('editAddress', {pageTitle: 'PhoneZee | Edit Your Address', loginOrCart: req.session, errorMessage: 'Please Enter a Valid Mobile Number', address: addressData  });
+        } else if (req.body.pincode.length != 6 ) {
+            res.render('editAddress', {pageTitle: 'PhoneZee | Edit Your Address', loginOrCart: req.session, errorMessage: 'Please Enter a Valid Pincode', address: addressData  });
+        } else if (!address.locality.trim() ) {
+            res.render('editAddress', {pageTitle: 'PhoneZee | Edit Your Address', loginOrCart: req.session, errorMessage: 'Please Enter Locality', address: addressData  });
+        } else if (!address.city.trim() ) {
+            res.render('editAddress', {pageTitle: 'PhoneZee | Edit Your Address', loginOrCart: req.session, errorMessage: 'Please Enter City', address: addressData  });
+        } else if (!address.state.trim() ) {
+            res.render('editAddress', {pageTitle: 'PhoneZee | Edit Your Address', loginOrCart: req.session, errorMessage: 'Please Enter State', address: addressData  });
+        } else {
+
+            const addressAdded = await Address.findByIdAndUpdate(addressId, address, { new: true });
+
+            if (addressAdded) {
+
+                if (req.query.from) {
+                    res.redirect('/checkout');
+                } else {
+                    res.redirect('/profile');
+                }
+
+            } else {
+                res.render('editAddress', {pageTitle: 'PhoneZee | Edit Your Address', loginOrCart: req.session, errorMessage: 'Please Enter Locality', address: addressData });
+            }
+
+
+        };
+
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
+/*****************      To add product to Wishlist     *********************/
+
+const deleteAddress = async (req, res, next) => {
+    try {
+        const {addressId}=req.body;
+        const address = await Address.findByIdAndDelete(addressId);
+
+        if (!address) {
+            return next();
+        };
+
+        res.status(200).json({ message: 'Success' });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ message: 'Server error' });
+    }; 
+};
+
+/*****************      To add product to Wishlist     *********************/
 
 const addToWishlist = async (req, res) => {
     try {
@@ -711,6 +817,9 @@ module.exports = {
     loadAddAddress,
     insertAddress,
     addToWishlist,
-    deleteProductFromWishlist
+    deleteProductFromWishlist,
+    loadEditAddress,
+    updateAddress,
+    deleteAddress,
 
 };

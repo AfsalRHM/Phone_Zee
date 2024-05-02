@@ -51,6 +51,7 @@ user_route.get('/contact', userController.loadContact);
 user_route.get('/404', userController.loadErrorPage);
 user_route.get('/logout', userController.userLogout);
 user_route.get('/addAddress', userAuth.isLogin, userBlocked.isBlocked, userController.loadAddAddress);
+user_route.get('/editAddress', userAuth.isLogin, userBlocked.isBlocked, userController.loadEditAddress);
 user_route.get('/test', userController.loadTestPage);
 
 user_route.get('/resendOTP', userController.resendOtp);
@@ -97,7 +98,9 @@ user_route.post('/login', userController.userLogin);
 user_route.post('/otp', userController.validateOTP);
 user_route.post('/addAddress', userController.insertAddress);
 user_route.post('/addToWishlist', userController.addToWishlist);
-user_route.post('/Wishlist', userController.deleteProductFromWishlist)
+user_route.post('/Wishlist', userController.deleteProductFromWishlist);
+user_route.post('/editAddress', userController.updateAddress);
+user_route.post('/profile', userController.deleteAddress);
 
 
 module.exports = user_route;
