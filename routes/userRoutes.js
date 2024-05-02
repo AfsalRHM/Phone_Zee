@@ -96,6 +96,8 @@ user_route.post('/register', userController.insertUser);
 user_route.post('/login', userController.userLogin);
 user_route.post('/otp', userController.validateOTP);
 user_route.post('/addAddress', userController.insertAddress);
+user_route.post('/addToWishlist', userController.addToWishlist);
+user_route.post('/Wishlist', userController.deleteProductFromWishlist)
 
 
 module.exports = user_route;

@@ -407,15 +407,27 @@ const loadEditCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
     try {
 
-        const categoryData = await Category.findByIdAndUpdate({_id: req.body.id}, {
-            $set: {
-                name: req.body.categoryName,
-                description: req.body.categoryDescription
-            }
-        });
+        const id = req.body.id;
 
-        res.redirect('/admin/categorylist')
-        
+        const categoryData = await Category.findById({_id: id});
+
+        const categoryDataCheck = await Category.find({name: { $regex:'.*' + req.body.categoryName + '.*', $options: 'i' }});
+
+        if (categoryDataCheck.length !== 0) {
+
+            res.render('editCategory', {errorMessage: 'The Category name already exists', category: categoryData })
+
+        } else {
+            const categoryData = await Category.findByIdAndUpdate({_id: req.body.id}, {
+                $set: {
+                    name: req.body.categoryName,
+                    description: req.body.categoryDescription
+                }
+            });
+    
+            res.redirect('/admin/categorylist')
+        }
+
     } catch (error) {
         console.log(error.message);
     };

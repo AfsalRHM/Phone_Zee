@@ -39,7 +39,7 @@
 								        <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Account Details</a>
 								    </li>
 								    <li class="nav-item">
-								        <a class="nav-link" href="/logout">Sign Out</a>
+								        <a id="logoutLink" class="nav-link" href="/logout">Sign Out</a>
 								    </li>
 								</ul>
 	                		</aside><!-- End .col-lg-3 -->
@@ -165,5 +165,34 @@
             
     </div><!-- End .page-wrapper -->
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			// Get the "Sign Out" link
+			var logoutLink = document.getElementById('logoutLink');
+
+			// Add click event listener
+			logoutLink.addEventListener('click', function (event) {
+				// Prevent the default action of the link
+				event.preventDefault();
+
+				// Display SweetAlert confirmation dialog
+				Swal.fire({
+					title: 'Are you sure you want to sign out?',
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: 'Confirm',
+					cancelButtonText: 'Cancel'
+				}).then((result) => {
+					// If user confirms, proceed with logout
+					if (result.isConfirmed) {
+						window.location.href = logoutLink.href;
+					}
+				});
+			});
+		});
+	</script>
     
 <%- include('../userLayouts/footer.ejs') %>

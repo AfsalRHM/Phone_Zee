@@ -1,47 +1,14 @@
 const mongoose = require("mongoose");
 
-const addressSchema = new mongoose.Schema({
+const wishlistSchema = new mongoose.Schema({
 
     user: {
+        type: String,
+        required: true
+    },
+    product: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
-    },
-    // user: {
-    //     type: String,
-    //     require: true
-    // },
-    name: {
-        type: String,
-        required: true
-    },
-    mobileNumber: {
-        type: Number,
-        required: true
-    },
-    pincode: {
-        type: Number,
-        required: true
-    },
-    locality: {
-        type: String,
-        required: true
-    },
-    city: {
-        type: String,
-        required: true
-    },
-    state: {
-        type: String,
-        required: true
-    },
-    landmark: {
-        type: String,
-        default: 0
-    },
-    mobileNumber2: {
-        type: String,
-        default: 0
+        ref: 'Product'
     },
     created_at: {
         type: Date,
@@ -50,4 +17,4 @@ const addressSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model('Address', addressSchema);
+module.exports = mongoose.model('Wishlist', wishlistSchema);
