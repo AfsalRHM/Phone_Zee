@@ -87,22 +87,20 @@
                                         <label for="size">Ram:</label>
                                         <div class="select-custom">
                                             <select name="size" id="size" class="form-control">
-                                                <option value="#" selected="selected">Select a Ram</option>
-                                                <option value="s">4 GB</option>
-                                                <option value="m">6 Gb</option>
-                                                <option value="l">8 GB</option>
-                                                <option value="xl">10 GB</option>
+                                                <option value="4 GB" selected="selected">4 GB</option>
+                                                <option value="6 GB">6 GB</option>
+                                                <option value="8 GB">8 GB</option>
+                                                <option value="10 GB">10 GB</option>
                                             </select>
                                         </div><!-- End .select-custom -->
 
                                         <label for="size">Storage:</label>
                                         <div class="select-custom">
                                             <select name="size" id="size" class="form-control">
-                                                <option value="#" selected="selected">Select a Storage</option>
-                                                <option value="s">32 GB</option>
-                                                <option value="m">64 Gb</option>
-                                                <option value="l">128 GB</option>
-                                                <option value="xl">256 GB</option>
+                                                <option value="64 GB" selected="selected">64 GB</option>
+                                                <option value="128 GB">128 GB</option>
+                                                <option value="256 GB">256 GB</option>
+                                                <option value="512 GB">512 GB</option>
                                             </select>
                                         </div><!-- End .select-custom -->
                                     </div><!-- End .details-filter-row -->
@@ -113,14 +111,17 @@
                                             <input type="number" id="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
                                         </div><!-- End .product-details-quantity -->
 
-                                        <label for="qty" style="margin-left: 3em;">stock :</label>
-                                        <div class="product-details-quantity" style="margin-left: -1em;">
-                                            <%= product.stock %>
-                                        </div><!-- End .product-details-quantity -->
+                                        <% if (product.stock <= 8) { %>
+                                            <p style="color: rgb(209, 160, 38); margin-left: 3em;" class="ml-3">Only Few Left</p>
+                                        <% } else if (product.stock > 8) { %>
+                                            <p style="color: rgb(27, 180, 27); margin-left: 3em;" >In Stock</p>
+                                        <% } else if (product.stock <= 0) { %>
+                                            <p style="color: rgb(198, 55, 7); margin-left: 3em;">Out of Stock</p>
+                                        <% } %>
                                     </div><!-- End .details-filter-row -->
 
                                     <div class="product-details-action">
-                                        <button class="btn-product btn-cart" ><span>add to cart</span></button>
+                                        <button class="btn-product btn-cart" onclick="productAddToCart('<%= product._id %>', document.getElementById('qty').value)"><span>add to cart</span></button>
 
                                         <div class="details-action-wrapper" >
                                             <button class="btn-product btn-wishlist px-5 py-2 border border-primary" style="text-decoration: none;" title="Wishlist" onclick="productAddToWishlist('<%= product._id %>')" ><span>Add to Wishlist</span></button>
@@ -514,6 +515,64 @@
                             } else {
                                 // Navigate to the wishlist page
                                 window.location.href = '/wishlist'; // Update with the actual URL of your wishlist page
+                            }
+                        });
+                    };
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        };
+
+        function productAddToCart (productId, qty) {
+            fetch('/addToCart', { // Corrected URL to include userId in the route
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ productId: productId, qty: qty}),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if(data.message == 'Failed') {
+                        console.log('user Not Found')
+                    } else if (data.message === 'Already Exists') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Product Already in Cart',
+                            text: 'The selected product is already in your Cart.',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#3085d6',
+                        });
+                    } else if (data.message === 'Not Enough Product') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'There Has Only few Stocks left',
+                            text: 'Try selecting a small quantity',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#3085d6',
+                        });
+                    } else if (data.message === 'Success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Product Added to Cart',
+                            text: 'The selected product has been added to your Cart.',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#3085d6',
+                            showCancelButton: true,
+                            cancelButtonText: 'Go to Cart',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Reload the page after the user closes the success alert
+                                window.location.reload();
+                            } else {
+                                // Navigate to the wishlist page
+                                window.location.href = '/cart'; // Update with the actual URL of your wishlist page
                             }
                         });
                     };

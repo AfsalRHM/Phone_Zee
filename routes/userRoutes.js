@@ -101,6 +101,8 @@ user_route.post('/addToWishlist', userController.addToWishlist);
 user_route.post('/Wishlist', userController.deleteProductFromWishlist);
 user_route.post('/editAddress', userController.updateAddress);
 user_route.post('/profile', userController.deleteAddress);
+user_route.post('/addToCart', userController.addToCart);
+user_route.post('/cart', userController.deleteProductFromCart, userController.updateCart);
 
 
 module.exports = user_route;

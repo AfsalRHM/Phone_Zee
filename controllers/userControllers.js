@@ -3,6 +3,7 @@ const Product = require('../models/productModel');
 const Category = require('../models/categoryModel');
 const Address = require('../models/addressModel');
 const Wishlist = require('../models/wishlistModel');
+const Cart = require('../models/cartModel');
 
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer');
@@ -255,8 +256,16 @@ const loadCategory = async (req, res) => {
 
 const loadCart = async (req, res) => {
     try {
+
+        let subTotal = 0;
+
+        const cartData = await Cart.find({user: req.session.user_id}).populate('product');
+
+        for (let i = 0; i < cartData.length; i++) {
+            subTotal += cartData[i].product.price * cartData[i].quantity;
+        };
         
-        res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session})
+        res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session, cartItems: cartData, subTotal: subTotal})
 
     } catch (error) {
         console.log(error.message);
@@ -777,6 +786,106 @@ const deleteProductFromWishlist = async (req, res) => {
     };
 };
 
+/*****************      To Add Product to Cart     *********************/
+
+const addToCart = async (req, res) => {
+    try {
+
+        const {productId, qty}=req.body;
+        
+        const product = await Product.findById(productId);
+
+        const existingProduct = await Cart.findOne({user: req.session.user_id, product: productId});
+
+        if (!existingProduct) {
+
+            if (product.stock < qty) {
+                res.status(200).json({ message: 'Not Enough Product' });
+            } else {
+
+                if (!product) {
+                    return next();
+                };
+
+                if (!qty) {
+
+                    const cart = new Cart({
+                        user: req.session.user_id,
+                        product: productId,
+                        quantity: qty,
+                        total_price: product.price
+                    });
+
+                    await cart.save();
+        
+                    res.status(200).json({ message: 'Success' });
+
+                } else {
+
+                    const cart = new Cart({
+                        user: req.session.user_id,
+                        product: productId,
+                        quantity: qty,
+                        total_price: qty * product.price
+                    });
+            
+                    await cart.save();
+            
+                    res.status(200).json({ message: 'Success' });
+
+                };
+
+            };
+
+        } else {
+            res.status(200).json({ message: 'Already Exists' });
+        };
+
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
+/*****************      To Delete Product from the cart     *********************/
+
+const deleteProductFromCart = async (req, res, next) => {
+    try {
+
+        const { cartItemId, justCheck, verifyString } = req.body;
+
+        if (verifyString == undefined) {
+            next()
+        } else {
+            await Cart.deleteOne({_id: cartItemId});
+
+            res.status(200).json({ message: 'Success' });
+        }
+
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
+/*****************      To update the Cart when the User changes the quantity     *********************/
+
+const updateCart =  async (req, res) => {
+    try {
+
+        const { cartItemId, newQuantity } = req.body;
+        
+        const cartData = await Cart.findOne({_id: cartItemId}).populate('product');
+
+        const TotalPrice = cartData.product.price * newQuantity; 
+
+        await Cart.findByIdAndUpdate(cartItemId, { quantity: newQuantity, total_price: TotalPrice}, { new: true });
+        
+        res.status(200).json({ message: 'Success', totalPrice: TotalPrice });
+
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
 /*****************      To load the testing page     *********************/
 
 const loadTestPage = async (req, res) => {
@@ -821,5 +930,8 @@ module.exports = {
     loadEditAddress,
     updateAddress,
     deleteAddress,
+    addToCart,
+    deleteProductFromCart,
+    updateCart,
 
 };
