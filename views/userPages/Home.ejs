@@ -201,27 +201,30 @@
                 <span class="slider-loader"></span><!-- End .slider-loader -->
             </div><!-- End .intro-slider-container -->
 
-            <div class="container">
-                <h2 class="title text-center mb-4">Explore Popular Categories</h2><!-- End .title text-center -->
-                
-                <div class="cat-blocks-container">
-                    <div class="row">
-                        <% for (let i = 0; i < 6; i++) { %>
-                            <div class="col-6 col-sm-4 col-lg-2">
-                                <a href="/category" class="cat-block">
-                                    <figure>
-                                        <span>
-                                            <img src="/assets/images/demos/demo-4/cats/1.png" alt="Category image">
-                                        </span>
-                                    </figure>
-    
-                                    <h3 class="cat-block-title"><%= categories[i].name %></h3><!-- End .cat-block-title -->
-                                </a>
-                            </div><!-- End .col-sm-4 col-lg-2 -->
-                        <% } %>
-                    </div><!-- End .row -->
-                </div><!-- End .cat-blocks-container -->
-            </div><!-- End .container -->
+            <% if (categories.length == 0) { %>
+            <% } else { %>
+                <div class="container">
+                    <h2 class="title text-center mb-4">Explore Popular Categories</h2><!-- End .title text-center -->
+                    
+                    <div class="cat-blocks-container">
+                        <div class="row">
+                            <% for (let i = 0; i < 6; i++) { %>
+                                <div class="col-6 col-sm-4 col-lg-2">
+                                    <a href="/category" class="cat-block">
+                                        <figure>
+                                            <span>
+                                                <img src="/assets/images/demos/demo-4/cats/1.png" alt="Category image">
+                                            </span>
+                                        </figure>
+        
+                                        <h3 class="cat-block-title"><%= categories.name %></h3><!-- End .cat-block-title -->
+                                    </a>
+                                </div><!-- End .col-sm-4 col-lg-2 -->
+                            <% } %>
+                        </div><!-- End .row -->
+                    </div><!-- End .cat-blocks-container -->
+                </div><!-- End .container -->
+            <% } %>
 
             <div class="mb-4"></div><!-- End .mb-4 -->
 

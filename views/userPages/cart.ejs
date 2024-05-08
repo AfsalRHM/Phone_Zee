@@ -138,12 +138,12 @@
                                                         <div class="product">
                                                             <figure class="product-media">
                                                                 <a href="#">
-                                                                    <img src="/assets/images/productImages/<%= cartItems[i].product.product_image[0] %>" alt="Product image">
+                                                                    <img src="/assets/images/productImages/<%= cartItems[i].product.product_image[0]%>" alt="Product image">
                                                                 </a>
                                                             </figure>
         
                                                             <h3 class="product-title">
-                                                                <a href="#"><%= cartItems[i].product.name %></a>
+                                                                <a href="/product?id=<%= cartItems[i].product._id %>&photoNumber=0"><%= cartItems[i].product.name %></a>
                                                             </h3><!-- End .product-title -->
                                                         </div><!-- End .product -->
                                                     </td>
@@ -151,11 +151,11 @@
                                                     <td class="quantity-col">
                                                         <% if (cartItems[i].product.stock < 5) { %>
                                                             <div class="cart-product-quantity">
-                                                                <input  data-cart-item-id="<%= cartItems[i]._id %>" type="number" class="form-control" value="<%= cartItems[i].quantity %>" min="1" max="<%= cartItems[i].product.stock %>" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems[i]._id %>', this.value)">
+                                                                <input  data-cart-item-id="<%= cartItems[i]._id %>" type="number" class="form-control" value="<%= cartItems[i].quantity %>" min="1" max="<%= cartItems[i].product.stock %>" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems[i]._id %>', this.value, '<%= cartItems[0]._id %>')">
                                                             </div><!-- End .cart-product-quantity -->
                                                         <% } else { %>
                                                             <div class="cart-product-quantity">
-                                                                <input  data-cart-item-id="<%= cartItems[i]._id %>"  type="number" class="form-control" value="<%= cartItems[i].quantity %>" min="1" max="5" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems[i]._id %>', this.value)">
+                                                                <input  data-cart-item-id="<%= cartItems[i]._id %>"  type="number" class="form-control" value="<%= cartItems[i].quantity %>" min="1" max="5" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems[i]._id %>', this.value, '<%= cartItems[0]._id %>')">
                                                             </div><!-- End .cart-product-quantity -->
                                                         <% } %>
                                                     </td>
@@ -178,7 +178,7 @@
                                             </form>
                                         </div><!-- End .cart-discount -->
     
-                                        <a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
+                                        <a href="/cart" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
                                     </div><!-- End .cart-bottom -->
                                 </div><!-- End .col-lg-9 -->
                                 <aside class="col-lg-3">
@@ -189,7 +189,7 @@
                                             <tbody>
                                                 <tr class="summary-subtotal">
                                                     <td>Subtotal:</td>
-                                                    <td>₹ <%= cartItems[0].total_price %>.00</td>
+                                                    <td data-subtotal-cartTotal-id ="<%= cartItems[0]._id %>">₹ <%= cartTotalPrice %>.00</td>
                                                 </tr><!-- End .summary-subtotal -->
                                                 <tr class="summary-shipping">
                                                     <td>Shipping:</td>
@@ -199,7 +199,7 @@
                                                 <tr class="summary-shipping-row">
                                                     <td>
                                                         <div class="custom-control custom-radio">
-                                                            <input type="radio" id="free-shipping" name="shipping" value="0" class="custom-control-input">
+                                                            <input type="radio" id="free-shipping" name="shipping" value="0" class="custom-control-input" checked>
                                                             <label class="custom-control-label" for="free-shipping">Free Shipping</label>
                                                         </div><!-- End .custom-control -->
                                                     </td>
@@ -228,7 +228,7 @@
     
                                                 <tr class="summary-total">
                                                     <td>Total:</td>
-                                                    <td>₹ <%= subTotal %>.00</td>
+                                                    <td>₹ <%= cartTotalPrice %>.00</td>
                                                 </tr><!-- End .summary-total -->
                                             </tbody>
                                         </table><!-- End .table table-summary -->
@@ -366,13 +366,13 @@
     </div><!-- End .modal -->
 
     <script>
-        function deleteItemFromCart(cartItemId) {
+        function deleteItemFromCart(cartItemId, check = 'deleteProduct') {
             fetch('/cart', { // Corrected URL to include userId in the route
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ cartItemId: cartItemId }),
+                    body: JSON.stringify({ cartItemId: cartItemId, check : check}),
                 })
                 .then(response => {
                     if (!response.ok) {
@@ -392,7 +392,7 @@
                 });
         };
 
-        function updateCartItem(cartItemId, newQuantity) {
+        function updateCartItem(cartItemId, newQuantity, cartTotalId) {
             fetch('/cart', {
                 method: 'POST',
                 headers: {
@@ -414,12 +414,15 @@
                     quantityInput.value = newQuantity;
                 }
 
-                
-
                 const subtotalCell = document.querySelector(`td[data-subtotal-id="${cartItemId}"]`);
-                    if (subtotalCell) {
-                        subtotalCell.textContent = `₹ ${data.totalPrice}`;
-                    }
+                if (subtotalCell) {
+                    subtotalCell.textContent = `₹ ${data.totalPrice}`;
+                }
+
+                const cartTotal = document.querySelector(`td[data-subtotal-cartTotal-id="${cartTotalId}"]`);
+                if (cartTotal) {
+                    cartTotal.textContent = `₹ ${data.cartTotal}.00`;
+                }
             })
             .catch(error => {
                 console.error('Error:', error);

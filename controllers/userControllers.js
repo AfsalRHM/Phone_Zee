@@ -257,15 +257,17 @@ const loadCategory = async (req, res) => {
 const loadCart = async (req, res) => {
     try {
 
-        let subTotal = 0;
+        let cartTotalPrice = 0;
 
         const cartData = await Cart.find({user: req.session.user_id}).populate('product');
 
         for (let i = 0; i < cartData.length; i++) {
-            subTotal += cartData[i].product.price * cartData[i].quantity;
+            cartTotalPrice += cartData[i].total_price;
         };
+
+        console.log(cartTotalPrice);
         
-        res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session, cartItems: cartData, subTotal: subTotal})
+        res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session, cartItems: cartData, cartTotalPrice: cartTotalPrice})
 
     } catch (error) {
         console.log(error.message);
@@ -851,9 +853,9 @@ const addToCart = async (req, res) => {
 const deleteProductFromCart = async (req, res, next) => {
     try {
 
-        const { cartItemId, justCheck, verifyString } = req.body;
+        const { cartItemId, check } = req.body;
 
-        if (verifyString == undefined) {
+        if (check != 'deleteProduct') {
             next()
         } else {
             await Cart.deleteOne({_id: cartItemId});
@@ -871,15 +873,27 @@ const deleteProductFromCart = async (req, res, next) => {
 const updateCart =  async (req, res) => {
     try {
 
+        let cartTotal = 0;
         const { cartItemId, newQuantity } = req.body;
         
         const cartData = await Cart.findOne({_id: cartItemId}).populate('product');
 
         const TotalPrice = cartData.product.price * newQuantity; 
 
+        const cart = await Cart.find({user: req.session.user_id});
+
+        console.log(cart)
+        console.log(cartTotal)
+
+        for (let i = 0; i < cart.length; i++) {
+            cartTotal += cart[i].total_price
+        }
+
+        console.log(cartTotal)
+
         await Cart.findByIdAndUpdate(cartItemId, { quantity: newQuantity, total_price: TotalPrice}, { new: true });
         
-        res.status(200).json({ message: 'Success', totalPrice: TotalPrice });
+        res.status(200).json({ message: 'Success', totalPrice: TotalPrice, cartTotal:  cartTotal });
 
     } catch (error) {
         console.log(error.message);
