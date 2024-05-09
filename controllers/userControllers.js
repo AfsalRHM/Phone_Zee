@@ -165,65 +165,65 @@ const FailureGoogleLogin = async (req, res) => {
 };
 
 
-/*****************      To load after Success on Goole Login     *********************/
+// /*****************      To load after Success on Goole Login     *********************/
 
-const successFacebookLogin = async (req, res) => {
-    try {
+// const successFacebookLogin = async (req, res) => {
+//     try {
 
-        console.log(req.user);
-        // if (req.user) {
-        //     console.log(req.user);
-        //     const user = new User({
-        //         name: req.user.displayName,
-        //         email: req.user.email
-        //     });
+//         console.log(req.user);
+//         // if (req.user) {
+//         //     console.log(req.user);
+//         //     const user = new User({
+//         //         name: req.user.displayName,
+//         //         email: req.user.email
+//         //     });
 
-        //     const userAlready = await User.findOne({
-        //         email: req.user.email
-        //     });
+//         //     const userAlready = await User.findOne({
+//         //         email: req.user.email
+//         //     });
 
-        //     if (userAlready) {
-        //         const userData = await User.findOne({email: req.user.email});
+//         //     if (userAlready) {
+//         //         const userData = await User.findOne({email: req.user.email});
 
-        //         if (userData) {
-        //             req.session.user_id = userData._id;
-        //             res.redirect('/');
-        //         } else {
-        //             res.render('login', {validationMessage: 'User Not Added', loginOrCart: req.session});
-        //         };
-        //     } else {
+//         //         if (userData) {
+//         //             req.session.user_id = userData._id;
+//         //             res.redirect('/');
+//         //         } else {
+//         //             res.render('login', {validationMessage: 'User Not Added', loginOrCart: req.session});
+//         //         };
+//         //     } else {
 
-        //         const userData = await user.save();
+//         //         const userData = await user.save();
 
-        //         if (userData) {
-        //             req.session.user_id = userData._id;
-        //             res.redirect('/');
-        //         } else {
-        //             res.render('login', {validationMessage: 'User Not Added', loginOrCart: req.session});
-        //         };
-        //     };
+//         //         if (userData) {
+//         //             req.session.user_id = userData._id;
+//         //             res.redirect('/');
+//         //         } else {
+//         //             res.render('login', {validationMessage: 'User Not Added', loginOrCart: req.session});
+//         //         };
+//         //     };
             
            
-        // } else {
-        //     res.redirect('/facebookFailure');
-        // };
+//         // } else {
+//         //     res.redirect('/facebookFailure');
+//         // };
         
-    } catch (error) {
-        console.log(error.message);
-    };
-};
+//     } catch (error) {
+//         console.log(error.message);
+//     };
+// };
 
-/*****************      To load after Failure on Goole Login     *********************/
+// /*****************      To load after Failure on Goole Login     *********************/
 
-const failureFacebookLogin = async (req, res) => {
-    try {
+// const failureFacebookLogin = async (req, res) => {
+//     try {
 
-        res.render('signup', {message: 'Facebook Login Failed', loginOrCart: req.session});
+//         res.render('signup', {message: 'Facebook Login Failed', loginOrCart: req.session});
         
-    } catch (error) {
-        console.log(error.message);
-    };
-};
+//     } catch (error) {
+//         console.log(error.message);
+//     };
+// };
 
 /*****************      To load the OTP page     *********************/
 
@@ -259,13 +259,15 @@ const loadCart = async (req, res) => {
 
         let cartTotalPrice = 0;
 
-        const cartData = await Cart.find({user: req.session.user_id}).populate('product');
+        const cartData = await Cart.findOne({user: req.session.user_id}).populate('products.product');
 
-        for (let i = 0; i < cartData.length; i++) {
-            cartTotalPrice += cartData[i].total_price;
+        // console.log(cartData.products);
+
+        for (let i = 0; i < cartData.products.length; i++) {
+            cartTotalPrice += cartData.products[i].product.price * cartData.products[i].quantity;
         };
 
-        console.log(cartTotalPrice);
+        // console.log(cartTotalPrice, 'u uwhfuyfh lsfj');
         
         res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session, cartItems: cartData, cartTotalPrice: cartTotalPrice})
 
@@ -793,28 +795,27 @@ const deleteProductFromWishlist = async (req, res) => {
 const addToCart = async (req, res) => {
     try {
 
-        const {productId, qty}=req.body;
+        const {productId, qty} = req.body;
         
         const product = await Product.findById(productId);
 
-        const existingProduct = await Cart.findOne({user: req.session.user_id, product: productId});
+        const existingCart = await Cart.findOne({user: req.session.user_id});
 
-        if (!existingProduct) {
+        if (!product) {
+            return next();
+        };
+
+        if (!existingCart) {
 
             if (product.stock < qty) {
                 res.status(200).json({ message: 'Not Enough Product' });
             } else {
 
-                if (!product) {
-                    return next();
-                };
-
                 if (!qty) {
 
                     const cart = new Cart({
                         user: req.session.user_id,
-                        product: productId,
-                        quantity: qty,
+                        products: [{product: productId, quantity: 1, product_total: product.price}],
                         total_price: product.price
                     });
 
@@ -826,8 +827,7 @@ const addToCart = async (req, res) => {
 
                     const cart = new Cart({
                         user: req.session.user_id,
-                        product: productId,
-                        quantity: qty,
+                        products: [{product: productId, quantity: qty, product_total: qty * product.price}],
                         total_price: qty * product.price
                     });
             
@@ -840,7 +840,46 @@ const addToCart = async (req, res) => {
             };
 
         } else {
-            res.status(200).json({ message: 'Already Exists' });
+
+            const existingProductOnCart = await Cart.findOne({user: req.session.user_id, 'products.product': productId});
+
+            if (!existingProductOnCart) {
+
+                if (product.stock < qty) {
+                    res.status(200).json({ message: 'Not Enough Product' });
+                } else {
+    
+                    if (!qty) {
+
+                        const productTotal = product.price * 1;
+
+                        existingCart.products.push({ product: productId, quantity: 1, product_total: productTotal });
+
+                        existingCart.total_price += productTotal;
+
+                        await existingCart.save();
+            
+                        res.status(200).json({ message: 'Success' });
+    
+                    } else {
+                
+                        const productTotal = product.price * qty;
+
+                        existingCart.products.push({ product: productId, quantity: qty, product_total: productTotal });
+
+                        existingCart.total_price += productTotal;
+    
+                        await existingCart.save();
+            
+                        res.status(200).json({ message: 'Success' });
+    
+                    };
+                };
+
+            } else {
+                res.status(200).json({ message: 'Already Exists' });
+            }
+            
         };
 
     } catch (error) {
@@ -855,12 +894,22 @@ const deleteProductFromCart = async (req, res, next) => {
 
         const { cartItemId, check } = req.body;
 
+        const cartData = await Cart.findOne({user: req.session.user_id}).populate('products');
+
+        const product = await Product.findOne({_id: cartItemId});
+
         if (check != 'deleteProduct') {
             next()
         } else {
-            await Cart.deleteOne({_id: cartItemId});
+
+            const productToRemove = cartData.products.find(product => product.product._id.equals(cartItemId));
+
+            const updatedTotalPrice = cartData.total_price - productToRemove.product_total;
+
+            await cartData.updateOne({ $pull: { products: { product: cartItemId } }, total_price: updatedTotalPrice});
 
             res.status(200).json({ message: 'Success' });
+
         }
 
     } catch (error) {
@@ -873,25 +922,22 @@ const deleteProductFromCart = async (req, res, next) => {
 const updateCart =  async (req, res) => {
     try {
 
-        let cartTotal = 0;
         const { cartItemId, newQuantity } = req.body;
         
-        const cartData = await Cart.findOne({_id: cartItemId}).populate('product');
+        const cartData = await Cart.findOne({user: req.session.user_id}).populate('products.product');
 
-        const TotalPrice = cartData.product.price * newQuantity; 
+        const productToUpdate = cartData.products.find(product => product.product._id.equals(cartItemId));
 
-        const cart = await Cart.find({user: req.session.user_id});
+        const TotalPrice = productToUpdate.product.price * newQuantity; 
 
-        console.log(cart)
-        console.log(cartTotal)
+        productToUpdate.quantity = newQuantity;
+        productToUpdate.product_total = TotalPrice;
 
-        for (let i = 0; i < cart.length; i++) {
-            cartTotal += cart[i].total_price
-        }
+        const cartTotal = cartData.products.reduce((total, product) => total + product.product_total, 0);
 
-        console.log(cartTotal)
+        cartData.total_price = cartTotal;
 
-        await Cart.findByIdAndUpdate(cartItemId, { quantity: newQuantity, total_price: TotalPrice}, { new: true });
+        await cartData.save();
         
         res.status(200).json({ message: 'Success', totalPrice: TotalPrice, cartTotal:  cartTotal });
 
@@ -918,8 +964,8 @@ module.exports = {
     loadSignUpPage,
     successGoogleLogin,
     FailureGoogleLogin,
-    successFacebookLogin,
-    failureFacebookLogin,
+    // successFacebookLogin,
+    // failureFacebookLogin,
     loadOtpPage,
     loadCategory,
     loadCart,

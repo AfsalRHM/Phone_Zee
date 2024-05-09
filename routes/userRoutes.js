@@ -61,7 +61,7 @@ user_route.get('/resendOTP', userController.resendOtp);
 // Google Auth Route
 user_route.get('/auth/google' , passport.authenticate('google', { scope: ['email', 'profile'] }));
 
-// Goole Auth callback
+// Google Auth callback
 user_route.get('/auth/google/callback',
     passport.authenticate('google', {
         successRedirect: '/googleSuccess',
@@ -76,20 +76,20 @@ user_route.get('/googleFailure', userController.FailureGoogleLogin);
 
 /*********      Facebook Auth Routes      **********/ 
 
-// Google Auth Route
-user_route.get('/auth/facebook' , passport.authenticate('facebook', { scope: ['public_profile', 'email'] }));
+// Facebook Auth Route
+// user_route.get('/auth/facebook' , passport.authenticate('facebook', { scope: ['public_profile', 'email'] }));
 
-// Goole Auth callback
-user_route.get('/auth/facebook/callback',
-    passport.authenticate('facebook', {
-        successRedirect: '/facebookSuccess',
-        failureRedirect: '/facebookFailure'
-    })
-);
+// // Facebook Auth callback
+// user_route.get('/auth/facebook/callback',
+//     passport.authenticate('facebook', {
+//         successRedirect: '/facebookSuccess',
+//         failureRedirect: '/facebookFailure'
+//     })
+// );
 
-// Success and Failure Routes
-user_route.get('/facebookSuccess', userController.successFacebookLogin);
-user_route.get('/facebookFailure', userController.failureFacebookLogin);
+// // Success and Failure Routes
+// user_route.get('/facebookSuccess', userController.successFacebookLogin);
+// user_route.get('/facebookFailure', userController.failureFacebookLogin);
 
 
 /*********      Post Requests      **********/ 

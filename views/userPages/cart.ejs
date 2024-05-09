@@ -21,7 +21,7 @@
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
 
-            <% if (cartItems.length == 0) { %>
+            <% if (cartItems.products.length == 0) { %>
                 <div class="page-content">
                     <div class="cart">
                         <div class="container">
@@ -132,35 +132,35 @@
                                         </thead>
     
                                         <tbody>
-                                            <% for (let i = 0; i < cartItems.length; i++) { %>
+                                            <% for (let i = 0; i < cartItems.products.length; i++) { %>
                                                 <tr>
                                                     <td class="product-col">
                                                         <div class="product">
                                                             <figure class="product-media">
                                                                 <a href="#">
-                                                                    <img src="/assets/images/productImages/<%= cartItems[i].product.product_image[0]%>" alt="Product image">
+                                                                    <img src="/assets/images/productImages/<%= cartItems.products[i].product.product_image[0]%>" alt="Product image">
                                                                 </a>
                                                             </figure>
         
                                                             <h3 class="product-title">
-                                                                <a href="/product?id=<%= cartItems[i].product._id %>&photoNumber=0"><%= cartItems[i].product.name %></a>
+                                                                <a href="/product?id=<%= cartItems.products[i].product._id %>&photoNumber=0"><%= cartItems.products[i].product.name %></a>
                                                             </h3><!-- End .product-title -->
                                                         </div><!-- End .product -->
                                                     </td>
-                                                    <td class="price-col">₹ <%= cartItems[i].product.price %></td>
+                                                    <td class="price-col">₹ <%= cartItems.products[i].product.price %></td>
                                                     <td class="quantity-col">
-                                                        <% if (cartItems[i].product.stock < 5) { %>
+                                                        <% if (cartItems.products[i].product.stock < 5) { %>
                                                             <div class="cart-product-quantity">
-                                                                <input  data-cart-item-id="<%= cartItems[i]._id %>" type="number" class="form-control" value="<%= cartItems[i].quantity %>" min="1" max="<%= cartItems[i].product.stock %>" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems[i]._id %>', this.value, '<%= cartItems[0]._id %>')">
+                                                                <input  data-cart-item-id="<%= cartItems.products[i]._id %>" type="number" class="form-control" value="<%= cartItems.products[i].quantity %>" min="1" max="<%= cartItems.products[i].product.stock %>" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems.products[i].product._id %>', this.value, '<%= cartItems.products[i].product._id %>')">
                                                             </div><!-- End .cart-product-quantity -->
                                                         <% } else { %>
                                                             <div class="cart-product-quantity">
-                                                                <input  data-cart-item-id="<%= cartItems[i]._id %>"  type="number" class="form-control" value="<%= cartItems[i].quantity %>" min="1" max="5" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems[i]._id %>', this.value, '<%= cartItems[0]._id %>')">
+                                                                <input  data-cart-item-id="<%= cartItems.products[i]._id %>"  type="number" class="form-control" value="<%= cartItems.products[i].quantity %>" min="1" max="5" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems.products[i].product._id %>', this.value, '<%= cartItems.products[i].product._id %>')">
                                                             </div><!-- End .cart-product-quantity -->
                                                         <% } %>
                                                     </td>
-                                                    <td class="total-col" data-subtotal-id="<%= cartItems[i]._id %>" >₹ <%= cartItems[i].product.price * cartItems[i].quantity %></td>
-                                                    <td class="remove-col"><button onclick="deleteItemFromCart('<%= cartItems[i]._id %>')" class="btn-remove"><i class="icon-close"></i></button></td>
+                                                    <td class="total-col" data-subtotal-id="<%= cartItems.products[i].product._id %>" >₹ <%= cartItems.products[i].product.price * cartItems.products[i].quantity %></td>
+                                                    <td class="remove-col"><button onclick="deleteItemFromCart('<%= cartItems.products[i].product._id %>')" class="btn-remove"><i class="icon-close"></i></button></td>
                                                 </tr>
                                             <% } %>
                                         </tbody>
@@ -189,7 +189,7 @@
                                             <tbody>
                                                 <tr class="summary-subtotal">
                                                     <td>Subtotal:</td>
-                                                    <td data-subtotal-cartTotal-id ="<%= cartItems[0]._id %>">₹ <%= cartTotalPrice %>.00</td>
+                                                    <td data-subtotal-cartTotal-id ="idForUpdatingThePriceBeforeSelectingShipping">₹ <%= cartItems.total_price %>.00</td>
                                                 </tr><!-- End .summary-subtotal -->
                                                 <tr class="summary-shipping">
                                                     <td>Shipping:</td>
@@ -419,7 +419,7 @@
                     subtotalCell.textContent = `₹ ${data.totalPrice}`;
                 }
 
-                const cartTotal = document.querySelector(`td[data-subtotal-cartTotal-id="${cartTotalId}"]`);
+                const cartTotal = document.querySelector(`td[data-subtotal-cartTotal-id="idForUpdatingThePriceBeforeSelectingShipping"]`);
                 if (cartTotal) {
                     cartTotal.textContent = `₹ ${data.cartTotal}.00`;
                 }
