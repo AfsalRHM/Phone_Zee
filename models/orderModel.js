@@ -18,6 +18,10 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    shipping_plan: {
+        type: String,
+        required: true
+    },
     products: [
         {
             product: {
@@ -30,6 +34,10 @@ const orderSchema = new mongoose.Schema({
             }
         }
     ],
+    order_total: {
+        type: Number,
+        required: true
+    },
     created_at: {
         type: Date,
         default: Date.now()

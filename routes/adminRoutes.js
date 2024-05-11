@@ -46,6 +46,8 @@ admin_route.get('/addproductPrice', adminAuth.isLogin, adminController.loadAddPr
 admin_route.get('/addproductImages', adminAuth.isLogin, adminController.loadAddProductImages);
 admin_route.get('/addproductRelatedproducts', adminAuth.isLogin, adminController.loadAddProductRelatedProducts);
 admin_route.get('/productlist', adminAuth.isLogin, adminController.loadProductList);
+admin_route.get('/orderlist', adminAuth.isLogin, adminController.loadOrderList);
+admin_route.get('/orderdetail', adminAuth.isLogin, adminController.loadOrderDetail)
 admin_route.get('/userlist', adminAuth.isLogin, adminController.loadUserList);
 admin_route.get('/categorylist', adminAuth.isLogin, adminController.loadCategoryList);
 admin_route.get('/login', adminAuth.isLogout, adminController.loadAdminLogin);
@@ -62,7 +64,9 @@ admin_route.post('/categorylist', adminController.activeOrInactive, adminControl
 admin_route.post('/editcategory', adminController.updateCategory);
 admin_route.post('/addproduct', upload.array('image_1', 4), adminController.insertProduct);
 admin_route.post('/productlist', adminController.activeOrInactive2);
-admin_route.post('/editproduct', upload.array('image_1', 4), adminController.updateProduct)
+admin_route.post('/editproduct', upload.array('image_1', 4), adminController.updateProduct);
+admin_route.post('/orderdetail', adminController.updateOrderStatus);
+admin_route.post('/orderlist', adminController.deleteOrder);
 
 
 // All Routes

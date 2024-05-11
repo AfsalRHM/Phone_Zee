@@ -21,10 +21,10 @@
                     <div class="header-center">
                         <div class="header-search header-search-extended header-search-visible d-none d-lg-block">
                             <a href="#" class="search-toggle" role="button"><i class="icon-search"></i></a>
-                            <form action="#" method="get">
+                            <form id="searchForm" action="/search" method="GET">
                                 <div class="header-search-wrapper search-wrapper-wide">
                                     <label for="q" class="sr-only">Search</label>
-                                    <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+                                    <button type="submit" class="btn btn-primary"><i class="icon-search"></i></button>
                                     <input type="search" class="form-control" name="q" id="q" placeholder="Search product ..." required>
                                 </div><!-- End .header-search-wrapper -->
                             </form>
@@ -44,15 +44,15 @@
                             } else {
                                 %>
                                 <div class="header-right">
-                                    <div class="header-search">
+                                    <!-- <div class="header-search">
                                         <a href="#" class="search-toggle" role="button" title="Search"><i class="icon-search"></i></a>
                                         <form action="#" method="get">
                                             <div class="header-search-wrapper">
                                                 <label for="q" class="sr-only">Search</label>
                                                 <input type="search" class="form-control" name="q" id="q" placeholder="Search in..." required>
-                                            </div><!-- End .header-search-wrapper -->
+                                            </div>
                                         </form>
-                                    </div><!-- End .header-search -->
+                                    </div> -->
                                     <div class="dropdown compare-dropdown">
                                         <a href="wishlist" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" data-display="static" title="Compare Products" aria-label="Compare Products">
                                             <i class="icon-heart" ></i>
@@ -63,7 +63,7 @@
                                     <div class="dropdown cart-dropdown">
                                         <a href="cart" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" data-display="static">
                                             <i class="icon-shopping-cart"></i>
-                                            <span class="cart-count">2</span>
+                                            <span class="cart-count"><%= cartItemsForCartCount.length %></span>
                                         </a>
                                     </div><!-- End .cart-dropdown -->
                                     <div class="dropdown compare-dropdown">

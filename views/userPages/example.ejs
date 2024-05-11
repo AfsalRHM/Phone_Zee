@@ -25,6 +25,27 @@
         .btn-save {
             margin-top: 20px;
         }
+
+        .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        }
+
     </style>
 </head>
 <body>
@@ -61,30 +82,88 @@
         <button class="btn btn-primary btn-save" onclick="saveAddress()">Save</button>
     </div>
 
+    <a id="openModalButton" href="#">Choose a different address</a>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <h2>Select Address</h2>
+            <form id="addressForm">
+                <!-- Populate this list dynamically with available addresses -->
+                <input type="radio" id="address1" name="address" value="Address 1">
+                <label for="address1">Address 1</label><br>
+                <input type="radio" id="address2" name="address" value="Address 2">
+                <label for="address2">Address 2</label><br>
+                <!-- Add more addresses as needed -->
+                <button type="button" onclick="selectAddress()">Select</button>
+                <button type="button" onclick="closeModal()">Close</button>
+              </form>
+        </div>
+      </div>
+
+      <p id="selectedAddress"></p>
+      
+    
+
     <!-- Bootstrap JS (optional if needed for functionality) -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <!-- JavaScript function to save selected addresses -->
     <script>
-        function saveAddress() {
-            // Get all checkboxes
-            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            var selectedAddresses = [];
+        // function saveAddress() {
+        //     // Get all checkboxes
+        //     var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        //     var selectedAddresses = [];
 
-            // Loop through checkboxes to find selected ones
-            checkboxes.forEach(function(checkbox) {
-                if (checkbox.checked) {
-                    selectedAddresses.push(checkbox.name); // Push the address name to the array
-                }
-            });
+        //     // Loop through checkboxes to find selected ones
+        //     checkboxes.forEach(function(checkbox) {
+        //         if (checkbox.checked) {
+        //             selectedAddresses.push(checkbox.name); // Push the address name to the array
+        //         }
+        //     });
 
-            // Display selected addresses (for demonstration)
-            if (selectedAddresses.length > 0) {
-                alert('Selected addresses: ' + selectedAddresses.join(', '));
+        //     // Display selected addresses (for demonstration)
+        //     if (selectedAddresses.length > 0) {
+        //         alert('Selected addresses: ' + selectedAddresses.join(', '));
+        //     } else {
+        //         alert('Please select at least one address.');
+        //     }
+        // };
+
+        // Get the modal    
+        var modal = document.getElementById("myModal");
+
+        var btn = document.getElementById("openModalButton");
+
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        
+
+        function selectAddress(address) {
+            var selectedAddress = document.querySelector('input[name="address"]:checked');
+            if (selectedAddress) {
+                // Pass the selected address back to the main page
+                // You can use any appropriate method here, like setting a hidden input value
+                document.getElementById("selectedAddress").innerHTML = selectedAddress.value;
+                closeModal();
             } else {
-                alert('Please select at least one address.');
+                alert("Please select an address.");
             }
         }
+
+        // When the user clicks on <span> (x), close the modal
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
     </script>
 </body>
 </html>

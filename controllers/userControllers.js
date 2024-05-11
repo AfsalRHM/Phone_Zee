@@ -4,10 +4,12 @@ const Category = require('../models/categoryModel');
 const Address = require('../models/addressModel');
 const Wishlist = require('../models/wishlistModel');
 const Cart = require('../models/cartModel');
+const Order = require('../models/orderModel');
 
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer');
 const Otp = require('../models/otp');
+const Swal = require('sweetalert2');
 
 /*****************      To Secure the password Using bcrypt     *********************/
 
@@ -38,8 +40,8 @@ const transporter =  nodemailer.createTransport({
     port: 587,
     secure: false, // upgrade later with STARTTLS
     auth: {
-      user: "afsalrahmanm25@gmail.com",
-      pass: "sclv dytn njag ohro",
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
     },
   });
 
@@ -73,7 +75,10 @@ const loadHome = async (req, res) => {
     try {
 
         const categoryData = await Category.find({is_hide: 0});
-        res.render('Home', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, categories: categoryData});
+        const cartData = await Cart.find({user: req.session.user_id});
+        const cartDataForCount = await Cart.find({user: req.session.user_id});
+
+        res.render('Home', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, categories: categoryData, cartItemsForCartCount: cartDataForCount});
 
     } catch (error) {
         console.log(error.message)
@@ -245,7 +250,8 @@ const loadCategory = async (req, res) => {
         
         const productData = await Product.find({is_hide: 0});
         const categoryData = await Category.find({is_hide: 0});
-        res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session});
+        const cartDataForCount = await Cart.find({user: req.session.user_id});
+        res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount });
 
     } catch (error) {
         console.log(error.message);
@@ -259,17 +265,21 @@ const loadCart = async (req, res) => {
 
         let cartTotalPrice = 0;
 
-        const cartData = await Cart.findOne({user: req.session.user_id}).populate('products.product');
+        let cartData;
 
-        // console.log(cartData.products);
+        const cart = await Cart.find({user: req.session.user_id});
 
-        for (let i = 0; i < cartData.products.length; i++) {
-            cartTotalPrice += cartData.products[i].product.price * cartData.products[i].quantity;
-        };
+        cartData = await Cart.findOne({user: req.session.user_id}).populate('products.product');
 
-        // console.log(cartTotalPrice, 'u uwhfuyfh lsfj');
+        const cartDataForCount = await Cart.find({user: req.session.user_id});
         
-        res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session, cartItems: cartData, cartTotalPrice: cartTotalPrice})
+        if (cartData && cartData.products) {
+            for (let i = 0; i < cartData.products.length; i++) {
+                cartTotalPrice += cartData.products[i].product.price * cartData.products[i].quantity;
+            };
+        };
+        
+        res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session, cartItems: cartData, cartTotalPrice: cartTotalPrice, cartItemsForCartCount: cartDataForCount })
 
     } catch (error) {
         console.log(error.message);
@@ -280,8 +290,10 @@ const loadCart = async (req, res) => {
 
 const loadFaq = async (req, res) => {
     try {
+
+        const cartDataForCount = await Cart.find({user: req.session.user_id});
         
-        res.render('faq', {activeMoreMessage: 'active', pageTitle: 'FAQs | PhoneZee', loginOrCart: req.session})   
+        res.render('faq', {activeMoreMessage: 'active', pageTitle: 'FAQs | PhoneZee', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount });
 
     } catch (error) {
         console.log(error.message);
@@ -297,8 +309,9 @@ const loadProduct = async (req, res) => {
         const imagePosition = req.query.photoNumber;
         const productData = await Product.findOne({_id: id});
         const relatedProductData = await Product.find({_id: {$ne: id} ,category: productData.category});
+        const cartDataForCount = await Cart.find({user: req.session.user_id});
 
-        res.render('product', {pageTitle: 'product | PhoneZee', loginOrCart: req.session, product: productData, relatedProducts: relatedProductData, imagePos: imagePosition});
+        res.render('product', {pageTitle: 'product | PhoneZee', loginOrCart: req.session, product: productData, relatedProducts: relatedProductData, imagePos: imagePosition, cartItemsForCartCount: cartDataForCount });
 
     } catch (error) {
         console.log(error.message);
@@ -311,8 +324,12 @@ const loadCheckout = async (req, res) => {
     try {
 
         const addressData = await Address.find({user: req.session.user_id});
+
+        const cartData = await Cart.findOne({user: req.session.user_id}).populate('products.product');
+
+        const cartDataForCount = await Cart.find({user: req.session.user_id});
         
-        res.render('checkout', {pageTitle: 'checkout | PhoneZee', loginOrCart: req.session, address: addressData});
+        res.render('checkout', {pageTitle: 'checkout | PhoneZee', loginOrCart: req.session, address: addressData, cartItems: cartData, cartItemsForCartCount: cartDataForCount });
 
     } catch (error) {
         console.log(error.message);
@@ -324,7 +341,9 @@ const loadCheckout = async (req, res) => {
 const loadAbout = async (req, res) => {
     try {
         
-        res.render('about', {pageTitle: 'about | PhoneZee', loginOrCart: req.session});
+        const cartDataForCount = await Cart.find({user: req.session.user_id});
+
+        res.render('about', {pageTitle: 'about | PhoneZee', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount });
 
     } catch (error) {
         console.log(error.message);
@@ -335,8 +354,10 @@ const loadAbout = async (req, res) => {
 
 const loadContact = async (req, res) => {
     try {
+
+        const cartDataForCount = await Cart.find({user: req.session.user_id});
         
-        res.render('contact', {pageTitle: 'contact | PhoneZee', loginOrCart: req.session});
+        res.render('contact', {pageTitle: 'contact | PhoneZee', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount });
 
     } catch (error) {
         console.log(error.message);
@@ -347,8 +368,10 @@ const loadContact = async (req, res) => {
 
 const loadErrorPage = async (req, res) => {
     try {
+
+        const cartDataForCount = await Cart.find({user: req.session.user_id});
         
-        res.render('404', {pageTitle: 'Error | PhoneZee', loginOrCart: req.session});
+        res.render('404', {pageTitle: 'Error | PhoneZee', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount });
 
     } catch (error) {
         console.log(error.message);
@@ -361,8 +384,10 @@ const loadWishlist = async (req, res) => {
     try {
 
         const wishlistData = await Wishlist.find({user: req.session.user_id}).populate('product');
+
+        const cartDataForCount = await Cart.find({user: req.session.user_id});
         
-        res.render('wishlist', {pageTitle: 'wishlist | PhoneZee', loginOrCart: req.session, wishlistItems: wishlistData});
+        res.render('wishlist', {pageTitle: 'wishlist | PhoneZee', loginOrCart: req.session, wishlistItems: wishlistData, cartItemsForCartCount: cartDataForCount });
 
     } catch (error) {
         console.log(error.message);
@@ -376,11 +401,14 @@ const loadProfile = async (req, res) => {
         
         const addressData = await Address.find({user: req.session.user_id});
         const userData = await User.findOne({_id: req.session.user_id});
+        const orderData = await Order.find({ user: req.session.user_id }).populate('products.product').populate('address');
 
-        res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData });
+        const cartDataForCount = await Cart.find({user: req.session.user_id});
+
+        res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, cartItemsForCartCount: cartDataForCount });
 
     } catch (error) {
-        res.render('404');
+        res.render('404', { loginOrCart: req.session });
         console.log(error.message);
     };
 };
@@ -726,7 +754,7 @@ const updateAddress =  async (req, res) => {
 
 const deleteAddress = async (req, res, next) => {
     try {
-        const {addressId}=req.body;
+        const { addressId }=req.body;
         const address = await Address.findByIdAndDelete(addressId);
 
         if (!address) {
@@ -946,6 +974,173 @@ const updateCart =  async (req, res) => {
     };
 };
 
+/*****************      To Place the Order     *********************/
+
+const placeOrder = async (req, res) => {
+    try {
+
+        const cartData = await Cart.findOne({user: req.session.user_id});
+
+        const orderExists = await Order.findOne({user: req.session.user_id, products: cartData.products.product});
+
+        const length = cartData.products.length;
+
+        for (let i = 0; i < cartData.products.length; i++) {
+            const productId = cartData.products[i].product._id;
+            const quantity = cartData.products[i].quantity;
+        
+            try {
+                let product = await Product.findByIdAndUpdate(
+                    { _id: productId },
+                    { $inc: { stock: -quantity } }
+                );
+            } catch (error) {
+                console.error("Error updating product:", error);
+            }
+        }
+
+        if (!orderExists) {
+            const { addressId } = req.body;
+
+            const order = new Order ({
+                user: req.session.user_id,
+                address: addressId,
+                payment_type: 'COD',
+                order_status: 'Pending',    
+                shipping_plan: 'Free-shipping',
+                products: cartData.products,
+                order_total: cartData.total_price
+            });
+    
+            const OrderData = await order.save();
+    
+            await Cart.findByIdAndUpdate(cartData._id, { $pull: { products: { _id: { $in: cartData.products.map(p => p._id) } } } });
+    
+            if (OrderData) {
+                res.status(200).json({ message: 'Success' });
+            } else {
+                res.status(500).json({ message: 'Failed' });
+            };
+    
+        } else {
+            res.status(200).json({ message: 'Order Already Exists' });
+        }
+        
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
+/*****************      To Cancel a Order     *********************/
+
+const deleteOrder = async (req, res) => {
+    try {
+
+        const { OrderId } = req.body;
+
+        const orderData = await Order.findOne({_id: OrderId});
+
+        if ( orderData ) {
+
+            await Order.deleteOne({_id: OrderId});
+            res.status(200).json({ message: 'Success' });
+
+        } else {
+            res.status(500).json({ message: 'Order Not Found' });
+        }
+
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
+/*****************      To Search the product or category     *********************/
+
+const searchFeature = async (req, res) => {
+    try {
+
+        let searchtext = '';
+
+        const searchText = req.query.q;;
+
+        if (searchText) {
+            searchtext = searchText;
+        };
+
+        const productData = await Product.find({is_hide: 0,
+            $or : [
+                { name : { $regex:'.*' + searchtext + '.*', $options: 'i' } },
+                { category : { $regex:'.*' + searchtext + '.*', $options: 'i' } },
+            ]});
+        const categoryData = await Category.find({is_hide: 0});
+        res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session});
+
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
+
+// const sortItems = async (req, res) => {
+//     try {
+
+//         const { selectedValue } = req.body;
+
+//         console.log('here reached', selectedValue);
+
+//         let productData;
+
+//         const categoryData = await Category.find({is_hide: 0});
+
+//         if (selectedValue == 'date') {
+//             productData = await Product.find({is_hide: 0});
+//         } else if (selectedValue == 'lowToHigh') {
+//             productData = await Product.find({is_hide: 0}).sort({price: 1});
+//         } else if (selectedValue === 'highToLow') {
+//             productData = await Product.find({}).sort({ price: -1 });
+//         } else if (selectedValue === 'aATozZ') {
+//             productData = await Product.find({}).sort({ name: 1 });
+//         } else if (selectedValue === 'zZToaA') {
+//             productData = await Product.find({}).sort({ name: -1 });
+//         }
+
+//         console.log('The product Data : ', productData)
+
+//         // res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session});
+
+//         res.status(200).json({ message: 'Success', productData: productData });
+
+//     } catch (error) {
+//         console.log(error.message);
+//     };
+// };
+
+const sortFunction = async (req, res) => {
+    try {
+
+        const sortValue = req.query.sortby;
+
+        const categoryData = await Category.find({is_hide: 0});
+
+
+        let sortedData;
+        if (sortValue === 'lowToHigh') {
+            sortedData = await Product.find().sort({ price: 1 });
+        } else if (sortValue === 'highToLow') {
+            sortedData = await Product.find().sort({ price: -1 });
+        } else if (sortValue === 'aATozZ') {
+            sortedData = await Product.find({}).sort({ name: 1 });
+        } else if (sortValue === 'zZToaA') {
+            sortedData = await Product.find({}).sort({ name: -1 });
+        }
+
+        res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: sortedData, categories: categoryData, loginOrCart: req.session})
+
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
 /*****************      To load the testing page     *********************/
 
 const loadTestPage = async (req, res) => {
@@ -993,5 +1188,10 @@ module.exports = {
     addToCart,
     deleteProductFromCart,
     updateCart,
+    placeOrder,
+    deleteOrder,
+    searchFeature,
+    // sortItems,
+    sortFunction
 
 };

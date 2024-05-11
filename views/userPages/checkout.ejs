@@ -30,7 +30,6 @@
             					<label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
             				</form>
             			</div><!-- End .checkout-discount -->
-            			<form action="#">
 		                	<div class="row">
 								<div class="col-lg-9">
 									<h2 class="checkout-title"><u>Address Details</u></h2><!-- End .checkout-title -->
@@ -38,18 +37,25 @@
 									<% if (address) { %>
 										<!-- Display default address -->
 										<div class="default-address border rounded border-secondary p-3 mb-1">
-											<p><strong><i>Selected Address</i>:</strong></p>
-											<p><span style="color: #333; font-weight: 500;">Name : </span><%= address[0].name %></p>
-											<p><span style="color: #333; font-weight: 500;">Address : </span><%= address[0].locality %>, <%= address[0].city %>, <%= address[0].state %></p>
-											<p><span style="color: #333; font-weight: 500;">Pin code : </span><%= address[0].pincode %></p>
-											<p><span style="color: #333; font-weight: 500;">Contact Number : </span><%= address[0].mobileNumber %></p>
+												<p><strong><i>Selected Address</i>:</strong></p>
+											<p><span style="color: #333; font-weight: 500;">Name : </span><span id="selectedAddressName"><%= address[0].name %></span></p>
+											<p><span style="color: #333; font-weight: 500;">Address : </span><span id="selectedAddressPlace"><%= address[0].locality %>, <%= address[0].city %>, <%= address[0].state %></span></p>
+											<p><span style="color: #333; font-weight: 500;">Pin code : </span><span id="selectedAddressPincode"><%= address[0].pincode %></span></p>
+											<p><span style="color: #333; font-weight: 500;">Contact Number : </span><span id="selectedAddressNumber"><%= address[0].mobileNumber %></span></p>
+										</div>
+									<% } else if (!address) { %>
+										<div class="default-address border rounded border-secondary p-3 mb-1">
+											<p><strong><i>Add a Address</i></strong></p>
 										</div>
 									<% } %>
 								
 									<div class="addressButtons row justify-content-between mx-3">
 										<div>
+											<% if (address) { %>
+												<a id="openModalButton" href="" class="btn btn-link" onmouseover="this.style.fontWeight = '700'" onmouseout="this.style.fontWeight = '400'">Ship to a different address ?</a>
+											<% } else if (!address) { %>
+											<% } %>
 											<!-- Option to change address -->
-											<a href="" class="btn btn-link" onmouseover="this.style.fontWeight = '700'" onmouseout="this.style.fontWeight = '400'">Ship to a different address ?</a>
 										</div>
 										<div>
 											<!-- Option to add a new address -->
@@ -57,7 +63,10 @@
 										</div>
 										<div>
 											<!-- Option to edit the address -->
-											<a href="/editAddress?id=<%= address[0]._id %>&from='cP'" class="btn btn-link" onmouseover="this.style.fontWeight = '700'" onmouseout="this.style.fontWeight = '400'">Edit Address<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="24px" fill="#5a90db"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></a>
+											<% if (address) { %>
+												<a href="/editAddress?id=<%= address[0]._id %>&from='cP'" class="btn btn-link" onmouseover="this.style.fontWeight = '700'" onmouseout="this.style.fontWeight = '400'">Edit Address<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="24px" fill="#5a90db"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></a>
+											<% } else if (!address) { %>
+											<% } %>
 										</div>
 									</div>
 									
@@ -153,18 +162,15 @@
 		                					</thead>
 
 		                					<tbody>
-		                						<tr>
-		                							<td><a href="#">Beige knitted elastic runner shoes</a></td>
-		                							<td>$84.00</td>
-		                						</tr>
-
-		                						<tr>
-		                							<td><a href="#">Blue utility pinafore denimdress</a></td>
-		                							<td>$76,00</td>
-		                						</tr>
+												<% for (let i = 0; i < cartItems.products.length; i++) { %>
+													<tr>
+														<td><a href="#"><%= cartItems.products[i].product.name %> <b>x <%= cartItems.products[i].quantity %></b></a></td>
+														<td>₹ <%= cartItems.products[i].product_total %>.00</td>
+													</tr>
+												<% } %>
 		                						<tr class="summary-subtotal">
 		                							<td>Subtotal:</td>
-		                							<td>$160.00</td>
+		                							<td>₹ <%= cartItems.total_price %>.00</td>
 		                						</tr><!-- End .summary-subtotal -->
 		                						<tr>
 		                							<td>Shipping:</td>
@@ -172,30 +178,149 @@
 		                						</tr>
 		                						<tr class="summary-total">
 		                							<td>Total:</td>
-		                							<td>$160.00</td>
+		                							<td>₹ <%= cartItems.total_price %>.00</td>
 		                						</tr><!-- End .summary-total -->
 		                					</tbody>
 		                				</table><!-- End .table table-summary -->
 
+										<button type="submit" onclick="placeOrder('<%= address[0]._id %>')" class="btn btn-outline-primary-2 btn-order btn-block">
+											<span class="btn-text">Place Order</span>
+											<span class="btn-hover-text">Place Order</span>
+										</button>
 		                				
-		                				<button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
-		                					<span class="btn-text">Place Order</span>
-		                					<span class="btn-hover-text">Place Order</span>
-		                				</button>
 		                			</div><!-- End .summary -->
 									
 		                		</aside><!-- End .col-lg-3 -->
 		                	</div><!-- End .row -->
-            			</form>
 	                </div><!-- End .container -->
                 </div><!-- End .checkout -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
 
+
+		<!--       To Popup the window for Address Selection         -->
+		<div id="myModal" class="modal">
+			<div class="modal-content">
+				<h2 class="modal-heading">Select Address</h2>
+				<form id="addressForm">
+					<!-- Populate this list dynamically with available addresses -->
+					<% for (let i = 0; i < address.length; i++) { %>
+						<% if (i == 0) { %>
+							<input type="radio" id="address<%= i %>" name="address" value="<%= JSON.stringify(address[i]) %>" checked>
+						<% } else { %>
+							<input type="radio" id="address<%= i %>" name="address" value="<%= JSON.stringify(address[i]) %>">
+						<% } %>
+					<label for="address<%= i %>">
+						<div class="default-address border rounded border-secondary p-3 mb-1">
+							<p><span style="color: #333; font-weight: 500;">Name : </span><%= address[i].name %></p>
+							<p><span style="color: #333; font-weight: 500;">Address : </span><%= address[i].locality %>, <%= address[i].city %>, <%= address[i].state %></p>
+							<p><span style="color: #333; font-weight: 500;">Pin code : </span><%= address[i].pincode %></p>
+							<p><span style="color: #333; font-weight: 500;">Contact Number : </span><%= address[i].mobileNumber %></p>
+						</div>
+					</label><br>
+					<% } %>
+					<!-- Add more addresses as needed -->
+					<button type="button" onclick="selectAddress()" >Select</button>
+					<button type="button" onclick="closeModal()" >Close</button>
+				  </form>
+			</div>
+		</div>
+
         <%- include('../userLayouts/pageFooter.ejs') %>
         
     </div><!-- End .page-wrapper -->
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+	<script>
+
+		var modal = document.getElementById("myModal");
+
+		var btn = document.getElementById("openModalButton");
+
+		btn.onclick = function() {
+			modal.style.display = "block";
+		};
+
+		function selectAddress(address) {
+            var selectedAddress = document.querySelector('input[name="address"]:checked');
+            if (selectedAddress) {
+				const add2 = selectedAddress.value
+				const address1 = JSON.parse(add2);
+                // Pass the selected address back to the main page
+                // You can use any appropriate method here, like setting a hidden input value
+                document.getElementById("selectedAddressName").textContent = address1.name;
+				document.getElementById("selectedAddressPlace").innerHTML = address1.locality + ", " + address1.city + ", " + address1.state;
+				document.getElementById("selectedAddressPincode").innerHTML = address1.pincode;
+				document.getElementById("selectedAddressNumber").innerHTML = address1.mobileNumber;
+				document.getElementById("selectedAddress").value = address1._id;
+                closeModal();
+            } else {
+                alert("Please select an address.");
+            };
+        };
+
+        // When the user clicks on <span> (x), close the modal
+        function closeModal() {
+            modal.style.display = "none";
+        };
+
+		btn.onclick = function(event) {
+			event.preventDefault(); // Prevent default behavior of anchor element
+			modal.style.display = "block";
+		};
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            };
+        };
+
+		function placeOrder (addressId) {
+			fetch('/checkout', { 
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ addressId: addressId }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if(data.message == 'Success') {
+                        Swal.fire({
+							icon: 'success',
+							title: 'Order Confirmed!',
+							text: 'Your order has been successfully placed.',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							console.log('Order Confirmed');
+							window.location.href = '/';
+						});
+                    } else if (data.message == 'Order Already Exists') {
+                        Swal.fire({
+							icon: 'failed',
+							title: 'Order Cancelled!',
+							text: 'Order Already Exists.',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							console.log('Order Failed');
+							window.location.href = '/';
+						});
+                    } else {
+                        window.location.reload();
+                    };
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+		};
+
+	</script>
 
     
 <%- include('../userLayouts/footer.ejs') %>

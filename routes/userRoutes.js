@@ -55,6 +55,9 @@ user_route.get('/editAddress', userAuth.isLogin, userBlocked.isBlocked, userCont
 user_route.get('/test', userController.loadTestPage);
 
 user_route.get('/resendOTP', userController.resendOtp);
+user_route.get('/search', userController.searchFeature);
+user_route.get('/sortMethod', userController.sortFunction);
+
 
 /*********      Google Auth Routes      **********/ 
 
@@ -100,9 +103,11 @@ user_route.post('/addAddress', userController.insertAddress);
 user_route.post('/addToWishlist', userController.addToWishlist);
 user_route.post('/Wishlist', userController.deleteProductFromWishlist);
 user_route.post('/editAddress', userController.updateAddress);
-user_route.post('/profile', userController.deleteAddress);
+user_route.post('/profile', userController.deleteAddress, userController.deleteOrder);
 user_route.post('/addToCart', userController.addToCart);
 user_route.post('/cart', userController.deleteProductFromCart, userController.updateCart);
+user_route.post('/checkout', userController.placeOrder);
+// user_route.post('/category', userController.sortItems);
 
 
 module.exports = user_route;

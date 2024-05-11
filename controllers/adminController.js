@@ -2,6 +2,7 @@ const Admin = require('../models/adminModel');
 const User = require('../models/userModel');
 const Category = require('../models/categoryModel');
 const Product = require('../models/productModel');
+const Order = require('../models/orderModel');
 const bcrypt = require('bcrypt');
 
 const loadAdminHome = async (req, res) => {
@@ -9,7 +10,8 @@ const loadAdminHome = async (req, res) => {
         
         const productData = await Product.find({is_hide: 0});
         const categoryData = await Category.find({is_hide: 0});
-        res.render('adminDashboard', {activeDashboardMessage: 'active', product: productData, categories: categoryData })
+        const OrderData = await Order.find({ order_status: { $nin: 'cancelOrder' }  });
+        res.render('adminDashboard', {activeDashboardMessage: 'active', product: productData, categories: categoryData, orders: OrderData })
 
     } catch (error) {
         console.log(error.message);
@@ -58,6 +60,81 @@ const loadAddProductRelatedProducts = async (req, res) => {
     };
 };
 
+const loadOrderList = async (req, res) => {
+    try {
+        
+        const orderData = await Order.find({}).populate('user').populate('address').populate('products.product');
+        res.render('ordersList', {activeOrderMessage: 'active', orders: orderData});
+
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
+const loadOrderDetail = async (req, res) => {
+    try {
+        
+        const orderId = req.query.orderId;
+
+        const orderData = await Order.findById(orderId).populate('user').populate('address').populate('products.product');
+
+        res.render('orderDetails', {activeOrderMessage: 'active', orderData: orderData});
+
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
+const updateOrderStatus = async (req, res) => {
+    try {
+
+        const { orderId, updatingStatus } = req.body
+        const orderData = await Order.findOne(orderId);
+
+        if (!orderData) {
+            return res.status(404).json({ message: 'Failed' });
+        }
+
+        // Toggle the is_blocked field
+        // user.is_blocked = user.is_blocked === 0 ? 1 : 0;
+        if (updatingStatus == 'paymentDelay') {
+            orderData.order_status = 'paymentDelay';
+        } else if (updatingStatus == 'confirmed') {
+            orderData.order_status = 'confirmed';
+        } else if (updatingStatus == 'shipped') {
+            orderData.order_status = 'shipped';
+        } else if (updatingStatus == 'delivered') {
+            orderData.order_status = 'delivered';
+        } else if (updatingStatus == 'cancelOrder') {
+            orderData.order_status = 'cancelOrder';
+        }
+
+        await orderData.save();
+
+        res.status(200).json({ message: 'Success' });
+        
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
+const deleteOrder = async (req, res) => {
+    try {
+
+        const { orderId } = req.body;
+
+        const orderDeletionData = await Order.deleteOne({ _id: orderId });
+
+        if (orderDeletionData) {
+            res.status(200).json({ message: 'Success' });
+        } else {
+            res.status(500).json({ message: 'Failed' });
+        }
+        
+    } catch (error) {
+        console.log(error.message);
+    };
+};
 
 const loadProductList = async (req, res) => {
     try {
@@ -445,6 +522,10 @@ module.exports = {
     loadAdminHome,
     loadAddProduct,
     loadProductList,
+    loadOrderList,
+    loadOrderDetail,
+    updateOrderStatus,
+    deleteOrder,
     blockAndActive2,
     loadEditProduct,
     updateProduct,

@@ -19916,3 +19916,86 @@ button:focus {
     transform: scale(1.4); /* Adjust the zoom level as needed */
     transform-origin: 50% 50%; /* Zoom from the center */
 }
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%;
+}
+
+/* Styles for the modal content */
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Styles for the buttons */
+.modal-content button {
+    margin-top: 10px; /* Adjust as needed */
+}
+
+.modal-content .modal-heading {
+    text-align: center;
+    text-decoration: underline;
+}
+
+/* Styles for modal buttons */
+.modal-content button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Styles for the "Select" button */
+.modal-content button[type="button"][onclick="selectAddress()"] {
+    background-color: #007bff; /* Blue */
+    color: #fff; /* White */
+    margin-left: 100px;
+    margin-right: 10px;
+}
+
+/* Styles for the "Close" button */
+.modal-content button[type="button"][onclick="closeModal()"] {
+    background-color: #dc3545; /* Red */
+    color: #fff; /* White */
+}
+
+/* Styles for radio buttons */
+.modal-content input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* Styles for the label of radio buttons */
+.modal-content label {
+    cursor: pointer;
+}
+
+/* Styles for the checked state of radio buttons */
+.modal-content input[type="radio"]:checked + label {
+    font-weight: bold;
+}
+
+/* Styles for the default address container */
+.default-address {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
