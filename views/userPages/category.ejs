@@ -516,6 +516,14 @@
                             confirmButtonText: 'OK',
                             confirmButtonColor: '#3085d6',
                         });
+                    } else if (data.message === 'Product out of stock') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'There Has No Stocks left.',
+                            text: 'Add to Wsihlist to know when the stock available.',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#3085d6',
+                        });
                     } else if (data.message === 'Success') {
                         Swal.fire({
                             icon: 'success',

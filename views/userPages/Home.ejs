@@ -63,7 +63,11 @@
                                     <div class="dropdown cart-dropdown">
                                         <a href="cart" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" data-display="static">
                                             <i class="icon-shopping-cart"></i>
-                                            <span class="cart-count"><%= cartItemsForCartCount.length %></span>
+                                            <% if (cartItemsForCartCount == null) { %>
+                                                <span class="cart-count">0</span>
+                                            <% } else { %>
+                                                <span class="cart-count"><%= cartItemsForCartCount.length %></span>
+                                            <% } %>
                                         </a>
                                     </div><!-- End .cart-dropdown -->
                                     <div class="dropdown compare-dropdown">
@@ -111,7 +115,7 @@
                                     <a href="/" >Home</a>
                                 </li>
                                 <li>
-                                    <a href="category" >Shop</a>
+                                    <a href="shop" >Shop</a>
                                 </li>
                                 <li>
                                     <a href="#" class="sf-with-ul">more</a>
@@ -165,7 +169,7 @@
                                         </span>
                                     </div><!-- End .intro-price -->
 
-                                    <a href="/category" class="btn btn-primary btn-round">
+                                    <a href="/shop" class="btn btn-primary btn-round">
                                         <span>Shop More</span>
                                         <i class="icon-long-arrow-right"></i>
                                     </a>
@@ -188,7 +192,7 @@
                                         </span>
                                     </div><!-- End .intro-price -->
 
-                                    <a href="/category" class="btn btn-primary btn-round">
+                                    <a href="/shop" class="btn btn-primary btn-round">
                                         <span>Shop More</span>
                                         <i class="icon-long-arrow-right"></i>
                                     </a>
@@ -210,7 +214,7 @@
                         <div class="row">
                             <% for (let i = 0; i < 6; i++) { %>
                                 <div class="col-6 col-sm-4 col-lg-2">
-                                    <a href="/category" class="cat-block">
+                                    <a href="/shop" class="cat-block">
                                         <figure>
                                             <span>
                                                 <img src="/assets/images/demos/demo-4/cats/1.png" alt="Category image">

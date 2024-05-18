@@ -1,0 +1,36 @@
+<%- include('../userLayouts/header.ejs') %>
+
+<div class="page-wrapper">
+    <%- include('../userLayouts/pageHeader.ejs') %>
+
+    <main class="main">
+        <div class="page-header text-center">
+            <div class="container">
+                <h1 class="page-title">Order Confirmed<span>Thank You!</span></h1>
+            </div><!-- End .container -->
+        </div><!-- End .page-header -->
+
+        <div class="page-content">
+            <div class="container">
+                <div class="card text-center" id="orderSuccessCard">
+                    <div class="order-success">
+                        <div class="icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h2 class="success-title">Your Order Has Been Confirmed!</h2>
+                        <p class="success-message">Thank you for shopping with us. Your order has been successfully placed.</p>
+                        <p class="order-details">You have placed <strong><%= totalQuantity %></strong> order(s) with a total of <strong>₹ <%= order.order_total %>.00</strong>.</p>
+                        <p class="success-details">You will receive a confirmation email shortly. You can track your order status in your account dashboard.</p>
+                        <div class="button-container">
+                            <a href="/shop" class="btn btn-primary">Continue Shopping</a>
+                        </div>
+                    </div><!-- End .order-success -->
+                </div><!-- End .card -->
+            </div><!-- End .container -->
+        </div><!-- End .page-content -->
+    </main><!-- End .main -->
+
+    <%- include('../userLayouts/pageFooter.ejs') %>
+</div><!-- End .page-wrapper -->
+
+<%- include('../userLayouts/footer.ejs') %>

@@ -14,8 +14,8 @@
             <nav aria-label="breadcrumb" class="breadcrumb-nav">
                 <div class="container">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                        <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="shop">Shop</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Checkout</li>
                     </ol>
                 </div><!-- End .container -->
@@ -59,12 +59,12 @@
 										</div>
 										<div>
 											<!-- Option to add a new address -->
-											<a href="/addAddress" class="btn btn-link" onmouseover="this.style.fontWeight = '700'" onmouseout="this.style.fontWeight = '400'">Add a new Address +</a>
+											<a href="/addAddress?from=CP" class="btn btn-link" onmouseover="this.style.fontWeight = '700'" onmouseout="this.style.fontWeight = '400'">Add a new Address +</a>
 										</div>
 										<div>
 											<!-- Option to edit the address -->
 											<% if (address) { %>
-												<a href="/editAddress?id=<%= address[0]._id %>&from='cP'" class="btn btn-link" onmouseover="this.style.fontWeight = '700'" onmouseout="this.style.fontWeight = '400'">Edit Address<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="24px" fill="#5a90db"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></a>
+												<a href="/editAddress?id=<%= address[0]._id %>&from=CP" class="btn btn-link" onmouseover="this.style.fontWeight = '700'" onmouseout="this.style.fontWeight = '400'">Edit Address<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="24px" fill="#5a90db"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></a>
 											<% } else if (!address) { %>
 											<% } %>
 										</div>
@@ -299,7 +299,8 @@
 							confirmButtonText: 'OK'
 						}).then(() => {
 							console.log('Order Confirmed');
-							window.location.href = '/';
+							console.log(data.orderId);
+							window.location.href = `/orderSuccess?id=${data.orderId}`;
 						});
                     } else if (data.message == 'Order Already Exists') {
                         Swal.fire({
@@ -309,7 +310,7 @@
 							confirmButtonText: 'OK'
 						}).then(() => {
 							console.log('Order Failed');
-							window.location.href = '/';
+							window.location.href = '/checkout';
 						});
                     } else {
                         window.location.reload();

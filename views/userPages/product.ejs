@@ -107,16 +107,24 @@
 
                                     <div class="details-filter-row details-row-size gap">
                                         <label for="qty">Qty:</label>
-                                        <div class="product-details-quantity">
-                                            <input type="number" id="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
-                                        </div><!-- End .product-details-quantity -->
+                                        <% if (product.stock < 5) { %>
+                                            <div class="product-details-quantity">
+                                                <input type="number" id="qty" class="form-control" value="1" min="1" max="<%= product.stock %>" step="1" data-decimals="0" required>
+                                            </div><!-- End .product-details-quantity -->
+                                        <% } else { %>
+                                            <div class="product-details-quantity">
+                                                <input type="number" id="qty" class="form-control" value="1" min="1" max="5" step="1" data-decimals="0" required>
+                                            </div><!-- End .product-details-quantity -->
+                                        <% } %>
 
                                         <% if (product.stock <= 8) { %>
-                                            <p style="color: rgb(209, 160, 38); margin-left: 3em;" class="ml-3">Only Few Left</p>
+                                            <% if (product.stock == 0) { %>
+                                                <p style="color: rgb(198, 55, 7); margin-left: 3em; font-weight: 500;" class="ml-7">Out of Stock</p>
+                                            <% } else { %>
+                                                <p style="color: rgb(209, 160, 38); margin-left: 3em; font-weight: 500;" class="ml-7">Only Few Left</p>
+                                            <% } %>
                                         <% } else if (product.stock > 8) { %>
-                                            <p style="color: rgb(27, 180, 27); margin-left: 3em;" >In Stock</p>
-                                        <% } else if (product.stock <= 0) { %>
-                                            <p style="color: rgb(198, 55, 7); margin-left: 3em;">Out of Stock</p>
+                                            <p style="color: rgb(27, 180, 27); margin-left: 3em; font-weight: 500;" class="ml-7">In Stock</p>
                                         <% } %>
                                     </div><!-- End .details-filter-row -->
 

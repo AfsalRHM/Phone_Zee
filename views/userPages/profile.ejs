@@ -66,30 +66,44 @@
 
 								    <div class="tab-pane fade" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
 										<% if (Orders.length === 0) { %>
-											<p>No Orders have been made yet.</p>
-											<a href="/category" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
+											<div class="no-orders text-center">
+												<p>No orders have been made yet.</p>
+												<a href="/category" class="btn btn-primary"><span>Go Shopping</span><i class="icon-long-arrow-right"></i></a>
+											</div>
 										<% } else { %>
-											<% Orders.forEach((order, index) => { %>
-												<div class="card card-dashboard mb-3">
-													<div class="card-body">
-														<h3 class="card-title mb-2" style="text-decoration: underline;">Order <%= index + 1 %> : </h3>
-														<p><strong>Products :=</strong> </p>
-														<% for(let i = 0; i < order.products.length; i++) { %>
-															<% if (order.products[i].product) { %>
-																<%= order.products[i].product.name %> :- <%= order.products[i].product.price %> x <%= order.products[i].quantity %> = <%= order.products[i].product.price * order.products[i].quantity %> <br>
-															<% } else { %>
-																Product is null <br>
-															<% } %>
-														<% } %>
-														<p><strong>Total Price :</strong> <%= order.order_total %></p>
-														<p><strong>Order Status :</strong> <%= order.order_status %></p>
-														<!-- Add more order details here as needed -->
-														<button onclick="deleteOrder('<%= order._id %>')" class="btn btn-danger">Delete Order</button>
-													</div><!-- End .card-body -->
-												</div><!-- End .card-dashboard -->
-											<% }); %>
+											<div class="orders-list">
+												<% Orders.forEach((order, index) => { %>
+													<div class="order-card card mb-4">
+														<div class="card-body">
+															<h3 class="card-title mb-3">Order <%= index + 1 %> :</h3>
+															<div class="products-list">
+																<% for(let i = 0; i < order.products.length; i++) { %>
+																	<% if (order.products[i].product) { %>
+																		<div class="product">
+																			<a href="" class="product-name"><%= order.products[i].product.name %></a>
+																			<a href="" class="product-price">₹ <%= order.products[i].product.price %>.00 x <%= order.products[i].quantity %> = ₹ <%= order.products[i].product.price * order.products[i].quantity %>.00</a>
+																		</div>
+																	<% } else { %>
+																		<div class="product">
+																			<span>Product is null</span>
+																		</div>
+																	<% } %>
+																<% } %>
+															</div>
+															<div class="order-details">
+																<p class="total-price"><strong>Total Price:</strong> ₹ <%= order.order_total %>.00</p>
+																<p class="order-status"><strong>Order Status:</strong> <%= order.order_status %></p>
+															</div>
+															<div class="button-details">
+																<a class="btn btn-info btn-sm">Details</a>
+																<button onclick="deleteOrder('<%= order._id %>')" class="btn btn-danger btn-sm">Delete Order</button>
+															</div>
+														</div><!-- End .card-body -->
+													</div><!-- End .order-card -->
+												<% }); %>
+											</div><!-- End .orders-list -->
 										<% } %>
-									</div><!-- .End .tab-pane -->
+									</div><!-- .End .tab-pane -->																									
 
 								    <div class="tab-pane fade" id="tab-downloads" role="tabpanel" aria-labelledby="tab-downloads-link">
 								    	<p>No downloads available yet.</p>
