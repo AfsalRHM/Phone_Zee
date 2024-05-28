@@ -11,6 +11,8 @@ const bcrypt = require('bcrypt');
 
 const loadAdminHome = async (req, res) => {
     try {
+
+        // Just for pushing to git
         
         const productData = await Product.find({is_hide: 0});
         const categoryData = await Category.find({is_hide: 0});
