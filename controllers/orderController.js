@@ -5,6 +5,7 @@ const Address = require('../models/addressModel');
 const Wishlist = require('../models/wishlistModel');
 const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
+const Coupon = require('../models/couponModel');
 
 
 /*********************     
@@ -122,11 +123,13 @@ const placeOrder = async (req, res) => {
 
         const cartData = await Cart.findOne({user: req.session.user_id});
 
+        const userData = await User.findOne({_id: req.session.user_id});
+
         const orderExists = await Order.findOne({user: req.session.user_id, products: cartData.products.product});
 
         const length = cartData.products.length;
 
-        for (let i = 0; i < cartData.products.length; i++) {
+        for (let i = 0; i < length; i++) {
             const productId = cartData.products[i].product._id;
             const quantity = cartData.products[i].quantity;
         
@@ -150,12 +153,17 @@ const placeOrder = async (req, res) => {
                 order_status: 'Pending',    
                 shipping_plan: 'Free-shipping',
                 products: cartData.products,
-                order_total: cartData.total_price
+                order_total: cartData.total_price - cartData.discount_amount,
+                discount_price: cartData.discount_amount
             });
     
             const OrderData = await order.save();
+
+            userData.coupon_claimed.push({couponId: cartData.coupon_id});
+
+            await userData.save();
     
-            await Cart.findByIdAndUpdate(cartData._id, { $pull: { products: { _id: { $in: cartData.products.map(p => p._id) } } } });
+            await Cart.findByIdAndUpdate(cartData._id, { $pull: { products: { _id: { $in: cartData.products.map(p => p._id) } } }, $set: { total_price: 0, discount_amount: 0, coupon_claimed: 0, coupon_id: 'nothing' } });
     
             if (OrderData) {
                 res.status(200).json({ message: 'Success', orderId: OrderData._id });
@@ -204,13 +212,9 @@ const loadOrderSuccess = async (req, res) => {
 
         const orderData = await Order.findOne({_id: orderId});
 
-        console.log(orderData, 'esrdftvgyuih');
-
         for (let i = 0; i < orderData.products.length; i++) {
             totalQuantity += orderData.products[i].quantity;
         };
-
-        console.log(totalQuantity);
 
         const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
         

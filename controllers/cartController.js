@@ -27,8 +27,14 @@ const loadCart = async (req, res) => {
                 cartTotalPrice += cartData.products[i].product.price * cartData.products[i].quantity;
             };
         };
-        
-        res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session, cartItems: cartData, cartTotalPrice: cartTotalPrice, cartItemsForCartCount: cartDataForCount.products })
+
+        console.log(cartData)
+
+        if (cartDataForCount == null) {
+            res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session, cartItems: cartData, cartTotalPrice: cartTotalPrice, cartItemsForCartCount: cartDataForCount })
+        } else {
+            res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session, cartItems: cartData, cartTotalPrice: cartTotalPrice, cartItemsForCartCount: cartDataForCount.products })
+        };
 
     } catch (error) {
         console.log(error.message);

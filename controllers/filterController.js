@@ -29,7 +29,11 @@ const searchFeature = async (req, res) => {
 
         const categoryData = await Category.find({is_hide: 0});
 
-        res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products });
+        if (cartDataForCount == null) {
+            res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount, sortMethod: 'undefined' });
+        } else {
+            res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products, sortMethod: 'undefined' });
+        };
 
     } catch (error) {
         console.log(error.message);
@@ -47,18 +51,32 @@ const sortFunction = async (req, res) => {
 
         const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
 
+        let sortMethod = '';
+
         let sortedData;
         if (sortValue === 'lowToHigh') {
             sortedData = await Product.find().sort({ price: 1 });
+            sortMethod = 'Price : Low - High';
         } else if (sortValue === 'highToLow') {
             sortedData = await Product.find().sort({ price: -1 });
+            sortMethod = 'Price : High - Low';
         } else if (sortValue === 'aATozZ') {
             sortedData = await Product.find({}).sort({ name: 1 });
+            sortMethod = 'Name : Aa - Zz';
         } else if (sortValue === 'zZToaA') {
             sortedData = await Product.find({}).sort({ name: -1 });
-        }
+            sortMethod = 'Name : Zz - Aa';
+        } else if (sortValue === 'date') {
+            sortedData = await Product.find({});
+            sortMethod = 'Dated';
+        };
 
-        res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: sortedData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products })
+
+        if (cartDataForCount == null) {
+            res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: sortedData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount, sortMethod, sortValue })
+        } else {
+            res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: sortedData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products, sortMethod, sortValue })
+        };
 
     } catch (error) {
         console.log(error.message);

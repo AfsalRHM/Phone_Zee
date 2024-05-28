@@ -68,7 +68,7 @@
 										<% if (Orders.length === 0) { %>
 											<div class="no-orders text-center">
 												<p>No orders have been made yet.</p>
-												<a href="/category" class="btn btn-primary"><span>Go Shopping</span><i class="icon-long-arrow-right"></i></a>
+												<a href="/shop" class="btn btn-primary"><span>Go Shopping</span><i class="icon-long-arrow-right"></i></a>
 											</div>
 										<% } else { %>
 											<div class="orders-list">
@@ -79,7 +79,7 @@
 															<div class="products-list">
 																<% for(let i = 0; i < order.products.length; i++) { %>
 																	<% if (order.products[i].product) { %>
-																		<div class="product">
+																		<div class="order-product">
 																			<a href="" class="product-name"><%= order.products[i].product.name %></a>
 																			<a href="" class="product-price">₹ <%= order.products[i].product.price %>.00 x <%= order.products[i].quantity %> = ₹ <%= order.products[i].product.price * order.products[i].quantity %>.00</a>
 																		</div>
@@ -90,13 +90,23 @@
 																	<% } %>
 																<% } %>
 															</div>
+															<% if (order.discount_price !== 0) { %>
+																<p class="total-price"><strong>Coupon Discount:</strong> ₹ <%= order.discount_price %>.00</p>
+															<% } %>
 															<div class="order-details">
-																<p class="total-price"><strong>Total Price:</strong> ₹ <%= order.order_total %>.00</p>
+																<p class="total-price"><strong>Total Price:</strong> ₹ <%= order.order_total + order.discount_price %>.00</p>
+																<% if (order.discount_price !== 0) { %>
+																	<p class="total-price"><strong>Last Price:</strong> ₹ <%= order.order_total %>.00</p>
+																<% } %>
 																<p class="order-status"><strong>Order Status:</strong> <%= order.order_status %></p>
 															</div>
 															<div class="button-details">
 																<a class="btn btn-info btn-sm">Details</a>
-																<button onclick="deleteOrder('<%= order._id %>')" class="btn btn-danger btn-sm">Delete Order</button>
+																<% if (order.order_status == 'delivered') { %>
+																	<button onclick="returnOrder('<%= order._id %>')" class="btn btn-warning btn-sm">Return Order</button>
+																<% } else { %>
+																	<button onclick="deleteOrder('<%= order._id %>')" class="btn btn-danger btn-sm">Cancel Order</button>
+																<% } %>
 															</div>
 														</div><!-- End .card-body -->
 													</div><!-- End .order-card -->
@@ -122,13 +132,12 @@
 
 								    	<div class="row">
 											<% if (address.length == 0) { %>
-												<p>There has no Address Added</p>
+												<div class="col-lg-6"><p><b>There has no Address Added</b></p></div>
 											<% } else { %>
 												<% for (let i = 0; i < address.length; i++) { %>
 													<div class="col-lg-6">
 														<div class="card card-dashboard">
 															<div class="card-body">
-		
 																<p><b>SI : </b><%= i + 1 %><br>
 																	<b>Name : </b><%= address[i].name %><br>
 																    <b>Mobile Number : </b><%= address[i].mobileNumber %><br>

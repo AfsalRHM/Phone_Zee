@@ -37,6 +37,7 @@ const adminController = require('../controllers/adminController');
 const categoryController = require('../controllers/categoryController');
 const orderController = require('../controllers/orderController');
 const productController = require('../controllers/productController');
+const couponController =  require('../controllers/couponController');
 
 // Requerung the Admin Auth
 const adminAuth = require('../middlewares/adminAuth');
@@ -56,20 +57,26 @@ admin_route.get('/categorylist', adminAuth.isLogin, categoryController.loadCateg
 admin_route.get('/login', adminAuth.isLogout, adminController.loadAdminLogin);
 admin_route.get('/editcategory', adminAuth.isLogin, categoryController.loadEditCategory);
 admin_route.get('/editproduct', adminAuth.isLogin, productController.loadEditProduct);
-admin_route.get('/adminLogout', adminAuth.isLogin, adminController.adminLogout)
+admin_route.get('/couponlist', adminAuth.isLogin, couponController.loadCouponList);
+admin_route.get('/addcoupon', adminAuth.isLogin, couponController.loadAddCoupon);
+admin_route.get('/editcoupon', adminAuth.isLogin, couponController.loadEditCoupon);
+admin_route.get('/adminLogout', adminAuth.isLogin, adminController.adminLogout);
 
 admin_route.get('/test', adminController.loadTesting);
 
 // Post Requests
 admin_route.post('/login', adminController.adminVerifyLogin);
-admin_route.post('/userlist', adminController.blockAndActive2);
-admin_route.post('/categorylist', adminController.activeOrInactive, categoryController.createCategory);
-admin_route.post('/editcategory', categoryController.updateCategory);
-admin_route.post('/addproduct', upload.array('image_1', 4), productController.insertProduct);
-admin_route.post('/productlist', productController.activeOrInactive2);
-admin_route.post('/editproduct', upload.array('image_1', 4), productController.updateProduct);
-admin_route.post('/orderdetail', orderController.updateOrderStatus);
-admin_route.post('/orderlist', orderController.deleteOrder);
+admin_route.post('/userlist', adminAuth.isLogin, adminController.blockAndActive2);
+admin_route.post('/categorylist', adminAuth.isLogin, adminController.activeOrInactive, categoryController.createCategory);
+admin_route.post('/editcategory', adminAuth.isLogin, categoryController.updateCategory);
+admin_route.post('/addproduct', adminAuth.isLogin, upload.array('image_1', 4), productController.insertProduct);
+admin_route.post('/productlist', adminAuth.isLogin, productController.activeOrInactive2);
+admin_route.post('/editproduct', adminAuth.isLogin, upload.array('image_1', 4), productController.updateProduct);
+admin_route.post('/orderdetail', adminAuth.isLogin, orderController.updateOrderStatus);
+admin_route.post('/orderlist', adminAuth.isLogin, orderController.deleteOrder);
+admin_route.post('/couponlist', adminAuth.isLogin, couponController.couponStatusChange, couponController.deleteCoupon);
+admin_route.post('/addCoupon', adminAuth.isLogin, couponController.insertCoupon);
+admin_route.post('/editcoupon', adminAuth.isLogin, couponController.updateCoupon);
 
 
 // All Routes

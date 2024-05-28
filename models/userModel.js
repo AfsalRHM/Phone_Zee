@@ -18,6 +18,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    coupon_claimed: [
+        {
+            couponId: {
+                type: String,
+                required: false
+            }
+        }
+    ],
     created_at:{
         type:Date,
         default: Date.now()

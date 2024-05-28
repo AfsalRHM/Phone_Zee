@@ -18,11 +18,19 @@ const loadAddAddress = async (req, res) => {
 
         if (addressData.length < 5) {
 
-            res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products   });
+            if (cartDataForCount == null) {
+                res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount });
+            } else {
+                res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products });
+            };
 
         } else {
-            res.render('profile#tab-address', {addressPageMessage: 'Maximum Address Added', loginOrCart: req.session, user: userData, address: addressData, cartItemsForCartCount: cartDataForCount.products  });
-        }
+            if (cartDataForCount == null) {
+                res.render('profile#tab-address', {addressPageMessage: 'Maximum Address Added', loginOrCart: req.session, user: userData, address: addressData, cartItemsForCartCount: cartDataForCount });
+            } else {
+                res.render('profile#tab-address', {addressPageMessage: 'Maximum Address Added', loginOrCart: req.session, user: userData, address: addressData, cartItemsForCartCount: cartDataForCount.products });
+            };
+        };
 
     } catch (error) {
         console.log(error.message);

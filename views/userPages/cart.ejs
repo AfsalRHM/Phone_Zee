@@ -21,7 +21,7 @@
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
 
-            <% if (cartItems.products.length === 0) { %>
+            <% if ( cartItems === null || cartItems.products.length === 0 ) { %>
                 <div class="page-content">
                     <div class="cart">
                         <div class="container">
@@ -116,7 +116,7 @@
                                                             </figure>
         
                                                             <h3 class="product-title">
-                                                                <a href="/product?id=<%= cartItems.products[i].product._id %>&photoNumber=0"><%= cartItems.products[i].product.name %></a>
+                                                                <a href="/product?id=<%= cartItems.products[i].product._id %>&photoNumber=0" ><%= cartItems.products[i].product.name %></a>
                                                             </h3><!-- End .product-title -->
                                                         </div><!-- End .product -->
                                                     </td>
@@ -124,11 +124,11 @@
                                                     <td class="quantity-col">
                                                         <% if (cartItems.products[i].product.stock < 5) { %>
                                                             <div class="cart-product-quantity">
-                                                                <input  data-cart-item-id="<%= cartItems.products[i]._id %>" type="number" class="form-control" value="<%= cartItems.products[i].quantity %>" min="1" max="<%= cartItems.products[i].product.stock %>" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems.products[i].product._id %>', this.value, '<%= cartItems.products[i].product._id %>')">
+                                                                <input data-cart-item-id="<%= cartItems.products[i]._id %>" type="number" class="form-control" value="<%= cartItems.products[i].quantity %>" min="1" max="<%= cartItems.products[i].product.stock %>" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems.products[i].product._id %>', this.value, '<%= cartItems.products[i].product._id %>')">
                                                             </div><!-- End .cart-product-quantity -->
                                                         <% } else { %>
                                                             <div class="cart-product-quantity">
-                                                                <input  data-cart-item-id="<%= cartItems.products[i]._id %>"  type="number" class="form-control" value="<%= cartItems.products[i].quantity %>" min="1" max="5" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems.products[i].product._id %>', this.value, '<%= cartItems.products[i].product._id %>')">
+                                                                <input data-cart-item-id="<%= cartItems.products[i]._id %>"  type="number" class="form-control" value="<%= cartItems.products[i].quantity %>" min="1" max="5" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems.products[i].product._id %>', this.value, '<%= cartItems.products[i].product._id %>')">
                                                             </div><!-- End .cart-product-quantity -->
                                                         <% } %>
                                                     </td>
@@ -138,21 +138,6 @@
                                             <% } %>
                                         </tbody>
                                     </table><!-- End .table table-wishlist -->
-    
-                                    <div class="cart-bottom">
-                                        <div class="cart-discount">
-                                            <form action="#">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" required placeholder="coupon code">
-                                                    <div class="input-group-append">
-                                                        <button class="btn btn-outline-primary-2" type="submit"><i class="icon-long-arrow-right"></i></button>
-                                                    </div><!-- .End .input-group-append -->
-                                                </div><!-- End .input-group -->
-                                            </form>
-                                        </div><!-- End .cart-discount -->
-    
-                                        <a href="/cart" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
-                                    </div><!-- End .cart-bottom -->
                                 </div><!-- End .col-lg-9 -->
                                 <aside class="col-lg-3">
                                     <div class="summary summary-cart">

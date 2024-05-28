@@ -29,7 +29,7 @@
 									<%
 								}
 							%> ">
-									<a href="category" >Shop</a>
+									<a href="shop" >Shop</a>
 								</li>
 								<li class="<%
 								if (typeof activeMoreMessage !== 'undefined') {
@@ -88,7 +88,7 @@
 							    <div class="tab-pane fade show active" id="signin-2" role="tabpanel" aria-labelledby="signin-tab-2">
 							    	<form action="" method="post">
 										<% if (typeof successMessage !== 'undefined') { %>
-											<p style="color: rgb(54, 234, 93);" class="d-inline-flex p-2 " ><%= successMessage %>*</p>
+											<p style="color: rgb(54, 234, 93);" class="d-inline-flex p-2 " ><%= successMessage %></p>
 										<% } %>
 										<% if (typeof validationMessage !== 'undefined') { %>
 											<p style="color: red;" class="d-inline-flex p-2 " ><%= validationMessage %>*</p>

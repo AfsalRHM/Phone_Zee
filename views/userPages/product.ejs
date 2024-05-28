@@ -507,6 +507,14 @@
                             confirmButtonText: 'OK',
                             confirmButtonColor: '#3085d6',
                         });
+                    } else if (data.message === 'Product Exist In Cart') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'You can"t add this Product to Cart',
+                            text: 'Product Already Exist in the Cart',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#3085d6',
+                        });
                     } else if (data.message === 'Success') {
                         Swal.fire({
                             icon: 'success',
@@ -538,7 +546,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ productId: productId, qty: qty}),
+                    body: JSON.stringify({ productId, qty}),
                 })
                 .then(response => {
                     if (!response.ok) {

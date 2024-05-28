@@ -901,7 +901,8 @@ blockquote.text-white cite span {
 }
 
 .header-middle .menu.sf-arrows>li>.sf-with-ul {
-    padding-right: 1.5rem
+    padding-right: 1.5rem;
+    margin-right: 2em;
 }
 
 .cart-dropdown,
@@ -1314,7 +1315,6 @@ blockquote.text-white cite span {
     margin: 0;
     height: 38px;
     line-height: 20px;
-    border: none;
     border-radius: 20px;
     box-shadow: none
 }
@@ -15856,7 +15856,7 @@ button:focus {
 .checkout-discount label {
     position: absolute;
     left: 0;
-    top: 50%;
+    top: 25%;
     width: 100%;
     padding-left: 1.1rem;
     padding-right: 1.1rem;
@@ -19999,7 +19999,7 @@ button:focus {
     border-radius: 5px;
 }
 
-.order-card {
+ .order-card {
     background: #fff;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -20017,19 +20017,19 @@ button:focus {
     margin-bottom: 15px;
 }
 
-.product {
+.order-product {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
 }
 
-.product-name {
+.order-product-name {
     font-weight: bold;
     color: #333;
 }
 
-.product-price {
+.order-product-price {
     color: #666;
 }
 
@@ -20051,7 +20051,7 @@ button:focus {
 }
 
 .button-details .btn {
-    margin: 0 5px; /* Adjust spacing between buttons */
+    margin: 0 5px; 
     border-radius: 5px;
     padding: 6px 12px;
 }
@@ -20096,4 +20096,35 @@ button:focus {
     justify-content: center;
     margin-top: 10px;
     font-weight: 800;
+} 
+
+.apply-coupon-btn {
+    padding: 10px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.apply-coupon-btn:hover {
+    background-color: #0056b3;
+}
+
+.remove-coupon-btn {
+    padding: 10px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: red;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: none;
+}
+
+.remove-coupon-btn:hover {
+    background-color: #c9344b;
 }

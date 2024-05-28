@@ -28,7 +28,11 @@ const loadWishlist = async (req, res) => {
 
         const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
         
-        res.render('wishlist', {pageTitle: 'wishlist | PhoneZee', loginOrCart: req.session, wishlistItems: wishlistData, cartItemsForCartCount: cartDataForCount.products });
+        if (cartDataForCount == null) {
+            res.render('wishlist', {pageTitle: 'wishlist | PhoneZee', loginOrCart: req.session, wishlistItems: wishlistData, cartItemsForCartCount: cartDataForCount });
+        } else {
+            res.render('wishlist', {pageTitle: 'wishlist | PhoneZee', loginOrCart: req.session, wishlistItems: wishlistData, cartItemsForCartCount: cartDataForCount.products });
+        };
 
     } catch (error) {
         console.log(error.message);
@@ -39,29 +43,36 @@ const loadWishlist = async (req, res) => {
 
 const addToWishlist = async (req, res) => {
     try {
-        const {productId}=req.body;
+        const { productId } = req.body;
+
         const product = await Product.findById(productId);
 
-        const existingProduct = await Wishlist.findOne({user: req.session.user_id, product: productId});
+        const cartExist = await Cart.findOne({user: req.session.user_id, 'products.product': productId});
 
-        if (!existingProduct) {
+        if (cartExist != null) {
+            res.status(200).json({ message: 'Product Exist In Cart' });
+        } else if (cartExist == null) {
+            const existingProduct = await Wishlist.findOne({user: req.session.user_id, product: productId});
 
-            if (!product) {
-                return next();
-            };
+            if (!existingProduct) {
     
-            const wishlist = new Wishlist({
-                user: req.session.user_id,
-                product: productId,
-            });
+                if (!product) {
+                    return next();
+                };
+        
+                const wishlist = new Wishlist({
+                    user: req.session.user_id,
+                    product: productId,
+                });
+        
+                await wishlist.save();
+        
+                res.status(200).json({ message: 'Success' });
     
-            await wishlist.save();
-    
-            res.status(200).json({ message: 'Success' });
-
-        } else {
-            res.status(200).json({ message: 'Already Exists' });
-        }
+            } else {
+                res.status(200).json({ message: 'Already Exists' });
+            }
+        };
 
     } catch (err) {
         console.error(err.message);

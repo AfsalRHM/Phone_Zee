@@ -206,9 +206,9 @@ const loadCategory = async (req, res) => {
         const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
 
         if (cartDataForCount == null) {
-            res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount });
+            res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount, sortMethod: 'undefined' });
         } else {
-            res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products });
+            res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products, sortMethod: 'undefined' });
         };
 
     } catch (error) {
@@ -318,7 +318,11 @@ const loadProfile = async (req, res) => {
 
         const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
 
-        res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, cartItemsForCartCount: cartDataForCount.products });
+        if (cartDataForCount == null) {
+            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, cartItemsForCartCount: cartDataForCount });
+        } else {
+            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, cartItemsForCartCount: cartDataForCount.products });
+        };
 
     } catch (error) {
         res.render('404', { loginOrCart: req.session });
@@ -349,7 +353,9 @@ const insertUser = async (req, res) => {
         } else if (req.body.confirmPassword.trim() === '') {
             res.render('signup', { message: 'Please enter your password.' , userLiveData: user, loginOrCart: req.session});
         } else if (req.body.userEmail.includes(' ')) {
-            res.render('signup', { message: 'Inavlid Email Address. ' , userLiveData: user, loginOrCart: req.session});
+            res.render('signup', { message: 'Inavlid Email Address. No spaces Allowed' , userLiveData: user, loginOrCart: req.session});
+        } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(req.body.userEmail)) {
+            res.render('signup', { message: 'Invalid Email Address. Only lowercase letters are allowed.' , userLiveData: user, loginOrCart: req.session});
         } else if (req.body.userMobile.length != 10) {
             res.render('signup', { message: 'Inavlid Mobile Number. ' , userLiveData: user, loginOrCart: req.session});
         } else if (req.body.userPassword.includes(' ')) {

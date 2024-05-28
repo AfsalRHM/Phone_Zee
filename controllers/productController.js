@@ -25,7 +25,7 @@ const loadAddProduct = async (req, res) => {
     try {
 
         const categoryData = await Category.find({});
-        res.render('addProductGeneral', {activeAddproductMessage: 'active', categories: categoryData});
+        res.render('addProductGeneral', {activeProductMessage: 'active', categories: categoryData});
 
     } catch (error) {
         console.log(error.message);

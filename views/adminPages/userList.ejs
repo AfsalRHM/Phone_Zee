@@ -70,8 +70,8 @@
                                             <td><span class="badge rounded-pill alert-danger">Blocked</span></td>
                                             <% } %>
                                             <td><%= users[i].
-                                                created_at.getDate()+ '-'+ users[i].
-                                                created_at.getMonth() + '-' + users[i].
+                                                created_at.getDate() %> - <%= users[i].
+                                                created_at.getMonth() + 1 %> - <%= users[i].
                                                 created_at.getFullYear() %>
                                             </td>
                                             <% if (users[i].is_blocked == 0) { %>
