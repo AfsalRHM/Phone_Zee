@@ -1,0 +1,68 @@
+<%- include('../adminLayouts/header.ejs') %>
+<%- include('../adminLayouts/pageHeader.ejs') %>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Coupons</h2>
+            <p>View, edit, or delete coupons</p>
+        </div>
+        <div>
+            <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Create new</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>SI No.</th>
+                            <th>Coupon Name</th>
+                            <th>Coupon Code</th>
+                            <th>Limit</th>
+                            <th>Discount Price</th>
+                            <th>Minimum Price</th>
+                            <th>Start Date</th>
+                            <th>Expiry Date</th>
+                            <th>Status</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(let i = 0; i < 5; i++) { %>
+                        <tr class="coupon-row">
+                            <td><%= i + 1 %></td>
+                            <td><b>Coupon 1</b></td>
+                            <td><b>rterhtjtyhkjr</b></td>
+                            <td >8</td>
+                            <td>Rs 50 </td>
+                            <td>Rs 299 </td>
+                            <td>12-56-8678</td>
+                            <td>56-65-8907</td>
+                            <td><span class="badge rounded-pill alert-success">Active</span></td>
+                            <td class="text-end">
+                                <div class="dropdown">
+                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm">
+                                        <i class="material-icons md-more_horiz"></i>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">View detail</a>
+                                        <a class="dropdown-item" >Edit info</a>
+                                        <a class="dropdown-item text-success" onclick="toggleCouponStatus()">Activate</a>
+                                        <a class="dropdown-item text-danger" href="#">Delete</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../adminLayouts/pageFooter.ejs') %>
+<%- include('../adminLayouts/footer.ejs') %>

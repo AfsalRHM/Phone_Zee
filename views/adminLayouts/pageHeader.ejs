@@ -38,7 +38,7 @@
                         <%
                     }
                 %> ">
-                        <a class="menu-link" href="page-orders-1.html">
+                        <a class="menu-link" href="/admin/orderlist">
                             <i class="icon material-icons md-shopping_cart"></i>
                             <span class="text">Orders</span>
                         </a>
@@ -67,7 +67,7 @@
                             <span class="text">Products</span>
                         </a>
                     </li>
-                    <li class="menu-item <%
+                    <!-- <li class="menu-item <%
                     if (typeof activeAddproductMessage !== 'undefined') {
                         %>
                         <%=activeAddproductMessage %>
@@ -77,6 +77,18 @@
                         <a class="menu-link" href="/admin/addproduct">
                             <i class="icon material-icons md-add_box"></i>
                             <span class="text">Add product</span>
+                        </a>
+                    </li> -->
+                    <li class="menu-item <%
+                    if (typeof activeCouponMessage !== 'undefined') {
+                        %>
+                        <%=activeCouponMessage %>
+                        <%
+                    }
+                %> ">
+                        <a class="menu-link" href="/admin/couponlist">
+                            <i class="icon bi bi-tag"></i>
+                            <span class="text">Coupons</span>
                         </a>
                     </li>
                     <li class="menu-item <%

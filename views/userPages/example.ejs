@@ -1,90 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Address Selection - Checkout Theme</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Theme CSS -->
-    <style>
-        /* Additional styles specific to the checkout theme */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .address-item {
-            margin-bottom: 10px;
-        }
-        .btn-save {
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2>Select Address</h2>
+<%- include('../userLayouts/header.ejs') %>
 
-        <!-- Address checkboxes -->
-        <div class="address-item">
-            <input type="checkbox" id="address1" name="address1">
-            <label for="address1">Address 1</label>
-        </div>
 
-        <div class="address-item">
-            <input type="checkbox" id="address2" name="address2">
-            <label for="address2">Address 2</label>
-        </div>
+    <div class="page-wrapper">
+        
+        <%- include('../userLayouts/pageHeader.ejs') %>
 
-        <div class="address-item">
-            <input type="checkbox" id="address3" name="address3">
-            <label for="address3">Address 3</label>
-        </div>
+        <main class="main">
+            <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+                <!-- Breadcrumb content -->
+            </nav>
 
-        <div class="address-item">
-            <input type="checkbox" id="address4" name="address4">
-            <label for="address4">Address 4</label>
-        </div>
+            <div class="change-password-page">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 col-lg-5">
+                            <div class="change-password-form">
+                                <div class="change-password-heading">
+                                    <h2>Change Password</h2>
+                                </div>
 
-        <div class="address-item">
-            <input type="checkbox" id="address5" name="address5">
-            <label for="address5">Address 5</label>
-        </div>
+                                <form id="change-password-form" class="change-password-form">
 
-        <!-- Save button -->
-        <button class="btn btn-primary btn-save" onclick="saveAddress()">Save</button>
-    </div>
+                                    <div class="form-group">
+                                        <label for="new-password">New Password:</label>
+                                        <input type="password" id="new-password" name="newPassword" class="form-control" required>
+                                    </div>
 
-    <!-- Bootstrap JS (optional if needed for functionality) -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                                    <div class="form-group">
+                                        <label for="confirm-password">Confirm New Password:</label>
+                                        <input type="password" id="confirm-password" name="confirmPassword" class="form-control" required>
+                                    </div>
 
-    <!-- JavaScript function to save selected addresses -->
-    <script>
-        function saveAddress() {
-            // Get all checkboxes
-            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            var selectedAddresses = [];
+                                    <button type="submit" class="btn btn-primary btn-block">Change Password</button>
+                                </form>
+                            </div><!-- End .change-password-form -->
+                        </div><!-- End .col-md-6 -->
+                    </div><!-- End .row -->
+                </div><!-- End .container -->
+            </div><!-- End .change-password-page -->
+        </main><!-- End .main -->
 
-            // Loop through checkboxes to find selected ones
-            checkboxes.forEach(function(checkbox) {
-                if (checkbox.checked) {
-                    selectedAddresses.push(checkbox.name); // Push the address name to the array
-                }
-            });
+        <%- include('../userLayouts/pageFooter.ejs') %>
+            
+    </div><!-- End .page-wrapper -->
 
-            // Display selected addresses (for demonstration)
-            if (selectedAddresses.length > 0) {
-                alert('Selected addresses: ' + selectedAddresses.join(', '));
-            } else {
-                alert('Please select at least one address.');
-            }
-        }
-    </script>
-</body>
-</html>
+<%- include('../userLayouts/footer.ejs') %>

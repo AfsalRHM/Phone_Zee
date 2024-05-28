@@ -29,7 +29,7 @@
 									<%
 								}
 							%> ">
-									<a href="category" >Shop</a>
+									<a href="shop" >Shop</a>
 								</li>
 								<li class="<%
 								if (typeof activeMoreMessage !== 'undefined') {
@@ -87,6 +87,9 @@
 							<div class="tab-content">
 							    <div class="tab-pane fade show active" id="signin-2" role="tabpanel" aria-labelledby="signin-tab-2">
 							    	<form action="" method="post">
+										<% if (typeof successMessage !== 'undefined') { %>
+											<p style="color: rgb(54, 234, 93);" class="d-inline-flex p-2 " ><%= successMessage %></p>
+										<% } %>
 										<% if (typeof validationMessage !== 'undefined') { %>
 											<p style="color: red;" class="d-inline-flex p-2 " ><%= validationMessage %>*</p>
 										<% } %>
@@ -111,7 +114,7 @@
 												<label class="custom-control-label" for="signin-remember-2">Remember Me</label>
 											</div><!-- End .custom-checkbox -->
 
-											<a href="#" class="forgot-link">Forgot Your Password?</a>
+											<a href="forgotPassword" class="forgot-link">Forgot Your Password?</a>
 							    		</div><!-- End .form-footer -->
                                         <div class="text-center border-bottom pb-2">New User?<a href="register">Sign up</a></div>
 							    	</form>

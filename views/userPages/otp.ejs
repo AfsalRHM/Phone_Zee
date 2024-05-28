@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1>Verify OTP</h1>
-        <p>A 6-digit code has been sent to your phone number ending with ****<%= userMobile %>. Enter the code below to proceed.</p>
+        <p>A 6-digit code has been sent to your email. Enter the code below to proceed.</p>
         <% if (typeof message !== 'undefined') { %>
             <p style="color: red;" class="d-inline-flex p-2 " ><%= message %>*</p>
         <% } %>
@@ -26,23 +26,69 @@
                 <button type="submit">Verify</button>
                 <p>Resend Otp avialable in <span id="resendOtpTime"></span> seconds</p>
                 <a href="/resendOTP?mail=<%- userEmail %>" id="otpButton" style="display: none;">Resend OTP</a>
-            </div>
+            </div>  
         </form>
     </div>
 
     <script>
-            setTimeout(() => {
-                document.getElementById('otpButton').style.display = 'block';
-            }, 47000);  
 
-            let count = 47; // Initial countdown value
-            const countdownInterval = setInterval(() => {
-                count--; // Decrement count
-                document.getElementById('resendOtpTime').innerHTML = count; // Update countdown display
+            // let count = 47; // Initial countdown value
+            // const countdownInterval = setInterval(() => {
+            //     count--; // Decrement count
+            //     document.getElementById('resendOtpTime').innerHTML = count; // Update countdown display
+            //     if (count <= 0) {
+            //         document.getElementById('otpButton').style.display = 'block';
+            //         clearInterval(countdownInterval); // Stop the countdown when count reaches 0
+            //     };
+            // }, 1000);
+
+            function startTimer() {
+                let count = localStorage.getItem('countdown'); // Initial countdown value
                 if (count <= 0) {
-                    clearInterval(countdownInterval); // Stop the countdown when count reaches 0
+                    count = 47
                 }
-            }, 1000);
+                const countdownInterval = setInterval(() => {
+                    count--; // Decrement count
+                    document.getElementById('resendOtpTime').innerHTML = count; // Update countdown display
+                    localStorage.setItem('countdown', count); // Store countdown value in local storage
+                    if (count <= 0) {
+                        clearInterval(countdownInterval); // Stop the countdown when count reaches 0
+                        document.getElementById('otpButton').style.display = 'block'; // Show resend button
+                        document.getElementById('resendMessage').textContent = 'Resend OTP available'; // Update resend message
+                    }
+                }, 1000);
+            }
+
+            // Function to handle form submission
+            function submitForm() {
+                const form = document.getElementById('otpForm');
+                const formData = new FormData(form);
+
+                // Make an AJAX request to submit the form data
+                fetch(form.action, {
+                    method: form.method,
+                    body: formData
+                })
+                .then(response => {
+                    // Handle response (if needed)
+                    console.log(response);
+                })
+                .catch(error => {
+                    // Handle error (if needed)
+                    console.error('Error:', error);
+                });
+            }
+
+            // Start the timer after the page is fully loaded
+            window.onload = function() {
+                startTimer();
+
+                // Add event listener to the verify button
+                document.getElementById('verifyButton').addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default form submission
+                    submitForm(); // Call the function to submit the form asynchronously
+                });
+            };
 
     </script>
 </body>

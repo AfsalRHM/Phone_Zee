@@ -3,10 +3,14 @@ const Product = require('../models/productModel');
 const Category = require('../models/categoryModel');
 const Address = require('../models/addressModel');
 const Wishlist = require('../models/wishlistModel');
+const Cart = require('../models/cartModel');
+const Order = require('../models/orderModel');
 
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer');
-const Otp = require('../models/otp');
+const Otp = require('../models/otpModel');
+
+const otpController = require('../controllers/otpController');
 
 /*****************      To Secure the password Using bcrypt     *********************/
 
@@ -22,49 +26,9 @@ const securePassword = async(password) => {
     };
 };
 
-/*****************      To send the email     *********************/
-
-// Generate a random 6-digit number
-function generateOTP() {
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    return otp.toString(); 
-}
-
 // const otpValue =  generateOTP();
 
-const transporter =  nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // upgrade later with STARTTLS
-    auth: {
-      user: "afsalrahmanm25@gmail.com",
-      pass: "sclv dytn njag ohro",
-    },
-  });
 
-async function VerifyMail(recieverEmail, recieverName) {
-
-    const otpValue =  generateOTP();
-
-    await Otp.deleteMany({email: recieverEmail});
-
-    const info = await transporter.sendMail({
-    from: '"PhoneZee.com " <afsalrahmanm25@gmail.com>', 
-    to: recieverEmail, 
-    subject: "Phonzee 6-digit OTP", 
-    headers: `Hello ${recieverName}` ,
-    html: `<b>The 6-digit Otp is : ${otpValue}</b>`, 
-    });
-
-    const otp = await new Otp({
-        otp: otpValue,
-        email: recieverEmail,
-        expire_at: new Date(Date.now() + (10 * 1000 * 1))
-    });
-
-    const otpData = await otp.save();
-    
-};
 
 /*****************      To load the Home page     *********************/
 
@@ -72,7 +36,15 @@ const loadHome = async (req, res) => {
     try {
 
         const categoryData = await Category.find({is_hide: 0});
-        res.render('Home', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, categories: categoryData});
+        const cartData = await Cart.find({user: req.session.user_id});
+        const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
+
+
+        if (cartDataForCount == null) {
+            res.render('Home', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, categories: categoryData, cartItemsForCartCount: cartDataForCount});
+        } else {
+            res.render('Home', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, categories: categoryData, cartItemsForCartCount: cartDataForCount.products});
+        };
 
     } catch (error) {
         console.log(error.message)
@@ -164,78 +136,65 @@ const FailureGoogleLogin = async (req, res) => {
 };
 
 
-/*****************      To load after Success on Goole Login     *********************/
+// /*****************      To load after Success on Goole Login     *********************/
 
-const successFacebookLogin = async (req, res) => {
-    try {
+// const successFacebookLogin = async (req, res) => {
+//     try {
 
-        console.log(req.user);
-        // if (req.user) {
-        //     console.log(req.user);
-        //     const user = new User({
-        //         name: req.user.displayName,
-        //         email: req.user.email
-        //     });
+//         console.log(req.user);
+//         // if (req.user) {
+//         //     console.log(req.user);
+//         //     const user = new User({
+//         //         name: req.user.displayName,
+//         //         email: req.user.email
+//         //     });
 
-        //     const userAlready = await User.findOne({
-        //         email: req.user.email
-        //     });
+//         //     const userAlready = await User.findOne({
+//         //         email: req.user.email
+//         //     });
 
-        //     if (userAlready) {
-        //         const userData = await User.findOne({email: req.user.email});
+//         //     if (userAlready) {
+//         //         const userData = await User.findOne({email: req.user.email});
 
-        //         if (userData) {
-        //             req.session.user_id = userData._id;
-        //             res.redirect('/');
-        //         } else {
-        //             res.render('login', {validationMessage: 'User Not Added', loginOrCart: req.session});
-        //         };
-        //     } else {
+//         //         if (userData) {
+//         //             req.session.user_id = userData._id;
+//         //             res.redirect('/');
+//         //         } else {
+//         //             res.render('login', {validationMessage: 'User Not Added', loginOrCart: req.session});
+//         //         };
+//         //     } else {
 
-        //         const userData = await user.save();
+//         //         const userData = await user.save();
 
-        //         if (userData) {
-        //             req.session.user_id = userData._id;
-        //             res.redirect('/');
-        //         } else {
-        //             res.render('login', {validationMessage: 'User Not Added', loginOrCart: req.session});
-        //         };
-        //     };
+//         //         if (userData) {
+//         //             req.session.user_id = userData._id;
+//         //             res.redirect('/');
+//         //         } else {
+//         //             res.render('login', {validationMessage: 'User Not Added', loginOrCart: req.session});
+//         //         };
+//         //     };
             
            
-        // } else {
-        //     res.redirect('/facebookFailure');
-        // };
+//         // } else {
+//         //     res.redirect('/facebookFailure');
+//         // };
         
-    } catch (error) {
-        console.log(error.message);
-    };
-};
+//     } catch (error) {
+//         console.log(error.message);
+//     };
+// };
 
-/*****************      To load after Failure on Goole Login     *********************/
+// /*****************      To load after Failure on Goole Login     *********************/
 
-const failureFacebookLogin = async (req, res) => {
-    try {
+// const failureFacebookLogin = async (req, res) => {
+//     try {
 
-        res.render('signup', {message: 'Facebook Login Failed', loginOrCart: req.session});
+//         res.render('signup', {message: 'Facebook Login Failed', loginOrCart: req.session});
         
-    } catch (error) {
-        console.log(error.message);
-    };
-};
-
-/*****************      To load the OTP page     *********************/
-
-const loadOtpPage = async (req, res) => {
-    try {
-
-        // const otpData = await Otp.find({});
-        res.render('otp');
-        
-    } catch (error) {
-        console.log(error.message);
-    };
-};
+//     } catch (error) {
+//         console.log(error.message);
+//     };
+// };
 
 /*****************      To load the Category page     *********************/
 
@@ -244,19 +203,13 @@ const loadCategory = async (req, res) => {
         
         const productData = await Product.find({is_hide: 0});
         const categoryData = await Category.find({is_hide: 0});
-        res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session});
+        const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
 
-    } catch (error) {
-        console.log(error.message);
-    };
-};
-
-/*****************      To load the Cart page     *********************/
-
-const loadCart = async (req, res) => {
-    try {
-        
-        res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session})
+        if (cartDataForCount == null) {
+            res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount, sortMethod: 'undefined' });
+        } else {
+            res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products, sortMethod: 'undefined' });
+        };
 
     } catch (error) {
         console.log(error.message);
@@ -267,25 +220,15 @@ const loadCart = async (req, res) => {
 
 const loadFaq = async (req, res) => {
     try {
+
+        const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
         
-        res.render('faq', {activeMoreMessage: 'active', pageTitle: 'FAQs | PhoneZee', loginOrCart: req.session})   
-
-    } catch (error) {
-        console.log(error.message);
-    };
-};
-
-/*****************      To load the Product page     *********************/
-
-const loadProduct = async (req, res) => {
-    try {
-        
-        const id = req.query.id;
-        const imagePosition = req.query.photoNumber;
-        const productData = await Product.findOne({_id: id});
-        const relatedProductData = await Product.find({_id: {$ne: id} ,category: productData.category});
-
-        res.render('product', {pageTitle: 'product | PhoneZee', loginOrCart: req.session, product: productData, relatedProducts: relatedProductData, imagePos: imagePosition});
+        if (cartDataForCount == null) {
+            res.render('faq', {activeMoreMessage: 'active', pageTitle: 'FAQs | PhoneZee', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount });
+        } else {
+            res.render('faq', {activeMoreMessage: 'active', pageTitle: 'FAQs | PhoneZee', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products });
+        };
+        // res.render('faq', {activeMoreMessage: 'active', pageTitle: 'FAQs | PhoneZee', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products });
 
     } catch (error) {
         console.log(error.message);
@@ -298,8 +241,12 @@ const loadCheckout = async (req, res) => {
     try {
 
         const addressData = await Address.find({user: req.session.user_id});
+
+        const cartData = await Cart.findOne({user: req.session.user_id}).populate('products.product');
+
+        const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
         
-        res.render('checkout', {pageTitle: 'checkout | PhoneZee', loginOrCart: req.session, address: addressData});
+        res.render('checkout', {pageTitle: 'checkout | PhoneZee', loginOrCart: req.session, address: addressData, cartItems: cartData, cartItemsForCartCount: cartDataForCount.products });
 
     } catch (error) {
         console.log(error.message);
@@ -311,7 +258,13 @@ const loadCheckout = async (req, res) => {
 const loadAbout = async (req, res) => {
     try {
         
-        res.render('about', {pageTitle: 'about | PhoneZee', loginOrCart: req.session});
+        const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
+
+        if (cartDataForCount == null) {
+            res.render('about', {pageTitle: 'about | PhoneZee', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount });
+        } else {
+            res.render('about', {pageTitle: 'about | PhoneZee', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products });
+        };
 
     } catch (error) {
         console.log(error.message);
@@ -322,8 +275,14 @@ const loadAbout = async (req, res) => {
 
 const loadContact = async (req, res) => {
     try {
+
+        const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
         
-        res.render('contact', {pageTitle: 'contact | PhoneZee', loginOrCart: req.session});
+        if (cartDataForCount == null) {
+            res.render('contact', {pageTitle: 'contact | PhoneZee', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount });
+        } else {
+            res.render('contact', {pageTitle: 'contact | PhoneZee', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products });
+        };
 
     } catch (error) {
         console.log(error.message);
@@ -334,22 +293,14 @@ const loadContact = async (req, res) => {
 
 const loadErrorPage = async (req, res) => {
     try {
+
+        const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
         
-        res.render('404', {pageTitle: 'Error | PhoneZee', loginOrCart: req.session});
-
-    } catch (error) {
-        console.log(error.message);
-    };
-};
-
-/*****************      To load the Favourite page     *********************/
-
-const loadWishlist = async (req, res) => {
-    try {
-
-        const wishlistData = await Wishlist.find({user: req.session.user_id}).populate('product');
-        
-        res.render('wishlist', {pageTitle: 'wishlist | PhoneZee', loginOrCart: req.session, wishlistItems: wishlistData});
+        if (cartDataForCount == null) {
+            res.render('404', {pageTitle: 'Error | PhoneZee', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount });
+        } else {
+            res.render('404', {pageTitle: 'Error | PhoneZee', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products });
+        };
 
     } catch (error) {
         console.log(error.message);
@@ -363,11 +314,18 @@ const loadProfile = async (req, res) => {
         
         const addressData = await Address.find({user: req.session.user_id});
         const userData = await User.findOne({_id: req.session.user_id});
+        const orderData = await Order.find({ user: req.session.user_id }).populate('products.product').populate('address');
 
-        res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData });
+        const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
+
+        if (cartDataForCount == null) {
+            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, cartItemsForCartCount: cartDataForCount });
+        } else {
+            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, cartItemsForCartCount: cartDataForCount.products });
+        };
 
     } catch (error) {
-        res.render('404');
+        res.render('404', { loginOrCart: req.session });
         console.log(error.message);
     };
 };
@@ -395,7 +353,9 @@ const insertUser = async (req, res) => {
         } else if (req.body.confirmPassword.trim() === '') {
             res.render('signup', { message: 'Please enter your password.' , userLiveData: user, loginOrCart: req.session});
         } else if (req.body.userEmail.includes(' ')) {
-            res.render('signup', { message: 'Inavlid Email Address. ' , userLiveData: user, loginOrCart: req.session});
+            res.render('signup', { message: 'Inavlid Email Address. No spaces Allowed' , userLiveData: user, loginOrCart: req.session});
+        } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(req.body.userEmail)) {
+            res.render('signup', { message: 'Invalid Email Address. Only lowercase letters are allowed.' , userLiveData: user, loginOrCart: req.session});
         } else if (req.body.userMobile.length != 10) {
             res.render('signup', { message: 'Inavlid Mobile Number. ' , userLiveData: user, loginOrCart: req.session});
         } else if (req.body.userPassword.includes(' ')) {
@@ -425,7 +385,7 @@ const insertUser = async (req, res) => {
                 } else {                    
 
                     // Sending the VerifyMail
-                    let ans = await VerifyMail(req.body.userEmail, req.body.userName).catch(console.error);
+                    let ans = await otpController.VerifyMail(req.body.userEmail, req.body.userName).catch(console.error);
 
                     req.session.user_email = req.body.userEmail;
                     req.session.user_number = req.body.userMobile;
@@ -493,58 +453,6 @@ const userLogin = async (req, res) => {
     };
 };
 
-/*****************      To Validate the otp entered by user     *********************/
-
-const validateOTP = async (req, res) => {
-    try {
-
-        const joinedOTP = req.body['otp-digit-1'] + req.body['otp-digit-2'] + req.body['otp-digit-3'] + req.body['otp-digit-4'] + req.body['otp-digit-5'] + req.body['otp-digit-6'];
-        const otpData = await Otp.findOne({otp: joinedOTP});
-        if (!otpData) {
-            
-            const lastFourDigits = req.session.user_number.toString().slice(-4);
-            return res.render('otp', {message: 'Entered OTP is Incorrect', userEmail: req.session.user_email, userMobile: lastFourDigits})
-
-        } else {
-            const Email = await otpData.email;
-            const userData = await User.updateOne({email: Email},{
-                $set:{
-                    is_verified : 1,
-                }
-            });
-
-            userData.is_verified = 1;
-            res.redirect('/login');
-
-        }
-
-    } catch (error) {
-        res.render('404', {loginOrCart: req.session});
-        console.log(error.message);
-    };
-};
-
-/*****************      To Resend the OTP     *********************/
-
-const resendOtp = async (req, res) => {
-    try {
-
-        const userMail = req.query.mail;
-        const userName = req.query.name;
-        const userMobileNumber = req.query.number;
-        await Otp.deleteOne({email: userMail});
-
-        // Sending the VerifyMail
-        let ans = await VerifyMail(userMail, userName).catch(console.error);
-
-        res.render('otp', {UserMobileNumber: userMobileNumber, userEmail: userMail, userName: userName});
-
-    } catch (error) {
-        res.render('404', {loginOrCart: req.session});
-        console.log(error.message);
-    };
-};
-
 /*****************      To Logout the user     *********************/
 
 const userLogout = async (req, res) => {
@@ -558,125 +466,18 @@ const userLogout = async (req, res) => {
     };
 };
 
-/*****************      To load the Add Address page     *********************/
-
-const loadAddAddress = async (req, res) => {
-    try {
-
-        const addressData = await Address.find({user: req.session.user_id});
-        const userData = await User.findOne({_id: req.session.user_id});
-
-        if (addressData.length < 5) {
-
-            res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session });
-
-        } else {
-            res.render('profile#tab-address', {addressPageMessage: 'Maximum Address Reached', loginOrCart: req.session, user: userData, address: addressData  });
-        }
-
-    } catch (error) {
-        console.log(error.message);
-    };
-};
-
-/*****************      To Insert the Address     *********************/
-
-const insertAddress = async (req, res) => {
-    try {
-
-        const address = new Address ({
-            user: req.session.user_id,
-            name: req.body.name,
-            mobileNumber: req.body.mobileNumber,
-            pincode: req.body.pincode,
-            locality: req.body.locality,
-            city: req.body.city,
-            state: req.body.state,
-            landmark: req.body.landmark,
-            mobileNumber2: req.body.mobileNumber2            
-        });
-
-        if (!address.name.trim() ) {
-            res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, errorMessage: 'Please Enter You Name' });
-        } else if (req.body.mobileNumber.length != 10 ) {
-            return res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, errorMessage: 'Please Enter a Valid Mobile Number' });
-        } else if (req.body.pincode.length != 6 ) {
-            return res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, errorMessage: 'Please Enter a Valid Pincode' });
-        } else if (!address.locality.trim() ) {
-            return res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, errorMessage: 'Please Enter Locality' });
-        } else if (!address.city.trim() ) {
-            return res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, errorMessage: 'Please Enter City' });
-        } else if (!address.state.trim() ) {
-            return res.render('addAddress', {pageTitle: 'PhoneZee | Add new Address', loginOrCart: req.session, errorMessage: 'Please Enter State' });
-        } else {
-
-            await address.save();
-
-            res.redirect('/profile')
-
-        };
-
-    } catch (error) {
-        console.log(error.message);
-    };
-};
-
-/*****************      To add product to cart     *********************/
-
-const addToWishlist = async (req, res) => {
-    try {
-        const {productId}=req.body;
-        const product = await Product.findById(productId);
-
-        const existingProduct = await Wishlist.findOne({user: req.session.user_id, product: productId});
-
-        if (!existingProduct) {
-
-            if (!product) {
-                return next();
-            };
-    
-            const wishlist = new Wishlist({
-                user: req.session.user_id,
-                product: productId,
-            });
-    
-            await wishlist.save();
-    
-            res.status(200).json({ message: 'Success' });
-
-        } else {
-            res.status(200).json({ message: 'Already Exists' });
-        }
-
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).json({ message: 'Server error' });
-    };
-};
-
-/*****************      To Delete a Product from wislist     *********************/
-
-const deleteProductFromWishlist = async (req, res) => {
-    try {
-
-        const { wislistItemId } = req.body;
-
-        await Wishlist.deleteOne({_id: wislistItemId}); 
-
-        res.status(200).json({ message: 'Success' });
-
-    } catch (error) {
-        console.log(error.message);
-    };
-};
-
 /*****************      To load the testing page     *********************/
 
 const loadTestPage = async (req, res) => {
     try {
 
-        res.render('example', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session  });
+        const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
+
+        if (cartDataForCount == null) {
+            res.render('example', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount  });
+        } else {
+            res.render('example', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products  });
+        };
 
     } catch (error) {
         console.log(error.message);
@@ -689,28 +490,18 @@ module.exports = {
     loadSignUpPage,
     successGoogleLogin,
     FailureGoogleLogin,
-    successFacebookLogin,
-    failureFacebookLogin,
-    loadOtpPage,
+    // successFacebookLogin,
+    // failureFacebookLogin,
     loadCategory,
-    loadCart,
     loadFaq,
-    loadProduct,
     loadCheckout,
     loadAbout,
     loadContact,
     loadErrorPage,
-    loadWishlist,
     loadProfile,
     userLogin,
     insertUser,
     loadTestPage,
-    validateOTP,
     userLogout,
-    resendOtp,
-    loadAddAddress,
-    insertAddress,
-    addToWishlist,
-    deleteProductFromWishlist
 
 };

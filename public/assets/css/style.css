@@ -901,7 +901,8 @@ blockquote.text-white cite span {
 }
 
 .header-middle .menu.sf-arrows>li>.sf-with-ul {
-    padding-right: 1.5rem
+    padding-right: 1.5rem;
+    margin-right: 2em;
 }
 
 .cart-dropdown,
@@ -1314,7 +1315,6 @@ blockquote.text-white cite span {
     margin: 0;
     height: 38px;
     line-height: 20px;
-    border: none;
     border-radius: 20px;
     box-shadow: none
 }
@@ -15856,7 +15856,7 @@ button:focus {
 .checkout-discount label {
     position: absolute;
     left: 0;
-    top: 50%;
+    top: 25%;
     width: 100%;
     padding-left: 1.1rem;
     padding-right: 1.1rem;
@@ -19915,4 +19915,216 @@ button:focus {
 .main-image:hover img {
     transform: scale(1.4); /* Adjust the zoom level as needed */
     transform-origin: 50% 50%; /* Zoom from the center */
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%;
+}
+
+/* Styles for the modal content */
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Styles for the buttons */
+.modal-content button {
+    margin-top: 10px; /* Adjust as needed */
+}
+
+.modal-content .modal-heading {
+    text-align: center;
+    text-decoration: underline;
+}
+
+/* Styles for modal buttons */
+.modal-content button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Styles for the "Select" button */
+.modal-content button[type="button"][onclick="selectAddress()"] {
+    background-color: #007bff; /* Blue */
+    color: #fff; /* White */
+    margin-left: 100px;
+    margin-right: 10px;
+}
+
+/* Styles for the "Close" button */
+.modal-content button[type="button"][onclick="closeModal()"] {
+    background-color: #dc3545; /* Red */
+    color: #fff; /* White */
+}
+
+/* Styles for radio buttons */
+.modal-content input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* Styles for the label of radio buttons */
+.modal-content label {
+    cursor: pointer;
+}
+
+/* Styles for the checked state of radio buttons */
+.modal-content input[type="radio"]:checked + label {
+    font-weight: bold;
+}
+
+/* Styles for the default address container */
+.default-address {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+ .order-card {
+    background: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+
+.order-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.order-product {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.order-product-name {
+    font-weight: bold;
+    color: #333;
+}
+
+.order-product-price {
+    color: #666;
+}
+
+.order-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-price,
+.order-status {
+    margin-bottom: 0;
+}
+
+.button-details {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.button-details .btn {
+    margin: 0 5px; 
+    border-radius: 5px;
+    padding: 6px 12px;
+}
+
+.button-details .btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+    cursor: pointer;
+}
+
+.button-details .btn-info:hover {
+    background-color: #138496;
+    border-color: #117a8b;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    border-radius: 5px;
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.change-password-heading{
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    font-weight: 800;
+} 
+
+.apply-coupon-btn {
+    padding: 10px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.apply-coupon-btn:hover {
+    background-color: #0056b3;
+}
+
+.remove-coupon-btn {
+    padding: 10px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: red;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: none;
+}
+
+.remove-coupon-btn:hover {
+    background-color: #c9344b;
 }

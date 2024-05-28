@@ -1,0 +1,64 @@
+<%- include('../adminLayouts/header.ejs') %>
+<%- include('../adminLayouts/pageHeader.ejs') %>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Edit Coupon</h2>
+            <p>Edit a coupon</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post" >
+                <% if (typeof successMessage !== 'undefined') { %>
+                    <p style="color: rgb(54, 234, 93);" class="d-inline-flex p-2 " ><%= successMessage %></p>
+                <% } %>
+                <% if (typeof editCouponErrorMessage !== 'undefined') { %>
+                    <p style="color: red;" class="d-inline-flex p-2 " ><%= editCouponErrorMessage %>*</p>
+                <% } %>
+
+                    <input type="hidden" value="<%= couponData._id %>" name="couponId">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label for="coupon_name" class="form-label">Coupon Name</label>
+                            <input type="text" class="form-control" id="coupon_name" name="couponName" placeholder="Enter coupon name" value="<%= couponData.name %>" required>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label for="coupon_code" class="form-label">Coupon Code</label>
+                            <input type="text" class="form-control" id="coupon_code" name="couponCode" placeholder="Enter coupon code" value="<%= couponData.coupon_code %>" required>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label for="minimum_price" class="form-label">Minimum Price</label>
+                            <input type="tel" class="form-control" id="minimumPrice" name="minimumPrice" placeholder="Enter Minimum Price" value="<%= couponData.minimum_price %>" required>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label for="discount_price" class="form-label">Discount Price</label>
+                            <input type="tel" class="form-control" id="discountPrice" name="discountPrice" placeholder="Enter Discount Price" value="<%= couponData.discount_price %>" required>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label for="start_date" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="start_date" name="startDate" value="<%= couponData.start_date.toISOString().split('T')[0] %>" required>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label for="expiry_date" class="form-label">Expiry Date</label>
+                            <input type="date" class="form-control" id="expiry_date" name="endDate" value="<%= couponData.end_Date.toISOString().split('T')[0] %>" required>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label for="limit" class="form-label">Coupon Quantity</label>
+                            <input type="tel" class="form-control" id="limit" name="couponQuantity" placeholder="Enter Coupon limit" value="<%= couponData.coupon_quantity %>" required>
+                        </div>
+                        <div class="d-grid justify-content-center">
+                            <div>
+                                <button type="submit" class="btn btn-primary">Edit Coupon</button>
+                            </div>
+                        </div>                    
+                    </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<%- include('../adminLayouts/pageFooter.ejs') %>
+<%- include('../adminLayouts/footer.ejs') %>

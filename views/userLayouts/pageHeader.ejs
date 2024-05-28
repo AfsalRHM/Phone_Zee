@@ -24,7 +24,7 @@
                             <%
                         }
                     %> ">
-                            <a href="category" >Shop</a>
+                            <a href="shop" >Shop</a>
                         </li>
                         <li class="<%
                         if (typeof activeMoreMessage !== 'undefined') {
@@ -45,6 +45,14 @@
                                 <li><a href="faq">FAQs</a></li>
                             </ul>
                         </li>
+                        <div class="header-search header-search-extended header-search-visible d-none d-lg-block">
+                            <form id="searchForm" action="/search" method="GET">
+                                <div class="header-search-wrapper search-wrapper-wide">
+                                    <label for="q" class="sr-only">Search</label>
+                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search product ..." required>
+                                </div><!-- End .header-search-wrapper -->
+                            </form>
+                        </div><
                     </ul><!-- End .menu -->
                 </nav><!-- End .main-nav -->
             </div><!-- End .header-left -->
@@ -70,7 +78,11 @@
                         <div class="dropdown cart-dropdown">
                             <a href="cart" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" data-display="static">
                                 <i class="icon-shopping-cart"></i>
-                                <span class="cart-count">2</span>
+                                <% if (cartItemsForCartCount == null) { %>
+                                    <span class="cart-count">0</span>
+                                <% } else { %>
+                                    <span class="cart-count"><%= cartItemsForCartCount.length %></span>
+                                <% } %>
                             </a>
                         </div><!-- End .cart-dropdown -->
                         <div class="dropdown compare-dropdown">

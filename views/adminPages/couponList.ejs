@@ -1,0 +1,187 @@
+<%- include('../adminLayouts/header.ejs') %>
+<%- include('../adminLayouts/pageHeader.ejs') %>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Coupons</h2>
+            <p>View, edit, or delete coupons</p>
+        </div>
+        <div>
+            <a href="/admin/addcoupon" class="btn btn-primary btn-sm rounded">Create new</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <header class="card-header">
+            <div class="row gx-3">
+                <div class="col-lg-4 col-md-6 me-auto">
+                    <input type="text" placeholder="Search..." class="form-control" />
+                </div>
+                <div class="col-lg-2 col-6 col-md-3">
+                    <select class="form-select">
+                        <option>Status</option>
+                        <option>Active</option>
+                        <option>Disabled</option>
+                        <option>Show all</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-6 col-md-3">
+                    <select class="form-select">
+                        <option>Show 20</option>
+                        <option>Show 30</option>
+                        <option>Show 40</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+        <div class="card-body">
+            <div class="table-responsive">
+                <% if (typeof couponListSuccessMessage !== 'undefined') { %>
+                    <p class="d-inline-flex p-2 alert-success" ><%= couponListSuccessMessage %></p>
+                <% } %>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>SI No.</th>
+                            <th>Coupon Name</th>
+                            <th>Coupon Code</th>
+                            <th>Quantity / Remaining</th>
+                            <th>Minimum Price</th>
+                            <th>Discount Price</th>
+                            <th>Start Date</th>
+                            <th>Expiry Date</th>
+                            <th>Status</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (couponData.length == 0) { %>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td> There Has No Coupons Created.</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        <% } else { %>
+                            <% for(let i = 0; i < couponData.length; i++) { %>
+                                <tr class="coupon-row">
+                                    <td><%= i + 1 %></td>
+                                    <td><h5 class="mb-0 title"><%= couponData[i].name %></h5></td>
+                                    <td><h6 class="mb-0 title"><%= couponData[i].coupon_code %></h6></td>
+                                    <td><%= couponData[i].coupon_quantity %> / <%= couponData[i].remaining_quantity %></td>
+                                    <td>₹ <%= couponData[i].minimum_price %>.00</td>
+                                    <td>₹ <%= couponData[i].discount_price %>.00</td>
+                                    <td><%= couponData[i].start_date.getDate() %> - <%= couponData[i].start_date.getMonth() + 1 %> - <%= couponData[i].start_date.getFullYear() %></td>
+                                    <td><%= couponData[i].end_Date.getDate() %> - <%= couponData[i].end_Date.getMonth() + 1 %> - <%= couponData[i].end_Date.getFullYear() %></td>
+                                    <% if (couponData[i].is_hide == 0) { %>
+                                        <td><span class="badge rounded-pill alert-success">Active</span></td>
+                                    <% } else { %>
+                                        <td><span class="badge rounded-pill alert-danger">InActive</span></td>
+                                    <% } %>
+                                    <td class="text-end">
+                                        <div class="dropdown">
+                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm">
+                                                <i class="material-icons md-more_horiz"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="/admin/editcoupon?couponId=<%= couponData[i]._id %>">Edit info</a>
+                                                <% if (couponData[i].is_hide == 0) { %>
+                                                    <a class="dropdown-item text-danger" onclick="couponStatusSwitch('<%= couponData[i]._id %>')">Deactivate</a>
+                                                <% } else { %>
+                                                    <a class="dropdown-item text-success" onclick="couponStatusSwitch('<%= couponData[i]._id %>')">Activate</a>
+                                                <% } %>
+                                                <a class="dropdown-item text-danger" onclick="deleteCoupon('<%= couponData[i]._id %>', 'couponDelete')">Delete</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../adminLayouts/pageFooter.ejs') %>
+
+<script>
+    function couponStatusSwitch(couponId) {
+        
+        fetch('/admin/couponlist', { // Corrected URL to include userId in the route
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ couponId }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if(data.message == 'Failed') {
+                console.log('user Not Found')
+            } else {
+                window.location.reload();
+            };
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    };
+
+    function deleteCoupon(couponId, message) {
+                // Show a confirmation dialog using SweetAlert
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'Once deleted, you will not be able to recover this Coupon!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'No, cancel!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // User confirmed the deletion, proceed with the fetch request
+                        fetch('/admin/couponlist', {
+                            method: 'post',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ couponId, message }),
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.message === 'Failed') {
+                                console.log('User not found');
+                            } else {
+                                window.location.reload();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        // User clicked on "Cancel" or outside the modal
+                        Swal.fire('Cancelled', 'The Coupon deletion was cancelled', 'error');
+                    }
+                });
+            };
+
+</script>
+
+<%- include('../adminLayouts/footer.ejs') %>

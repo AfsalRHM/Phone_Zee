@@ -1,4 +1,4 @@
-const isLogin = (req, res, next) => {
+const isLogin = async (req, res, next) => {
     try {
         if (req.session.user_id) {
             next(); 
@@ -10,7 +10,7 @@ const isLogin = (req, res, next) => {
     }
 };
 
-const isLogout = (req, res, next) => {
+const isLogout = async (req, res, next) => {
     try {
         if (req.session.user_id) {
             res.redirect("/"); 

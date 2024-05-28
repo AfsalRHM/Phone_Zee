@@ -76,9 +76,9 @@
                                             </div><!-- End .product -->
                                         </td>
                                         <td class="price-col">₹ <%= wishlistItems[i].product.price %></td>
-                                        <% if (wishlistItems[i].product.stock >= 0) { %>
+                                        <% if (wishlistItems[i].product.stock > 0) { %>
                                             <td class="stock-col"><span class="in-stock">In stock</span></td>
-                                        <% } else { %>
+                                        <% } else if (wishlistItems[i].product.stock <= 0) { %>
                                             <td class="stock-col"><span class="out-of-stock">Out of stock</span></td>
                                         <% } %> 
                                         <td class="action-col">
