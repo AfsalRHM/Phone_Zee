@@ -92,6 +92,18 @@
                         </a>
                     </li>
                     <li class="menu-item <%
+                    if (typeof activeOfferMessage !== 'undefined') {
+                        %>
+                        <%=activeOfferMessage %>
+                        <%
+                    }
+                %> ">
+                        <a class="menu-link" href="/admin/productofferlist">
+                            <i class="icon fi fi-sr-badge-percent offer-icon"></i>
+                            <span class="text">Offers</span>
+                        </a>
+                    </li>
+                    <li class="menu-item <%
                     if (typeof activeTransactionMessage !== 'undefined') {
                         %>
                         <%=activeTransactionMessage %>

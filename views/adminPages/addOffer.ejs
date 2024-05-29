@@ -1,0 +1,70 @@
+<%- include('../adminLayouts/header.ejs') %>
+
+<%- include('../adminLayouts/pageHeader.ejs') %>
+
+
+<section class="content-main" style="background-color: rgb(236, 236, 236);">
+    <div class="content-header" style="background-color: rgb(236, 236, 236);">
+        <% if (comingFor == 'AddProduct' ) { %>
+                <h2 class="content-title">Add Offer</h2>
+            </div>
+            <section class="content-main d-flex justify-content-center align-items-center">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="content-title card-title mb-4">Add Product Offer</h2>
+                        <form method="post">
+                            <% if (typeof addOfferMessage !== 'undefined') { %>
+                                <p style="color: red;" class="d-inline-flex p-2 " ><%= addOfferMessage %>*</p>
+                            <% } %>
+                            <input type="hidden" name="item" value="product">
+                            <div class="mb-4">
+                                <label for="productName" class="form-label">Product Name</label>
+                                <select class="form-select" name="itemName">
+                                    <% for (let i = 0; i < items.length; i++) { %>
+                                    <option value="<%= items[i].name %>"><%= items[i].name %></option>
+                                    <% }; %>
+                                </select>
+                            </div>
+        <% } else if (comingFor == 'AddCategory' ) { %>
+            <h2 class="content-title">Add Offer</h2>
+            </div>
+            <section class="content-main d-flex justify-content-center align-items-center">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="content-title card-title mb-4">Add Categroy Offer</h2>
+                        <form method="post">
+                            <% if (typeof addOfferMessage !== 'undefined') { %>
+                                <p style="color: red;" class="d-inline-flex p-2 " ><%= addOfferMessage %>*</p>
+                            <% } %>
+                            <input type="hidden" name="item" value="category">
+                            <div class="mb-4">
+                                <label for="categoryName" class="form-label">Category Name</label>
+                                <select class="form-select" name="itemName">
+                                    <% for (let i = 0; i < items.length; i++) { %>
+                                    <option value="<%= items[i].name %>"><%= items[i].name %></option>
+                                    <% }; %>
+                                </select>
+                            </div>
+        <% } %>
+                    <div class="mb-4">
+                        <label for="percentageOffer" class="form-label">Percentage Offer(%)</label>
+                        <input type="number" class="form-control" name="percentageOffer" max="99" min="0" placeholder="Enter percentage offer">
+                    </div>
+                    <div class="d-grid justify-content-center">
+                        <div>
+                            <button type="submit" class="btn btn-primary">Add Offer</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- card body .// -->
+        </div>
+        <!-- card .// -->
+    </section>
+    <!-- card end// -->
+</section>
+<!-- content-main end// -->
+
+<%- include('../adminLayouts/pageFooter.ejs') %>
+
+<%- include('../adminLayouts/footer.ejs') %>

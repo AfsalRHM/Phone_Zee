@@ -10,6 +10,10 @@ const categorySchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    offer: {
+        type: Number,
+        default: 0
+    },
     is_hide:{
         type: Number,
         default: 0

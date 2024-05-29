@@ -85,23 +85,13 @@
 
                                     <div class="details-filter-row details-row-size">
                                         <label for="size">Ram:</label>
-                                        <div class="select-custom">
-                                            <select name="size" id="size" class="form-control">
-                                                <option value="4 GB" selected="selected">4 GB</option>
-                                                <option value="6 GB">6 GB</option>
-                                                <option value="8 GB">8 GB</option>
-                                                <option value="10 GB">10 GB</option>
-                                            </select>
+                                        <div >
+                                            <input value="<%= product.ram %>" style="width: 30px; margin-right: 3em;" class="form-control" readonly>
                                         </div><!-- End .select-custom -->
 
                                         <label for="size">Storage:</label>
-                                        <div class="select-custom">
-                                            <select name="size" id="size" class="form-control">
-                                                <option value="64 GB" selected="selected">64 GB</option>
-                                                <option value="128 GB">128 GB</option>
-                                                <option value="256 GB">256 GB</option>
-                                                <option value="512 GB">512 GB</option>
-                                            </select>
+                                        <div>
+                                            <input value="<%= product.storage %>" style="width: 30px;" class="form-control" readonly>
                                         </div><!-- End .select-custom -->
                                     </div><!-- End .details-filter-row -->
 

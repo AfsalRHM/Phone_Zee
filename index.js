@@ -24,4 +24,5 @@ app.use('/admin', adminRoute);
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is Running On : http://localhost:${process.env.PORT}`);
+    console.log(`Admin is On : http://localhost:${process.env.PORT}/admin`)
 });

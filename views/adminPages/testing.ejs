@@ -1,68 +1,108 @@
 <%- include('../adminLayouts/header.ejs') %>
+
 <%- include('../adminLayouts/pageHeader.ejs') %>
 
 <section class="content-main">
     <div class="content-header">
         <div>
-            <h2 class="content-title card-title">Coupons</h2>
-            <p>View, edit, or delete coupons</p>
+            <h2 class="content-title card-title">Products with Offers</h2>
+            <p>All products with applied offers.</p>
         </div>
         <div>
-            <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Create new</a>
+            <input type="text" placeholder="Search product name" class="form-control bg-white" />
         </div>
     </div>
-
-    <div class="card">
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row gx-3">
+                <div class="col-lg-4 col-md-6 me-auto">
+                    <input type="text" placeholder="Search..." class="form-control" />
+                </div>
+                <div class="col-lg-2 col-6 col-md-3">
+                    <select class="form-select">
+                        <option>Status</option>
+                        <option>Active</option>
+                        <option>Disabled</option>
+                        <option>Show all</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-6 col-md-3">
+                    <select class="form-select">
+                        <option>Show 20</option>
+                        <option>Show 30</option>
+                        <option>Show 40</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+        <!-- card-header end// -->
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>SI No.</th>
-                            <th>Coupon Name</th>
-                            <th>Coupon Code</th>
-                            <th>Limit</th>
-                            <th>Discount Price</th>
-                            <th>Minimum Price</th>
-                            <th>Start Date</th>
-                            <th>Expiry Date</th>
-                            <th>Status</th>
-                            <th class="text-end">Action</th>
+                            <th>#ID</th>
+                            <th scope="col">Product Name</th>
+                            <th scope="col">Original Price</th>
+                            <th scope="col">Offer Percentage</th>
+                            <th scope="col">Start Date</th>
+                            <th scope="col">End Date</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="text-end">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% for(let i = 0; i < 5; i++) { %>
-                        <tr class="coupon-row">
-                            <td><%= i + 1 %></td>
-                            <td><b>Coupon 1</b></td>
-                            <td><b>rterhtjtyhkjr</b></td>
-                            <td >8</td>
-                            <td>Rs 50 </td>
-                            <td>Rs 299 </td>
-                            <td>12-56-8678</td>
-                            <td>56-65-8907</td>
-                            <td><span class="badge rounded-pill alert-success">Active</span></td>
-                            <td class="text-end">
-                                <div class="dropdown">
-                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm">
-                                        <i class="material-icons md-more_horiz"></i>
-                                    </a>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#">View detail</a>
-                                        <a class="dropdown-item" >Edit info</a>
-                                        <a class="dropdown-item text-success" onclick="toggleCouponStatus()">Activate</a>
-                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
+                        <% if (true) { %>
+                            <p>No products with offers applied</p>
+                        <% } else { %>
+                            <% for (let i = 0; i < 5; i++) { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td><b>S22</b></td>
+                                    <td>₹ 7635267.00</td>
+                                    <td>39 %</td>
+                                    <td>28.05.2024</td>
+                                    <td>28.05.2024</td>
+                                    <td><span class="badge rounded-pill alert-success">Active</span></td>
+                                    <td class="text-end">
+                                        <a href="#" class="btn btn-md rounded font-sm">Detail</a>
+                                        <div class="dropdown">
+                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                            <div class="dropdown-menu">
+                                                <!-- <a class="dropdown-item" href="#">Edit info</a> -->
+                                                <a class="dropdown-item text-danger" ">Delete</a>
+                                            </div>
+                                        </div>
+                                        <!-- dropdown //end -->
+                                    </td>
+                                </tr>
+                            <% } %>
                         <% } %>
                     </tbody>
                 </table>
             </div>
+            <!-- table-responsive //end -->
         </div>
+        <!-- card-body end// -->
+    </div>
+    <!-- card end// -->
+    <div class="pagination-area mt-15 mb-50">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+                <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                <li class="page-item"><a class="page-link" href="#">02</a></li>
+                <li class="page-item"><a class="page-link" href="#">03</a></li>
+                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                <li class="page-item"><a class="page-link" href="#">16</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </section>
+<!-- content-main end// -->
 
 <%- include('../adminLayouts/pageFooter.ejs') %>
+
 <%- include('../adminLayouts/footer.ejs') %>

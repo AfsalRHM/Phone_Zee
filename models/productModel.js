@@ -10,12 +10,16 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    tags: {
-        type: String,
-        Default: null
-    },
     category: {
         type: String,
+        required: true
+    },
+    ram: {
+        type: Number,
+        required: true
+    },
+    storage: {
+        type: Number,
         required: true
     },
     price: {
@@ -23,6 +27,10 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     discount: {
+        type: Number,
+        default: 0
+    },
+    offer: {
         type: Number,
         default: 0
     },

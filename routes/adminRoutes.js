@@ -38,6 +38,7 @@ const categoryController = require('../controllers/categoryController');
 const orderController = require('../controllers/orderController');
 const productController = require('../controllers/productController');
 const couponController =  require('../controllers/couponController');
+const offerController = require('../controllers/offerController');
 
 // Requerung the Admin Auth
 const adminAuth = require('../middlewares/adminAuth');
@@ -60,6 +61,10 @@ admin_route.get('/editproduct', adminAuth.isLogin, productController.loadEditPro
 admin_route.get('/couponlist', adminAuth.isLogin, couponController.loadCouponList);
 admin_route.get('/addcoupon', adminAuth.isLogin, couponController.loadAddCoupon);
 admin_route.get('/editcoupon', adminAuth.isLogin, couponController.loadEditCoupon);
+admin_route.get('/productofferlist', adminAuth.isLogin, offerController.loadProductOfferList);
+admin_route.get('/categoryofferlist', adminAuth.isLogin, offerController.loadCategoryOfferList);
+admin_route.get('/addoffer', adminAuth.isLogin, offerController.loadAddOffer);
+admin_route.get('/editoffer', adminAuth.isLogin, offerController.loadEditOffer);
 admin_route.get('/adminLogout', adminAuth.isLogin, adminController.adminLogout);
 
 admin_route.get('/test', adminController.loadTesting);
@@ -77,6 +82,10 @@ admin_route.post('/orderlist', adminAuth.isLogin, orderController.deleteOrder);
 admin_route.post('/couponlist', adminAuth.isLogin, couponController.couponStatusChange, couponController.deleteCoupon);
 admin_route.post('/addCoupon', adminAuth.isLogin, couponController.insertCoupon);
 admin_route.post('/editcoupon', adminAuth.isLogin, couponController.updateCoupon);
+admin_route.post('/addoffer', adminAuth.isLogin, offerController.createOffer);
+admin_route.post('/editoffer', adminAuth.isLogin, offerController.updateOffer);
+admin_route.post('/productofferlist', adminAuth.isLogin, offerController.switchProductOfferStatus, offerController.deleteProductOffer);
+admin_route.post('/categoryofferlist', adminAuth.isLogin, offerController.switchCategoryOfferStatus,  offerController.deleteCategoryOffer);
 
 
 // All Routes

@@ -1,0 +1,194 @@
+<%- include('../adminLayouts/header.ejs') %>
+
+<%- include('../adminLayouts/pageHeader.ejs') %>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Catgeory with Offers</h2>
+            <p>All catgeory with offers.</p>
+        </div>
+        <div>
+            <a href="/admin/productofferlist" class="btn btn-secondary btn-sm rounded">Product Offers</a>
+        </div>
+        <div>
+            <a href="/admin/addoffer?by=category" class="btn btn-primary btn-sm rounded">Create new offer</a>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row gx-3">
+                <div class="col-lg-4 col-md-6 me-auto">
+                    <input type="text" placeholder="Search..." class="form-control" />
+                </div>
+                <div class="col-lg-2 col-6 col-md-3">
+                    <select class="form-select">
+                        <option>Status</option>
+                        <option>Active</option>
+                        <option>Disabled</option>
+                        <option>Show all</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-6 col-md-3">
+                    <select class="form-select">
+                        <option>Show 20</option>
+                        <option>Show 30</option>
+                        <option>Show 40</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+        <!-- card-header end// -->
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th scope="col">Category Name</th>
+                            <th scope="col">Offer Percentage</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (offerCategories.length == 0) { %>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td><p>No Category with offers</p></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        <% } else { %>
+                            <% for (let i = 0; i < offerCategories.length; i++) { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td><b><%= offerCategories[i].item_Id.name %></b></td>
+                                    <td><%= offerCategories[i].offer_percentage %> %</td>
+                                    <% if ( offerCategories[i].is_hide == 0) { %>
+                                        <td><span class="badge rounded-pill alert-success">Active</span></td>
+                                    <% } else { %>
+                                        <td><span class="badge rounded-pill alert-danger">In active</span></td>
+                                    <% } %>
+                                    <td class="text-end">
+                                        <a href="/admin/editoffer?editItem=category&offerId=<%= offerCategories[i]._id %>" class="btn btn-md rounded font-sm"><i class="fi fi-rr-edit"></i></a>
+                                        <div class="dropdown">
+                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"><i class="material-icons md-more_horiz"></i> </a>
+                                            <div class="dropdown-menu">
+                                                <% if ( offerCategories[i].is_hide == 0) { %>
+                                                    <a class="dropdown-item text-danger" onclick="switchOfferStatus( '<%= offerCategories[i]._id %>', 'Message')" >De activate</a>
+                                                <% } else { %>
+                                                    <a class="dropdown-item text-success" onclick="switchOfferStatus( '<%= offerCategories[i]._id %>', 'Message')" >Activate</a>
+                                                <% } %>
+                                                <a class="dropdown-item text-danger" onclick="deleteOffer('<%= offerCategories[i]._id %>', 'offerDelete')" >Delete</a>
+                                            </div>
+                                        </div>
+                                        <!-- dropdown //end -->
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <!-- table-responsive //end -->
+        </div>
+        <!-- card-body end// -->
+    </div>
+    <!-- card end// -->
+    <div class="pagination-area mt-15 mb-50">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+                <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                <li class="page-item"><a class="page-link" href="#">02</a></li>
+                <li class="page-item"><a class="page-link" href="#">03</a></li>
+                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                <li class="page-item"><a class="page-link" href="#">16</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>
+<!-- content-main end// -->
+
+<%- include('../adminLayouts/pageFooter.ejs') %>
+
+<script>
+
+    function switchOfferStatus(offerId, message) {
+        
+        fetch('/admin/categoryofferlist', { // Corrected URL to include userId in the route
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ offerId, message }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if(data.message == 'Failed') {
+                console.log('user Not Found')
+            } else {
+                window.location.reload();
+            };
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    };
+
+    function deleteOffer(offerId, message) {
+        // Show a confirmation dialog using SweetAlert
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Once deleted, you will not be able to recover this Offer!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // User confirmed the deletion, proceed with the fetch request
+                fetch('/admin/categoryofferlist', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ offerId, message }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.message === 'Failed') {
+                        console.log('User not found');
+                    } else {
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                // User clicked on "Cancel" or outside the modal
+                Swal.fire('Cancelled', 'The Coupon deletion was cancelled', 'error');
+            }
+        });
+    };
+
+</script>
+
+<%- include('../adminLayouts/footer.ejs') %>

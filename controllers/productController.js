@@ -99,10 +99,18 @@ const insertProduct = async (req, res) => {
             res.render('addProductGeneral',{message: 'Add a Price to the Product', categories: categoryData})
         } else if (req.body.productStock == '') {
             res.render('addProductGeneral',{message: 'Add a Product Stock', categories: categoryData})
+        } else if (req.body.productRam == '') {
+            res.render('addProductGeneral',{message: 'Add the Ram of the device', categories: categoryData})
+        } else if (req.body.productStorage == '') {
+            res.render('addProductGeneral',{message: 'Add the Ram capacity of the device', categories: categoryData})
         } else if (req.body.productStock <= 0) {
             res.render('addProductGeneral',{message: 'Enter a Valid Stock', categories: categoryData});
         } else if (req.body.productPrice <= 0) {
             res.render('addProductGeneral',{message: 'Enter a Valid Price', categories: categoryData});
+        } else if (req.body.productRam <= 0) {
+            res.render('addProductGeneral',{message: 'Enter a Valid Ram', categories: categoryData});
+        } else if (req.body.productStorage <= 0) {
+            res.render('addProductGeneral',{message: 'Enter a Valid Ram', categories: categoryData});
         } else {
             const product = new Product({
                 name: req.body.productName,
@@ -110,6 +118,8 @@ const insertProduct = async (req, res) => {
                 category: req.body.productCategory,
                 price: req.body.productPrice,
                 stock: req.body.productStock,
+                ram: req.body.productRam,
+                storage: req.body.productStorage,
                 product_image: productImages
             });
     
@@ -168,13 +178,21 @@ const updateProduct = async (req, res) => {
             res.render('editProduct',{message: 'Please make an Description for Product', product: product, categories: categoryData});
         } else if (req.body.productPrice == '') {
             res.render('editProduct',{message: 'Add a Price to the Product', product: product, categories: categoryData});
+        } else if (req.body.productRam == '') {
+            res.render('editProduct',{message: 'Add the Ram of the device',product: product, categories: categoryData})
+        } else if (req.body.productStorage == '') {
+            res.render('editProduct',{message: 'Add the Ram capacity of the device',product: product, categories: categoryData})
         } else if (req.body.productStock == '') {
             res.render('editProduct',{message: 'Add a Product Stock', product: product, categories: categoryData});
         } else if (req.body.productStock <= 0) {
             res.render('editProduct',{message: 'Enter a Valid Stock', product: product, categories: categoryData});
         } else if (req.body.productPrice <= 0) {
             res.render('editProduct',{message: 'Enter a Valid Price', product: product, categories: categoryData});
-        } else {
+        } else if (req.body.productRam <= 0) {
+            res.render('editProduct',{message: 'Enter a Valid Ram',product: product, categories: categoryData});
+        } else if (req.body.productStorage <= 0) {
+            res.render('editProduct',{message: 'Enter a Valid Ram',product: product, categories: categoryData});
+        }else {
 
             let productImages = product.product_image; // Initialize with existing images
 
@@ -195,6 +213,8 @@ const updateProduct = async (req, res) => {
                 category: req.body.productCategory,
                 price: req.body.productPrice,
                 stock: req.body.productStock,
+                ram: req.body.productRam,
+                storage: req.body.productStorage,
                 product_image: productImages.length > 0 ? productImages : product.product_image
             };
         
