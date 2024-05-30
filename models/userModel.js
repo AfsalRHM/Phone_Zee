@@ -26,19 +26,23 @@ const userSchema = new mongoose.Schema({
             }
         }
     ],
-    created_at:{
+    created_at: {
         type:Date,
         default: Date.now()
     },
-    is_admin:{
+    address: {
+        type: Number,
+        default: 1
+    },
+    is_admin: {
         type: Number,
         default:0
     },
-    is_verified:{
+    is_verified: {
         type: Number,
         default: 0
     },
-    is_blocked:{
+    is_blocked: {
         type: Number,
         default: 0
     }

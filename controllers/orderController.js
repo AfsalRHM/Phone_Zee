@@ -146,9 +146,11 @@ const placeOrder = async (req, res) => {
         if (!orderExists) {
             const { addressId } = req.body;
 
+            const addressData = await Address.find({user: req.session.user_id});
+
             const order = new Order ({
                 user: req.session.user_id,
-                address: addressId,
+                address: addressData[userData.address]._id,
                 payment_type: 'COD',
                 order_status: 'Pending',    
                 shipping_plan: 'Free-shipping',

@@ -113,7 +113,7 @@ const loadEditAddress =  async (req, res) => {
     };
 };
 
-/*****************      To Load Edit Address Page      *********************/
+/*****************      To Update Address       *********************/
 
 const updateAddress =  async (req, res) => {
     try {
@@ -179,7 +179,7 @@ const updateAddress =  async (req, res) => {
     };
 };
 
-/*****************      To add product to Wishlist     *********************/
+/*****************      To delete a address     *********************/
 
 const deleteAddress = async (req, res, next) => {
     try {
@@ -197,11 +197,48 @@ const deleteAddress = async (req, res, next) => {
     }; 
 };
 
+/*****************      To Cahnge the address     *********************/
+
+const addressChange =  async (req, res, next) => {
+    try {
+        // Use findById to get a single document
+        const userData = await User.findById(req.session.user_id);
+
+        const { addressId } = req.body;
+        const addressData = await Address.find({ user: req.session.user_id });
+
+        let addressFound = false;
+
+        for (let i = 0; i < addressData.length; i++) {
+            if (addressData[i]._id.toString() === addressId) { // Ensure IDs are compared correctly
+                userData.address = i;
+                console.log('Address Match');
+                await userData.save();
+                addressFound = true;
+                break;
+            } else {
+                console.log('Address not found');
+            };
+        };
+
+        if (!addressFound) {
+            return res.status(404).json({ message: 'Address not found' });
+        };
+
+        res.status(200).json({ message: 'Success' });
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ message: 'Server error' });
+    }; 
+};
+
 
 module.exports = {
     loadAddAddress,
     insertAddress,
     loadEditAddress,
     updateAddress,
-    deleteAddress
+    deleteAddress,
+    addressChange
 };

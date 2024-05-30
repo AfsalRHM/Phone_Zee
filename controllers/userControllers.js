@@ -241,13 +241,15 @@ const loadFaq = async (req, res) => {
 const loadCheckout = async (req, res) => {
     try {
 
+        const userData = await User.findOne({_id: req.session.user_id});
+
         const addressData = await Address.find({user: req.session.user_id});
 
         const cartData = await Cart.findOne({user: req.session.user_id}).populate('products.product');
 
         const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
         
-        res.render('checkout', {pageTitle: 'checkout | PhoneZee', loginOrCart: req.session, address: addressData, cartItems: cartData, cartItemsForCartCount: cartDataForCount.products });
+        res.render('checkout', {pageTitle: 'checkout | PhoneZee', loginOrCart: req.session, address: addressData, cartItems: cartData, cartItemsForCartCount: cartDataForCount.products, user: userData });
 
     } catch (error) {
         console.log(error.message);

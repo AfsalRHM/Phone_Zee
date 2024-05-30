@@ -5,6 +5,8 @@
         
         <%- include('../userLayouts/pageHeader.ejs') %>
 
+		<% const addressNumber = user.address %>
+
         <main class="main">
         	<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
         		<div class="container">
@@ -49,10 +51,10 @@
 										<!-- Display default address -->
 										<div class="default-address border rounded border-secondary p-3 mb-1">
 											<p><strong><i>Selected Address</i>:</strong></p>
-											<p><span style="color: #333; font-weight: 500;">Name : </span><span id="selectedAddressName"><%= address[0].name %></span></p>
-											<p><span style="color: #333; font-weight: 500;">Address : </span><span id="selectedAddressPlace"><%= address[0].locality %>, <%= address[0].city %>, <%= address[0].state %></span></p>
-											<p><span style="color: #333; font-weight: 500;">Pin code : </span><span id="selectedAddressPincode"><%= address[0].pincode %></span></p>
-											<p><span style="color: #333; font-weight: 500;">Contact Number : </span><span id="selectedAddressNumber"><%= address[0].mobileNumber %></span></p>
+											<p><span style="color: #333; font-weight: 500;">Name : </span><span id="selectedAddressName"><%= address[addressNumber].name %></span></p>
+											<p><span style="color: #333; font-weight: 500;">Address : </span><span id="selectedAddressPlace"><%= address[addressNumber].locality %>, <%= address[addressNumber].city %>, <%= address[addressNumber].state %></span></p>
+											<p><span style="color: #333; font-weight: 500;">Pin code : </span><span id="selectedAddressPincode"><%= address[addressNumber].pincode %></span></p>
+											<p><span style="color: #333; font-weight: 500;">Contact Number : </span><span id="selectedAddressNumber"><%= address[addressNumber].mobileNumber %></span></p>
 										</div>
 									<% } else if (!address) { %>
 										<div class="default-address border rounded border-secondary p-3 mb-1">
@@ -201,7 +203,7 @@
 		                				</table><!-- End .table table-summary -->
 
 										<% if (address.length != 0) { %>
-											<button type="submit" onclick="placeOrder('<%= address[0]._id %>', 'placeOrder')" class="btn btn-outline-primary-2 btn-order btn-block">
+											<button type="submit" onclick="placeOrder('<%= address[addressNumber]._id %>', 'placeOrder')" class="btn btn-outline-primary-2 btn-order btn-block">
 												<span class="btn-text">Place Order</span>
 												<span class="btn-hover-text">Place Order</span>
 											</button>
@@ -267,14 +269,56 @@
             if (selectedAddress) {
 				const add2 = selectedAddress.value
 				const address1 = JSON.parse(add2);
-                // Pass the selected address back to the main page
-                // You can use any appropriate method here, like setting a hidden input value
-                document.getElementById("selectedAddressName").textContent = address1.name;
-				document.getElementById("selectedAddressPlace").innerHTML = address1.locality + ", " + address1.city + ", " + address1.state;
-				document.getElementById("selectedAddressPincode").innerHTML = address1.pincode;
-				document.getElementById("selectedAddressNumber").innerHTML = address1.mobileNumber;
-				document.getElementById("selectedAddress").value = address1._id;
-                closeModal();
+
+				console.log('Address value - ', address1._id)
+				console.log('user value - ', address1.user)
+
+
+				const addressId = address1._id;
+				const userId = address1.user;
+
+				fetch('/addressChange', { // Corrected URL to include userId in the route
+					method: 'post',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ addressId, userId }),
+				})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Network response was not ok');
+					}
+					return response.json();
+				})
+				.then(data => {
+					if(data.message == 'Failed') {
+						console.log('user Not Found')
+					} else {
+						// Pass the selected address back to the main page
+						// You can use any appropriate method here, like setting a hidden input value
+						document.getElementById("selectedAddressName").textContent = address1.name;
+						document.getElementById("selectedAddressPlace").innerHTML = address1.locality + ", " + address1.city + ", " + address1.state;
+						document.getElementById("selectedAddressPincode").innerHTML = address1.pincode;
+						document.getElementById("selectedAddressNumber").innerHTML = address1.mobileNumber;
+						// document.getElementById("selectedAddress").value = address1._id;
+						closeModal();
+					};
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+
+
+
+
+                // // Pass the selected address back to the main page
+                // // You can use any appropriate method here, like setting a hidden input value
+                // document.getElementById("selectedAddressName").textContent = address1.name;
+				// document.getElementById("selectedAddressPlace").innerHTML = address1.locality + ", " + address1.city + ", " + address1.state;
+				// document.getElementById("selectedAddressPincode").innerHTML = address1.pincode;
+				// document.getElementById("selectedAddressNumber").innerHTML = address1.mobileNumber;
+				// // document.getElementById("selectedAddress").value = address1._id;
+                // closeModal();
             } else {
                 alert("Please select an address.");
             };
