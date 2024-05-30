@@ -132,6 +132,7 @@ user_route.post('/profile', userAuth.isLogin, addressContoller.deleteAddress, or
 user_route.post('/addToCart', userAuth.isLogin, cartController.addToCart);
 user_route.post('/cart', userAuth.isLogin, cartController.deleteProductFromCart, cartController.updateCart);
 user_route.post('/checkout', userAuth.isLogin, couponController.applyCoupon, couponController.removeCoupon, orderController.placeOrder);
+user_route.post('/confirm-payment', userAuth.isLogin, orderController.confirmPayment);
 user_route.post('/addressChange', userAuth.isLogin, addressContoller.addressChange);
 user_route.post('/forgotPassword', otpController.sendOtpForResetPassword);
 user_route.post('/resetPassword', otpController.resetPassword);

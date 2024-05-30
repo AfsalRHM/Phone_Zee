@@ -14,6 +14,10 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    payment_status: {
+        type: String,
+        required: true
+    },
     order_status: {
         type: String,
         required: true

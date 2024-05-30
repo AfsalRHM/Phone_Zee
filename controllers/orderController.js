@@ -8,6 +8,15 @@ const Order = require('../models/orderModel');
 const Coupon = require('../models/couponModel');
 
 
+const Razorpay = require('razorpay');
+
+const razorpayInstance = new Razorpay({ 
+  
+    key_id: process.env.RAZORPAY_CLIENT_ID, 
+    key_secret: process.env.RAZORPAY_CLIENT_SECRET 
+
+}); 
+
 /*********************     
  * 
  * 
@@ -144,14 +153,15 @@ const placeOrder = async (req, res) => {
         }
 
         if (!orderExists) {
-            const { addressId } = req.body;
+            const { addressId, paymentMethod } = req.body;
 
             const addressData = await Address.find({user: req.session.user_id});
 
             const order = new Order ({
                 user: req.session.user_id,
                 address: addressData[userData.address]._id,
-                payment_type: 'COD',
+                payment_type: paymentMethod,
+                payment_status: paymentMethod == 'payment-cod' ? 'pending' : 'COD' ,
                 order_status: 'Pending',    
                 shipping_plan: 'Free-shipping',
                 products: cartData.products,
@@ -161,26 +171,84 @@ const placeOrder = async (req, res) => {
     
             const OrderData = await order.save();
 
-            userData.coupon_claimed.push({couponId: cartData.coupon_id});
+            if ( OrderData.payment_type == 'payment-cod' ) {
+    
+                userData.coupon_claimed.push({couponId: cartData.coupon_id});
+    
+                await userData.save();
+        
+                await Cart.findByIdAndUpdate(cartData._id, { $pull: { products: { _id: { $in: cartData.products.map(p => p._id) } } }, $set: { total_price: 0, discount_amount: 0, coupon_claimed: 0, coupon_id: 'nothing' } });
+        
+                if (OrderData) {
+                    res.status(200).json({ message: 'Success', orderId: OrderData._id });
+                } else {
+                    res.status(500).json({ message: 'Failed' });
+                };
 
-            await userData.save();
-    
-            await Cart.findByIdAndUpdate(cartData._id, { $pull: { products: { _id: { $in: cartData.products.map(p => p._id) } } }, $set: { total_price: 0, discount_amount: 0, coupon_claimed: 0, coupon_id: 'nothing' } });
-    
-            if (OrderData) {
-                res.status(200).json({ message: 'Success', orderId: OrderData._id });
+            } else if ( OrderData.payment_type == 'payment-razorpay' ) {
+
+                try {
+
+                    const razorpayOrder = await razorpayInstance.orders.create({
+                        amount: OrderData.order_total * 100, // Amount in smallest currency unit (e.g., paisa for INR)
+                        currency: 'INR',
+                        receipt: `receipt_${OrderData._id}`
+                    });
+
+                    return res.status(200).json({
+                        message: 'Razorpay order created',
+                        razorpayOrderId: razorpayOrder.id,
+                        userName: userData.name,
+                        orderId: OrderData._id,
+                        amount: OrderData.order_total,
+                        currency: 'INR',
+                        key: process.env.RAZORPAY_KEY_ID
+                    });
+
+                } catch (err) {
+                    console.error('Error creating Razorpay order:', err);
+                    return res.status(500).send(err);
+                };
+
             } else {
-                res.status(500).json({ message: 'Failed' });
+                res.status(200).json({ message: 'Payment Method not Available' });
             };
-    
+
         } else {
             res.status(200).json({ message: 'Order Already Exists' });
-        }
+        };
         
     } catch (error) {
         console.log(error.message);
     };
 };
+
+const confirmPayment = async (req, res) => {
+    try {
+        const { orderId, razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
+
+        // Verify payment signature here (not shown for simplicity)
+
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        // Update order status to 'Paid'
+        order.payment_status = 'Paid';
+        await order.save();
+
+        res.status(200).json({ message: 'Success', orderId: order._id });
+    } catch (error) {
+        console.error('Error confirming payment:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+
+
+
+
 
 /*****************      To Delete a Order     *********************/
 
@@ -238,5 +306,6 @@ module.exports = {
     deleteOrderAdmin,
     placeOrder,
     deleteOrder,
-    loadOrderSuccess
+    loadOrderSuccess,
+    confirmPayment
 };

@@ -83,84 +83,88 @@
 										</div>
 									</div>
 									
-									<h2 class="checkout-title"><u>Payment Details</u></h2><!-- End .checkout-title -->
-									<div class="border rounded p-4 mt-2">
-										<div class="accordion-summary" id="accordion-payment">
-											<div class="card">
-												<div class="card-header" id="heading-1">
-													<h2 class="card-title">
-														<a role="button" data-toggle="collapse" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
-															Cash on delivery
-														</a>
-													</h2>
-												</div><!-- End .card-header -->
-												<div id="collapse-1" class="collapse show" aria-labelledby="heading-1" data-parent="#accordion-payment">
-													<div class="card-body">
-														Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.
-													</div><!-- End .card-body -->
-												</div><!-- End .collapse -->
-											</div><!-- End .card -->
-		
-											<div class="card">
-												<div class="card-header" id="heading-2">
-													<h2 class="card-title">
-														<a class="collapsed" role="button" data-toggle="collapse" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
-															Direct bank transfer
-														</a>
-													</h2>
-												</div><!-- End .card-header -->
-												<div id="collapse-2" class="collapse" aria-labelledby="heading-2" data-parent="#accordion-payment">
-													<div class="card-body">
-														Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account. 
-													</div><!-- End .card-body -->
-												</div><!-- End .collapse -->
-											</div><!-- End .card -->
-		
-											<div class="card">
-												<div class="card-header" id="heading-3">
-													<h2 class="card-title">
-														<a class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
-															Check payments
-														</a>
-													</h2>
-												</div><!-- End .card-header -->
-												<div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
-													<div class="card-body">Quisque volutpat mattis eros. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. 
-													</div><!-- End .card-body -->
-												</div><!-- End .collapse -->
-											</div><!-- End .card -->
-		
-											<div class="card">
-												<div class="card-header" id="heading-4">
-													<h2 class="card-title">
-														<a class="collapsed" role="button" data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
-															PayPal <small class="float-right paypal-link">What is PayPal?</small>
-														</a>
-													</h2>
-												</div><!-- End .card-header -->
-												<div id="collapse-4" class="collapse" aria-labelledby="heading-4" data-parent="#accordion-payment">
-													<div class="card-body">
-														Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum.
-													</div><!-- End .card-body -->
-												</div><!-- End .collapse -->
-											</div><!-- End .card -->
-		
-											<div class="card">
-												<div class="card-header" id="heading-5">
-													<h2 class="card-title">
-														<a class="collapsed" role="button" data-toggle="collapse" href="#collapse-5" aria-expanded="false" aria-controls="collapse-5">
-															Credit Card (Stripe)
-															<img src="assets/images/payments-summary.png" alt="payments cards">
-														</a>
-													</h2>
-												</div><!-- End .card-header -->
-												<div id="collapse-5" class="collapse" aria-labelledby="heading-5" data-parent="#accordion-payment">
-													<div class="card-body"> Donec nec justo eget felis facilisis fermentum.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Lorem ipsum dolor sit ame.
-													</div><!-- End .card-body -->
-												</div><!-- End .collapse -->
-											</div><!-- End .card -->
-										</div><!-- End .accordion -->
-									</div>
+									<div class="checkout-title"><u>Payment Details</u></div>
+								<div class="border rounded p-4 mt-2">
+									<div class="accordion-summary" id="accordion-payment">
+										<div class="card">
+											<div class="card-header" id="heading-1">
+												<h2 class="card-title">
+													<a id="payment-cod" role="button" data-toggle="collapse" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
+														Cash on delivery
+													</a>
+												</h2>
+											</div><!-- End .card-header -->
+											<div id="collapse-1" class="collapse show" aria-labelledby="heading-1" data-parent="#accordion-payment">
+												<div class="card-body">
+													Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.
+												</div><!-- End .card-body -->
+											</div><!-- End .collapse -->
+										</div><!-- End .card -->
+
+										<div class="card">
+											<div class="card-header" id="heading-4">
+												<h2 class="card-title">
+													<a id="payment-razorpay" class="collapsed" role="button" data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
+														Razor pay <small class="float-right paypal-link"></small>
+													</a>
+												</h2>
+											</div><!-- End .card-header -->
+											<div id="collapse-4" class="collapse" aria-labelledby="heading-4" data-parent="#accordion-payment">
+												<div class="card-body">
+													Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum.
+												</div><!-- End .card-body -->
+											</div><!-- End .collapse -->
+										</div><!-- End .card -->
+
+										<div class="card">
+											<div class="card-header" id="heading-2">
+												<h2 class="card-title">
+													<a id="payment-bank" class="collapsed" role="button" data-toggle="collapse" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
+														Direct bank transfer
+													</a>
+												</h2>
+											</div><!-- End .card-header -->
+											<div id="collapse-2" class="collapse" aria-labelledby="heading-2" data-parent="#accordion-payment">
+												<div class="card-body">
+													Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.
+												</div><!-- End .card-body -->
+											</div><!-- End .collapse -->
+										</div><!-- End .card -->
+
+										<div class="card">
+											<div class="card-header" id="heading-3">
+												<h2 class="card-title">
+													<a id="payment-check" class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
+														Check payments
+													</a>
+												</h2>
+											</div><!-- End .card-header -->
+											<div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
+												<div class="card-body">Quisque volutpat mattis eros. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros.
+												</div><!-- End .card-body -->
+											</div><!-- End .collapse -->
+										</div><!-- End .card -->
+
+										<div class="card">
+											<div class="card-header" id="heading-5">
+												<h2 class="card-title">
+													<a id="payment-stripe" class="collapsed" role="button" data-toggle="collapse" href="#collapse-5" aria-expanded="false" aria-controls="collapse-5">
+														Credit Card (Stripe)
+														<img src="assets/images/payments-summary.png" alt="payments cards">
+													</a>
+												</h2>
+											</div><!-- End .card-header -->
+											<div id="collapse-5" class="collapse" aria-labelledby="heading-5" data-parent="#accordion-payment">
+												<div class="card-body"> Donec nec justo eget felis facilisis fermentum.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Lorem ipsum dolor sit ame.
+												</div><!-- End .card-body -->
+											</div><!-- End .collapse -->
+										</div><!-- End .card -->
+									</div><!-- End .accordion -->
+								</div>
+
+								<!-- Hidden field to store selected payment method -->
+								<input type="hidden" id="selected-payment-method" name="selected-payment-method" value="payment-cod">
+
 								</div><!-- End .col-lg-9 -->
 								<aside class="col-lg-3">
 		                			<div class="summary">
@@ -203,7 +207,7 @@
 		                				</table><!-- End .table table-summary -->
 
 										<% if (address.length != 0) { %>
-											<button type="submit" onclick="placeOrder('<%= address[addressNumber]._id %>', 'placeOrder')" class="btn btn-outline-primary-2 btn-order btn-block">
+											<button type="submit" onclick="placeOrder('<%= address[addressNumber]._id %>', 'placeOrder', document.getElementById('selected-payment-method').value )" class="btn btn-outline-primary-2 btn-order btn-block">
 												<span class="btn-text">Place Order</span>
 												<span class="btn-hover-text">Place Order</span>
 											</button>
@@ -255,6 +259,174 @@
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
 
 	<script>
+
+		/*********************     
+		 * 
+		 * 
+		 * 
+		 * 
+		 *   Payment and order Function
+		 * 
+		 * 
+		 * 
+		 * 
+		 *********************/
+
+		let paymentMethod = '';
+
+		document.addEventListener('DOMContentLoaded', function() {
+			const paymentMethods = document.querySelectorAll('#accordion-payment .card-title a');
+			const selectedPaymentInput = document.getElementById('selected-payment-method');
+
+			paymentMethods.forEach(method => {
+				method.addEventListener('click', function() {
+
+					// Get the ID of the selected payment method
+					const selectedMethod = this.id;
+
+					// Update the hidden input field with the selected payment method
+					selectedPaymentInput.value = selectedMethod;
+					paymentMethod = selectedMethod;
+
+				});
+			});
+		});
+
+		function placeOrder (addressId, message, paymentMethod) {
+			fetch('/checkout', { 
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ addressId: addressId, paymentMethod }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+					if (paymentMethod === 'payment-razorpay' && data.razorpayOrderId) {
+						// Initiate Razorpay payment
+						const options = {
+							key: data.key , 
+							amount: data.amount * 100 , // To convert to Paisa
+							currency: data.currency ,
+							name: 'Phone Zee' ,
+							// description: 'Order Payment',
+							order_id: data.razorpayOrderId ,
+							handler: function (response) {
+								// Handle payment success
+								fetch('/confirm-payment', {
+									method: 'post',
+									headers: {
+										'Content-Type': 'application/json'
+									},
+									body: JSON.stringify({
+										orderId: data.orderId,
+										razorpayPaymentId: response.razorpay_payment_id,
+										razorpayOrderId: response.razorpay_order_id,
+										razorpaySignature: response.razorpay_signature
+									})
+								})
+								.then(response => response.json())
+								.then(data => {
+									if (data.message === 'Success') {
+										Swal.fire({
+											icon: 'success',
+											title: 'Order Confirmed!',
+											text: 'Your order has been successfully placed.',
+											confirmButtonText: 'OK'
+										}).then(() => {
+											console.log('Order Confirmed');
+											window.location.href = `/orderSuccess?id=${data.orderId}`;
+										});
+									} else {
+										Swal.fire({
+											icon: 'error',
+											title: 'Payment Failed!',
+											text: 'Your payment was successful but order placement failed. Please contact support.',
+											confirmButtonText: 'OK'
+										});
+									}
+								})
+								.catch(error => {
+									console.error('Error:', error);
+								});
+							},
+							prefill: {
+								name: "Afsal",
+								email: "email@example.com",
+								contact: "9876543210"
+							},
+							theme: {
+								color: "#3399cc"
+							}
+						};
+						const rzp1 = new Razorpay(options);
+						rzp1.on('payment.failed', function (response) {
+							console.error(response.error);
+							Swal.fire({
+								icon: 'error',
+								title: 'Payment Failed!',
+								text: 'There was an issue with your payment. Please try again.',
+								confirmButtonText: 'OK'
+							});
+						});
+						rzp1.open();
+					} else  if(data.message == 'Success') {
+                        Swal.fire({
+							icon: 'success',
+							title: 'Order Confirmed!',
+							text: 'Your order has been successfully placed.',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							console.log('Order Confirmed');
+							console.log(data.orderId);
+							window.location.href = `/orderSuccess?id=${data.orderId}`;
+						});
+                    } else if (data.message == 'Order Already Exists') {
+                        Swal.fire({
+							icon: 'error',
+							title: 'Order Cancelled!',
+							text: 'Order Already Exists.',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							console.log('Order Failed');
+							window.location.href = '/checkout';
+						});
+                    } else if (data.message == 'Payment Method not Available') {
+                        Swal.fire({
+							icon: 'error',
+							title: 'Payment Method unAvailable',
+							text: 'Choose another payment gateway',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							console.log('Payment Failed');
+						});
+                    } else {
+                        window.location.reload();
+                    };
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+		};
+
+
+			/*********************     
+			 * 
+			 * 
+			 * 
+			 * 
+			 *   Other functions
+			 * 
+			 * 
+			 * 
+			 * 
+			 *********************/
+
 
 		var modal = document.getElementById("myModal");
 
@@ -341,50 +513,7 @@
             };
         };
 
-		function placeOrder (addressId) {
-			fetch('/checkout', { 
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ addressId: addressId }),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if(data.message == 'Success') {
-                        Swal.fire({
-							icon: 'success',
-							title: 'Order Confirmed!',
-							text: 'Your order has been successfully placed.',
-							confirmButtonText: 'OK'
-						}).then(() => {
-							console.log('Order Confirmed');
-							console.log(data.orderId);
-							window.location.href = `/orderSuccess?id=${data.orderId}`;
-						});
-                    } else if (data.message == 'Order Already Exists') {
-                        Swal.fire({
-							icon: 'failed',
-							title: 'Order Cancelled!',
-							text: 'Order Already Exists.',
-							confirmButtonText: 'OK'
-						}).then(() => {
-							console.log('Order Failed');
-							window.location.href = '/checkout';
-						});
-                    } else {
-                        window.location.reload();
-                    };
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-		};
+		
 		
 		//
 		//
