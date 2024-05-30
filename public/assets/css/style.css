@@ -15885,7 +15885,7 @@ button:focus {
 }
 
 .summary {
-    padding: 2.5rem 3rem 3rem;
+    padding: 2rem 2rem 2rem;
     border: .1rem dashed #d7d7d7;
     background-color: #f9f9f9;
     border-radius: .3rem;
@@ -20127,4 +20127,9 @@ button:focus {
 
 .remove-coupon-btn:hover {
     background-color: #c9344b;
+}
+
+.offer-label {
+    font-size: 15px;
+    color: rgb(239, 131, 123);
 }

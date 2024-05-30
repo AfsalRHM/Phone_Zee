@@ -17,6 +17,7 @@
                                 <p style="color: red;" class="d-inline-flex p-2 " ><%= editOfferMessage %>*</p>
                             <% } %>
                             <input type="hidden" name="item" value="product">
+                            <input type="hidden" name="oldItemName" value="<%= offerData.item_Id.name %>">
                             <div class="mb-4">
                                 <label for="productName" class="form-label">Product Name</label>
                                 <select class="form-select" name="itemName">
@@ -41,6 +42,7 @@
                                 <p style="color: red;" class="d-inline-flex p-2 " ><%= editOfferMessage %>*</p>
                             <% } %>
                             <input type="hidden" name="item" value="category">
+                            <input type="hidden" name="oldItemName" value="<%= offerData.item_Id.name %>">
                             <div class="mb-4">
                                 <label for="categoryName" class="form-label">Category Name</label>
                                 <p><%= offerData.item_Id.name %></p>

@@ -97,7 +97,7 @@ const createOffer = async (req, res) => {
                 });
 
                 product.offer = 1;
-                product.salePrice = Math.ceil(product.price / percentageOffer) * 100;
+                product.salePrice = Math.ceil(product.price - (product.price * (percentageOffer / 100)))
 
                 await product.save();
 
@@ -197,7 +197,7 @@ const updateOffer = async (req, res) => {
 
         const { editItem, offerId } = req.query;
 
-        const { item, itemName, percentageOffer } = req.body;
+        const { item, itemName, percentageOffer, oldItemName } = req.body;
 
         if (item == 'product') {
 
@@ -206,6 +206,8 @@ const updateOffer = async (req, res) => {
             const productData = await Product.find();
 
             const product = await Product.findOne({name: itemName});
+
+            const oldProduct = await Product.findOne({name: oldItemName});
 
             const offerExist = await Offer.findOne({item_Id: product._id});
 
@@ -223,6 +225,19 @@ const updateOffer = async (req, res) => {
                 offerData.offer_percentage = percentageOffer;
 
                 const offerDataSaved = await offerData.save();
+
+                if ( oldProduct.name == itemName ) {
+                    oldProduct.offer = 1; 
+                } else {
+                    oldProduct.offer = 0;
+                    oldProduct.salePrice = 0;
+                    product.offer = 1;
+                };
+
+                product.salePrice = Math.ceil(product.price - (product.price * (percentageOffer / 100)));
+
+                await oldProduct.save();
+                await product.save();
 
                 if (offerDataSaved) {
 
@@ -242,6 +257,8 @@ const updateOffer = async (req, res) => {
 
             const category = await Category.findOne({name: itemName});
 
+            const oldCategory = await Category.findOne({name: oldItemName});
+
             const offerExist = await Offer.findOne({item_Id: category._id});
 
             if (offerExist && offerExist.offer_percentage == percentageOffer) {
@@ -256,6 +273,16 @@ const updateOffer = async (req, res) => {
 
                 offerData.item_Id = category._id;
                 offerData.offer_percentage = percentageOffer;
+
+                if ( oldCategory.name == itemName ) {
+                    oldCategory.offer = 1
+                } else {
+                    oldCategory.offer = 0
+                    category.offer = 1
+                };
+
+                await oldCategory.save();
+                await category.save();
 
                 const offerDataSaved = await offerData.save();
 
@@ -283,6 +310,8 @@ const switchProductOfferStatus = async (req, res, next) => {
         const { offerId, message } = req.body;
         const offer = await Offer.findById(offerId);
 
+        const product = await Product.findById( offer.item_Id );
+
         if (message == 'offerDelete') {
             return next();
         };
@@ -290,6 +319,15 @@ const switchProductOfferStatus = async (req, res, next) => {
         // Toggle the is_hide field
 
         offer.is_hide = offer.is_hide === 1 ? 0 : 1;
+        if (offer.is_hide == 1) {
+            product.offer = 0;
+            product.salePrice = 0;
+        } else {
+            product.offer = 1;
+            product.salePrice = Math.ceil(product.price - (product.price * (offer.offer_percentage / 100))) ;
+        }
+
+        await product.save();
         await offer.save();
 
         res.status(200).json({ message: 'Success' });

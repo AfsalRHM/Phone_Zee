@@ -75,9 +75,17 @@
                                         <a class="ratings-text" href="#product-review-link" id="review-link">( 2 Reviews )</a>
                                     </div><!-- End .rating-container -->
 
-                                    <div class="product-price">
-                                        ₹ <%= product.price %>.00
-                                    </div><!-- End .product-price -->
+                                    <% if ( product.offer !== 0 ) { %>
+                                        <div class="product-price">
+                                            <span class="new-price">₹ <%= product.salePrice %></span>
+                                            <span class="old-price" style="text-decoration: line-through;">₹ <%= product.price %></span>
+                                            <span class="offer-label label-sale">(<%= offerData.offer_percentage %>%off)</span>
+                                        </div><!-- End .product-price -->
+                                    <% } else { %>
+                                        <div class="product-price">
+                                            ₹ <%= product.price %>.00
+                                        </div><!-- End .product-price -->
+                                    <% } %>
 
                                     <div class="product-content">
                                         <p><%= product.description %>. </p>

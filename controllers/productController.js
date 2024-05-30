@@ -5,6 +5,7 @@ const Address = require('../models/addressModel');
 const Wishlist = require('../models/wishlistModel');
 const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
+const Offer = require('../models/offerModel');
 
 
 /*********************     
@@ -251,11 +252,12 @@ const loadProduct = async (req, res) => {
         const productData = await Product.findOne({_id: id});
         const relatedProductData = await Product.find({_id: {$ne: id} ,category: productData.category});
         const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
+        const offerData = await Offer.findOne({item_Id: id, is_hide: 0});
 
         if (cartDataForCount == null) {
-            res.render('product', {pageTitle: 'product | PhoneZee', loginOrCart: req.session, product: productData, relatedProducts: relatedProductData, imagePos: imagePosition, cartItemsForCartCount: cartDataForCount });
+            res.render('product', {pageTitle: 'product | PhoneZee', loginOrCart: req.session, product: productData, relatedProducts: relatedProductData, imagePos: imagePosition, cartItemsForCartCount: cartDataForCount, offerData });
         } else {
-            res.render('product', {pageTitle: 'product | PhoneZee', loginOrCart: req.session, product: productData, relatedProducts: relatedProductData, imagePos: imagePosition, cartItemsForCartCount: cartDataForCount.products });
+            res.render('product', {pageTitle: 'product | PhoneZee', loginOrCart: req.session, product: productData, relatedProducts: relatedProductData, imagePos: imagePosition, cartItemsForCartCount: cartDataForCount.products, offerData });
         };
 
     } catch (error) {

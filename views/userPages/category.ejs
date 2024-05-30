@@ -65,12 +65,18 @@
 
                     <div class="products">
                         <div class="row">
-                            <% if (product.length > 0) {
-                                for (let i = 0; i < product.length; i++) { %>
+                            <% if (product.length > 0) { %>
+                                <% const fourDaysAgo = new Date(new Date().getTime() - 4 * 24 * 60 * 60 * 1000); %>
+                                <% for (let i = 0; i < product.length; i++) { %>
                             <div class="col-6 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
                                 <div class="product">
                                     <figure class="product-media">
-                                        <span class="product-label label-new">New</span>
+                                        <% if ( new Date(product[i].created_at) >= fourDaysAgo ) { %>
+                                            <span class="product-label label-new">New</span>
+                                        <% } %>
+                                        <% if ( product[i].offer !== 0 ) { %>
+                                            <span class="product-label label-sale">30% off</span>
+                                        <% } %>
                                         <a href="/product?id=<%= product[i]._id %>&photoNumber=0">
                                             <img src="/assets/images/productImages/<%=product[i].product_image[0] %>" alt="Product image" class="product-image">
                                         </a>
@@ -91,9 +97,16 @@
                                             <a href="#"><%= product[i].category %></a>
                                         </div><!-- End .product-cat -->
                                         <h3 class="product-title"><a href="/product"><%= product[i].name %></a></h3><!-- End .product-title -->
-                                        <div class="product-price">
-                                            ₹ <%= product[i].price %>
-                                        </div><!-- End .product-price -->
+                                        <% if ( product[i].offer !== 0 ) { %>
+                                            <div class="product-price">
+                                                <span class="new-price">₹ <%= product[i].salePrice %></span>
+                                                <span class="old-price" style="text-decoration: line-through;">₹ <%= product[i].price %></span>
+                                            </div><!-- End .product-price -->
+                                        <% } else { %>
+                                            <div class="product-price">
+                                                ₹ <%= product[i].price %>
+                                            </div><!-- End .product-price -->
+                                        <% } %>
                                         <div class="ratings-container">
                                             <div class="ratings">
                                                 <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->

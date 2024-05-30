@@ -28,8 +28,6 @@ const loadCart = async (req, res) => {
             };
         };
 
-        console.log(cartData)
-
         if (cartDataForCount == null) {
             res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session, cartItems: cartData, cartTotalPrice: cartTotalPrice, cartItemsForCartCount: cartDataForCount })
         } else {
@@ -67,28 +65,60 @@ const addToCart = async (req, res) => {
                 } else {
     
                     if (!qty) {
-    
-                        const cart = new Cart({
-                            user: req.session.user_id,
-                            products: [{product: productId, quantity: 1, product_total: product.price}],
-                            total_price: product.price
-                        });
-    
-                        await cart.save();
+
+                        if (product.offer !== 0) {
+
+                            const cart = new Cart({
+                                user: req.session.user_id,
+                                products: [{product: productId, quantity: 1, product_total: product.salePrice}],
+                                total_price: product.salePrice
+                            });
+
+                            await cart.save();
             
-                        res.status(200).json({ message: 'Success' });
+                            res.status(200).json({ message: 'Success' });
+
+                        } else {
+
+                            const cart = new Cart({
+                                user: req.session.user_id,
+                                products: [{product: productId, quantity: 1, product_total: product.price}],
+                                total_price: product.price
+                            });
+
+                            await cart.save();
+            
+                            res.status(200).json({ message: 'Success' });
+
+                        };
     
                     } else {
-    
-                        const cart = new Cart({
-                            user: req.session.user_id,
-                            products: [{product: productId, quantity: qty, product_total: qty * product.price}],
-                            total_price: qty * product.price
-                        });
-                
-                        await cart.save();
-                
-                        res.status(200).json({ message: 'Success' });
+
+                        if (product.offer !== 0) {
+
+                            const cart = new Cart({
+                                user: req.session.user_id,
+                                products: [{product: productId, quantity: qty, product_total: qty * product.salePrice}],
+                                total_price: qty * product.salePrice
+                            });
+                    
+                            await cart.save();
+                    
+                            res.status(200).json({ message: 'Success' });
+
+                        } else {
+
+                            const cart = new Cart({
+                                user: req.session.user_id,
+                                products: [{product: productId, quantity: qty, product_total: qty * product.price}],
+                                total_price: qty * product.price
+                            });
+                    
+                            await cart.save();
+                    
+                            res.status(200).json({ message: 'Success' });
+
+                        };
     
                     };
     
@@ -105,35 +135,77 @@ const addToCart = async (req, res) => {
                     } else {
         
                         if (!qty) {
+
+                            if (product.offer !== 0) {
+
+                                const productTotal = product.salePrice * 1;
     
-                            const productTotal = product.price * 1;
+                                existingCart.products.push({ product: productId, quantity: 1, product_total: productTotal });
+        
+                                existingCart.total_price += productTotal;
+        
+                                await existingCart.save();
+                    
+                                res.status(200).json({ message: 'Success' });
     
-                            existingCart.products.push({ product: productId, quantity: 1, product_total: productTotal });
+                            } else {
     
-                            existingCart.total_price += productTotal;
+                                const productTotal = product.price * 1;
     
-                            await existingCart.save();
+                                existingCart.products.push({ product: productId, quantity: 1, product_total: productTotal });
+        
+                                existingCart.total_price += productTotal;
+        
+                                await existingCart.save();
+                    
+                                res.status(200).json({ message: 'Success' });
+    
+                            };
+    
+                            // const productTotal = product.price * 1;
+    
+                            // existingCart.products.push({ product: productId, quantity: 1, product_total: productTotal });
+    
+                            // existingCart.total_price += productTotal;
+    
+                            // await existingCart.save();
                 
-                            res.status(200).json({ message: 'Success' });
+                            // res.status(200).json({ message: 'Success' });
         
                         } else {
-                    
-                            const productTotal = product.price * qty;
+
+                            if (product.offer !== 0) {
+
+                                const productTotal = product.salePrice * qty;
     
-                            existingCart.products.push({ product: productId, quantity: qty, product_total: productTotal });
-    
-                            existingCart.total_price += productTotal;
+                                existingCart.products.push({ product: productId, quantity: qty, product_total: productTotal });
         
-                            await existingCart.save();
-                
-                            res.status(200).json({ message: 'Success' });
+                                existingCart.total_price += productTotal;
+            
+                                await existingCart.save();
+                    
+                                res.status(200).json({ message: 'Success' });
+    
+                            } else {
+    
+                                const productTotal = product.price * qty;
+    
+                                existingCart.products.push({ product: productId, quantity: qty, product_total: productTotal });
+        
+                                existingCart.total_price += productTotal;
+            
+                                await existingCart.save();
+                    
+                                res.status(200).json({ message: 'Success' });
+    
+                            };
         
                         };
                     };
     
                 } else {
                     res.status(200).json({ message: 'Already Exists' });
-                }
+                };
                 
             };
 
@@ -179,24 +251,45 @@ const deleteProductFromCart = async (req, res, next) => {
 const updateCart =  async (req, res) => {
     try {
 
+        let TotalPrice = 0;
+
         const { cartItemId, newQuantity } = req.body;
         
         const cartData = await Cart.findOne({user: req.session.user_id}).populate('products.product');
 
         const productToUpdate = cartData.products.find(product => product.product._id.equals(cartItemId));
 
-        const TotalPrice = productToUpdate.product.price * newQuantity; 
+        if (productToUpdate.product.offer == 1) {
 
-        productToUpdate.quantity = newQuantity;
-        productToUpdate.product_total = TotalPrice;
+            TotalPrice = productToUpdate.product.salePrice * newQuantity; 
 
-        const cartTotal = cartData.products.reduce((total, product) => total + product.product_total, 0);
+            productToUpdate.quantity = newQuantity;
+            productToUpdate.product_total = TotalPrice;
 
-        cartData.total_price = cartTotal;
+            const cartTotal = cartData.products.reduce((total, product) => total + product.product_total, 0);
 
-        await cartData.save();
-        
-        res.status(200).json({ message: 'Success', totalPrice: TotalPrice, cartTotal:  cartTotal });
+            cartData.total_price = cartTotal;
+
+            await cartData.save();
+            
+            res.status(200).json({ message: 'Success', totalPrice: TotalPrice, cartTotal:  cartTotal });
+
+        } else if (productToUpdate.product.offer == 0) {
+
+            TotalPrice = productToUpdate.product.price * newQuantity; 
+
+            productToUpdate.quantity = newQuantity;
+            productToUpdate.product_total = TotalPrice;
+
+            const cartTotal = cartData.products.reduce((total, product) => total + product.product_total, 0);
+
+            cartData.total_price = cartTotal;
+
+            await cartData.save();
+            
+            res.status(200).json({ message: 'Success', totalPrice: TotalPrice, cartTotal:  cartTotal });
+
+        };
 
     } catch (error) {
         console.log(error.message);

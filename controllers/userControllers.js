@@ -5,6 +5,7 @@ const Address = require('../models/addressModel');
 const Wishlist = require('../models/wishlistModel');
 const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
+const Offer = require('../models/offerModel');
 
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer');
