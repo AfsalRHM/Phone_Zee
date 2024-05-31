@@ -127,7 +127,11 @@
                                     </div><!-- End .details-filter-row -->
 
                                     <div class="product-details-action">
-                                        <button class="btn-product btn-cart" onclick="productAddToCart('<%= product._id %>', document.getElementById('qty').value)"><span>add to cart</span></button>
+                                        <% if (product.stock == 0) { %>
+                                            <button onclick="productAddToCart('<%= product._id %>', document.getElementById('qty').value)" class="disabled-button" disabled><span>add to cart</span></button>
+                                        <% } else { %>
+                                            <button class="btn-product btn-cart" onclick="productAddToCart('<%= product._id %>', document.getElementById('qty').value)"><span>add to cart</span></button>
+                                        <% } %>
 
                                         <div class="details-action-wrapper" >
                                             <button class="btn-product btn-wishlist px-5 py-2 border border-primary" style="text-decoration: none;" title="Wishlist" onclick="productAddToWishlist('<%= product._id %>')" ><span>Add to Wishlist</span></button>

@@ -17,17 +17,23 @@
                                 <span> <i class="material-icons md-calendar_today"></i> <b>Wed, Aug 13, 2020, 4:34PM</b> </span> <br />
                                 <small class="text-muted">Order ID: 3453012</small>
                             </div>
-                            <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                                <select id="orderStatus" onchange="updateOrderStatus('<%= orderData._id %>', this.value)" class="form-select d-inline-block mb-lg-0 mr-5 mw-200">
-                                    <option value="pending" ><%= orderData.order_status %></option>
-                                    <option value="paymentDelay" >Awaiting payment</option>
-                                    <option value="confirmed" >Confirmed</option>
-                                    <option value="shipped" >Shipped</option>
-                                    <option value="delivered" >Delivered</option>   
-                                </select>
-                                <a class="btn btn-danger" onclick="updateOrderStatus('<%= orderData._id %>', 'cancelOrder')" >Cancel Order</a>
-                                <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
-                            </div>
+                            <% if ( orderData.order_status != 'cancelOrder' ) { %>
+                                <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                                    <select id="orderStatus" onchange="updateOrderStatus('<%= orderData._id %>', this.value)" class="form-select d-inline-block mb-lg-0 mr-5 mw-200">
+                                        <option value="pending" <%= orderData.order_status == "Pending" ? "selected" : "" %> >Pending</option>
+                                        <option value="confirmed" <%= orderData.order_status == "Confirmed" ? "selected" : "" %> >Confirmed</option>
+                                        <option value="shipped" <%= orderData.order_status == "Shipped" ? "selected" : "" %> >Shipped</option>
+                                        <option value="delivered" <%= orderData.order_status == "Delivered" ? "selected" : "" %> >Delivered</option>   
+                                    </select>
+
+                                    <a class="btn btn-danger" onclick="cancelOrder('<%= orderData._id %>')" >Cancel Order</a>
+                                    <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
+                                </div>
+                            <% } else { %>
+                                <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                                    <span>Order Status : <span>Order Cancelled</span></span>
+                                </div>
+                            <% } %>
                         </div>
                     </header>
                     <!-- card-header end// -->
@@ -233,6 +239,60 @@
                     })
                     .catch(error => {
                         console.error('Error:', error);
+                    });
+                };
+
+
+
+                function cancelOrder(OrderId) {
+                    console.log('Here in admin cancelOrder ')
+                    Swal.fire({
+                        title: 'Are you sure you want to cannsel this order?',
+                        text: 'Once cancelled, you will not be able to recover it!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, cancel it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            console.log('Here in admin cancelOrder - confirmed', OrderId)
+                            fetch('/admin/cancelOrderAdmin', {
+                                method: 'post',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ OrderId: OrderId }),
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if(data.message == 'Success') {
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: 'Order has been deleted successfully.',
+                                        icon: 'success'
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'Failed to delete order.',
+                                        icon: 'error'
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                };
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                        };
                     });
                 };
         

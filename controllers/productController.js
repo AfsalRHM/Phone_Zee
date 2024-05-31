@@ -112,6 +112,8 @@ const insertProduct = async (req, res) => {
             res.render('addProductGeneral',{message: 'Enter a Valid Ram', categories: categoryData});
         } else if (req.body.productStorage <= 0) {
             res.render('addProductGeneral',{message: 'Enter a Valid Ram', categories: categoryData});
+        } else if (req.body.productCategory == 'select category') {
+            res.render('addProductGeneral',{message: 'Please select a category', categories: categoryData});
         } else {
             const product = new Product({
                 name: req.body.productName,

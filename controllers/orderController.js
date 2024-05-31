@@ -63,8 +63,8 @@ const loadOrderDetail = async (req, res) => {
 const updateOrderStatus = async (req, res) => {
     try {
 
-        const { orderId, updatingStatus } = req.body
-        const orderData = await Order.findOne(orderId);
+        const { orderDataId, updatingStatus } = req.body
+        const orderData = await Order.findOne({_id: orderDataId});
 
         if (!orderData) {
             return res.status(404).json({ message: 'Failed' });
@@ -72,17 +72,15 @@ const updateOrderStatus = async (req, res) => {
 
         // Toggle the is_blocked field
         // user.is_blocked = user.is_blocked === 0 ? 1 : 0;
-        if (updatingStatus == 'paymentDelay') {
-            orderData.order_status = 'paymentDelay';
-        } else if (updatingStatus == 'confirmed') {
-            orderData.order_status = 'confirmed';
+        if (updatingStatus == 'confirmed') {
+            orderData.order_status = 'Confirmed';
         } else if (updatingStatus == 'shipped') {
-            orderData.order_status = 'shipped';
+            orderData.order_status = 'Shipped';
         } else if (updatingStatus == 'delivered') {
-            orderData.order_status = 'delivered';
-        } else if (updatingStatus == 'cancelOrder') {
-            orderData.order_status = 'cancelOrder';
-        }
+            orderData.order_status = 'Delivered';   
+        } else if (updatingStatus == 'pending') {
+            orderData.order_status = 'Pending';
+        };
 
         await orderData.save();
 
@@ -95,17 +93,23 @@ const updateOrderStatus = async (req, res) => {
 
 /*****************      To Delete the Order     *********************/
 
-const deleteOrderAdmin = async (req, res) => {
+const cancelOrderAdmin = async (req, res) => {
     try {
 
-        const { orderId } = req.body;
+        const { OrderId } = req.body;
 
-        const orderDeletionData = await Order.deleteOne({ _id: orderId });
+        const orderData = await Order.findOne({_id: OrderId});
 
-        if (orderDeletionData) {
+        if ( orderData ) {
+
+            orderData.order_status = 'cancelOrder';
+
+            await orderData.save();
+
             res.status(200).json({ message: 'Success' });
+
         } else {
-            res.status(500).json({ message: 'Failed' });
+            res.status(500).json({ message: 'Order Not Found' });
         }
         
     } catch (error) {
@@ -252,7 +256,7 @@ const confirmPayment = async (req, res) => {
 
 /*****************      To Delete a Order     *********************/
 
-const deleteOrder = async (req, res) => {
+const cancelOrder = async (req, res) => {
     try {
 
         const { OrderId } = req.body;
@@ -261,7 +265,10 @@ const deleteOrder = async (req, res) => {
 
         if ( orderData ) {
 
-            await Order.deleteOne({_id: OrderId});
+            orderData.order_status = 'cancelOrder';
+
+            await orderData.save();
+
             res.status(200).json({ message: 'Success' });
 
         } else {
@@ -303,9 +310,9 @@ module.exports = {
     loadOrderList,
     loadOrderDetail,
     updateOrderStatus,
-    deleteOrderAdmin,
+    cancelOrderAdmin,
     placeOrder,
-    deleteOrder,
+    cancelOrder,
     loadOrderSuccess,
     confirmPayment
 };

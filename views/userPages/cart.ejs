@@ -126,15 +126,9 @@
                                                         <td class="price-col">₹ <%= cartItems.products[i].product.price %></td>
                                                     <% } %>
                                                     <td class="quantity-col">
-                                                        <% if (cartItems.products[i].product.stock < 5) { %>
-                                                            <div class="cart-product-quantity">
-                                                                <input data-cart-item-id="<%= cartItems.products[i]._id %>" type="number" class="form-control" value="<%= cartItems.products[i].quantity %>" min="1" max="<%= cartItems.products[i].product.stock %>" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems.products[i].product._id %>', this.value, '<%= cartItems.products[i].product._id %>')">
-                                                            </div><!-- End .cart-product-quantity -->
-                                                        <% } else { %>
-                                                            <div class="cart-product-quantity">
-                                                                <input data-cart-item-id="<%= cartItems.products[i]._id %>"  type="number" class="form-control" value="<%= cartItems.products[i].quantity %>" min="1" max="5" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems.products[i].product._id %>', this.value, '<%= cartItems.products[i].product._id %>')">
-                                                            </div><!-- End .cart-product-quantity -->
-                                                        <% } %>
+                                                        <div class="cart-product-quantity">
+                                                            <input data-cart-item-id="<%= cartItems.products[i]._id %>"  type="number" class="form-control" value="<%= cartItems.products[i].quantity %>" min="1" max="5" step="1" data-decimals="0" onchange="updateCartItem('<%= cartItems.products[i].product._id %>', this.value, '<%= cartItems.products[i].product._id %>')" onfocus="this.dataset.prevValue = this.value">
+                                                        </div><!-- End .cart-product-quantity -->
                                                     </td>
                                                     <% if (cartItems.products[i].product.offer !== 0) { %>
                                                         <td class="total-col" data-subtotal-id="<%= cartItems.products[i].product._id %>" >₹ <%= cartItems.products[i].product.salePrice * cartItems.products[i].quantity %></td>
@@ -333,6 +327,9 @@
                 });
         };
 
+
+        // To update the cart when quantity chage
+
         function updateCartItem(cartItemId, newQuantity, cartTotalId) {
             fetch('/cart', {
                 method: 'POST',
@@ -349,26 +346,40 @@
                 return response.json();
             })
             .then(data => {
-                // Update the quantity in the UI without reloading the page
-                const quantityInput = document.querySelector(`input[data-cart-item-id="${cartItemId}"]`);
-                if (quantityInput) {
-                    quantityInput.value = newQuantity;
-                }
 
-                const subtotalCell = document.querySelector(`td[data-subtotal-id="${cartItemId}"]`);
-                if (subtotalCell) {
-                    subtotalCell.textContent = `₹ ${data.totalPrice}`;
-                }
+                if (data.message == 'out of stock' ) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Out of Stock',
+                        text: 'The item you are trying to add is currently out of stock.',
+                        confirmButtonText: 'Okay'
+                    }).then(() => {
+                        // Reload the page after the user clicks "Okay"
+                        location.reload();
+                    });
+                } else if (data.message == 'Success' ) {
+                    // Update the quantity in the UI without reloading the page
+                    const quantityInput = document.querySelector(`input[data-cart-item-id="${cartItemId}"]`);
+                    if (quantityInput) {
+                        quantityInput.value = newQuantity;
+                    }
 
-                const cartTotal = document.querySelector(`td[data-subtotal-cartTotal-id="idForUpdatingThePriceBeforeSelectingShipping"]`);
-                if (cartTotal) {
-                    cartTotal.textContent = `₹ ${data.cartTotal}.00`;
+                    const subtotalCell = document.querySelector(`td[data-subtotal-id="${cartItemId}"]`);
+                    if (subtotalCell) {
+                        subtotalCell.textContent = `₹ ${data.totalPrice}`;
+                    }
+
+                    const cartTotal = document.querySelector(`td[data-subtotal-cartTotal-id="idForUpdatingThePriceBeforeSelectingShipping"]`);
+                    if (cartTotal) {
+                        cartTotal.textContent = `₹ ${data.cartTotal}.00`;
+                    }
+                    
+                    const total = document.querySelector(`td[data-total-id="${cartItemId}"]`);
+                    if (total) {
+                        total.textContent = `₹ ${data.totalPrice}.00`;
+                    }
                 }
                 
-                const total = document.querySelector(`td[data-total-id="${cartItemId}"]`);
-                if (total) {
-                    total.textContent = `₹ ${data.totalPrice}.00`;
-                }
             })
             .catch(error => {
                 console.error('Error:', error);

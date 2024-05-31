@@ -263,31 +263,43 @@ const updateCart =  async (req, res) => {
 
             TotalPrice = productToUpdate.product.salePrice * newQuantity; 
 
-            productToUpdate.quantity = newQuantity;
-            productToUpdate.product_total = TotalPrice;
+            if (newQuantity > productToUpdate.product.stock ) {
+                res.status(200).json({ message: 'out of stock'});
+            } else {
 
-            const cartTotal = cartData.products.reduce((total, product) => total + product.product_total, 0);
+                productToUpdate.quantity = newQuantity;
+                productToUpdate.product_total = TotalPrice;
+    
+                const cartTotal = cartData.products.reduce((total, product) => total + product.product_total, 0);
+    
+                cartData.total_price = cartTotal;
+    
+                await cartData.save();
+                
+                res.status(200).json({ message: 'Success', totalPrice: TotalPrice, cartTotal:  cartTotal });
 
-            cartData.total_price = cartTotal;
-
-            await cartData.save();
-            
-            res.status(200).json({ message: 'Success', totalPrice: TotalPrice, cartTotal:  cartTotal });
+            };
 
         } else if (productToUpdate.product.offer == 0) {
 
             TotalPrice = productToUpdate.product.price * newQuantity; 
 
-            productToUpdate.quantity = newQuantity;
-            productToUpdate.product_total = TotalPrice;
+            if (newQuantity > productToUpdate.product.stock ) {
+                res.status(200).json({ message: 'out of stock' , quantity: productToUpdate.quantity});
+            } else {
 
-            const cartTotal = cartData.products.reduce((total, product) => total + product.product_total, 0);
+                productToUpdate.quantity = newQuantity;
+                productToUpdate.product_total = TotalPrice;
 
-            cartData.total_price = cartTotal;
+                const cartTotal = cartData.products.reduce((total, product) => total + product.product_total, 0);
 
-            await cartData.save();
-            
-            res.status(200).json({ message: 'Success', totalPrice: TotalPrice, cartTotal:  cartTotal });
+                cartData.total_price = cartTotal;
+
+                await cartData.save();
+                
+                res.status(200).json({ message: 'Success', totalPrice: TotalPrice, cartTotal:  cartTotal });
+
+            }
 
         };
 

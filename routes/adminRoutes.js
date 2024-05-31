@@ -78,7 +78,8 @@ admin_route.post('/addproduct', adminAuth.isLogin, upload.array('image_1', 4), p
 admin_route.post('/productlist', adminAuth.isLogin, productController.activeOrInactive2);
 admin_route.post('/editproduct', adminAuth.isLogin, upload.array('image_1', 4), productController.updateProduct);
 admin_route.post('/orderdetail', adminAuth.isLogin, orderController.updateOrderStatus);
-admin_route.post('/orderlist', adminAuth.isLogin, orderController.deleteOrder);
+admin_route.post('/cancelOrderAdmin', adminAuth.isLogin, orderController.cancelOrderAdmin);
+admin_route.post('/orderlist', adminAuth.isLogin, orderController.cancelOrder);
 admin_route.post('/couponlist', adminAuth.isLogin, couponController.couponStatusChange, couponController.deleteCoupon);
 admin_route.post('/addCoupon', adminAuth.isLogin, couponController.insertCoupon);
 admin_route.post('/editcoupon', adminAuth.isLogin, couponController.updateCoupon);

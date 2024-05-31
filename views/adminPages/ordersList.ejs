@@ -68,7 +68,7 @@
                                                 <% } else if ( orders[i].order_status == 'cancelOrder') { %>  
                                                         <td><span class="badge rounded-pill alert-danger">Order Cancelled</span></td>
                                                 <% } else { %>
-                                                    <td><span class="badge rounded-pill alert-success"><%= orders[i].order_status %></span></td>
+                                                    <td><span class="badge rounded-pill alert-info"><%= orders[i].order_status %></span></td>
                                                 <% } %>
                                                 <td><%= orders[i].created_at.getDate() %>.<%= orders[i].created_at.getMonth() %>.<%= orders[i].created_at.getFullYear() %></td>
                                                 <td class="text-end">
