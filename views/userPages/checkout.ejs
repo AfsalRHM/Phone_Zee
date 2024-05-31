@@ -342,6 +342,13 @@
 											console.log('Order Confirmed');
 											window.location.href = `/orderSuccess?id=${data.orderId}`;
 										});
+									} else if (data.message === 'Payment not confirmed') {
+										Swal.fire({
+											icon: 'error',
+											title: 'Payment not confirmed!',
+											text: 'Payment not confirmed. Please contact support.',
+											confirmButtonText: 'OK'
+										});
 									} else {
 										Swal.fire({
 											icon: 'error',

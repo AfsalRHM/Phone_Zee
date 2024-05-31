@@ -8,7 +8,10 @@ const Order = require('../models/orderModel');
 const Coupon = require('../models/couponModel');
 
 
+const crypto = require('crypto');
 const Razorpay = require('razorpay');
+
+const { parseISO, format } = require('date-fns');
 
 const razorpayInstance = new Razorpay({ 
   
@@ -51,7 +54,18 @@ const loadOrderDetail = async (req, res) => {
 
         const orderData = await Order.findById(orderId).populate('user').populate('address').populate('products.product');
 
-        res.render('orderDetails', {activeOrderMessage: 'active', orderData: orderData});
+        const date = orderData.created_at;
+
+        // Parse and format the date using date-fns
+        // const convertedDate = parseISO(date);
+        
+        const formatconvertedDate = format(date, "EEE, MMM dd, yyyy, h:mma");
+
+        const pageOrderIdFull = orderData._id.toString();
+
+        const pageOrderId = pageOrderIdFull.substring(0, 8);
+
+        res.render('orderDetails', {activeOrderMessage: 'active', orderData: orderData, formatconvertedDate, pageOrderId});
 
     } catch (error) {
         console.log(error.message);
@@ -231,24 +245,33 @@ const confirmPayment = async (req, res) => {
     try {
         const { orderId, razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
 
-        // Verify payment signature here (not shown for simplicity)
-
+        // Find the order in the database
         const order = await Order.findById(orderId);
+
         if (!order) {
             return res.status(404).json({ message: 'Order not found' });
         }
 
-        // Update order status to 'Paid'
-        order.payment_status = 'Paid';
-        await order.save();
+        // Create a HMAC using the orderId and razorpayPaymentId
+        const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_CLIENT_SECRET);
+        hmac.update(`${razorpayOrderId}|${razorpayPaymentId}`);
+        const generatedSignature = hmac.digest('hex');
 
-        res.status(200).json({ message: 'Success', orderId: order._id });
+        // Verify the payment signature
+        if (generatedSignature === razorpaySignature) {
+            // Payment is successful and verified
+            order.payment_status = 'Paid';
+            await order.save();
+
+            res.status(200).json({ message: 'Success', orderId: order._id });
+        } else {
+            res.status(400).json({ message: 'Invalid signature' });
+        }
     } catch (error) {
         console.error('Error confirming payment:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
-
 
 
 
