@@ -45,6 +45,7 @@ const wishlistController = require('../controllers/wishlistController');
 const ratingController = require('../controllers/ratingController');
 const filterController = require('../controllers/filterController');
 const couponController = require('../controllers/couponController');
+const invoiceController = require('../controllers/invoiceController');
 
 // Requerung the User Auth
 const userAuth = require('../middlewares/userAuth');
@@ -62,6 +63,7 @@ user_route.get('/login', userAuth.isLogout, userController.loadLoginPage);
 user_route.get('/register', userAuth.isLogout, userController.loadSignUpPage);
 user_route.get('/otp', userAuth.isLogout, otpController.loadOtpPage);
 user_route.get('/profile', userAuth.isLogin, userBlocked.isBlocked, userController.loadProfile);
+user_route.get('/ordertrack', userAuth.isLogin, orderController.loadOrderTrack);
 user_route.get('/product', productController.loadProduct);
 user_route.get('/shop', userController.loadCategory);
 user_route.get('/cart', userAuth.isLogin, userBlocked.isBlocked, cartController.loadCart);
@@ -133,6 +135,7 @@ user_route.post('/addToCart', userAuth.isLogin, cartController.addToCart);
 user_route.post('/cart', userAuth.isLogin, cartController.deleteProductFromCart, cartController.updateCart);
 user_route.post('/checkout', userAuth.isLogin, couponController.applyCoupon, couponController.removeCoupon, orderController.placeOrder);
 user_route.post('/confirm-payment', userAuth.isLogin, orderController.confirmPayment);
+user_route.post('/downloadInvoice', userAuth.isLogin, invoiceController.generateInvoice);
 user_route.post('/addressChange', userAuth.isLogin, addressContoller.addressChange);
 user_route.post('/forgotPassword', otpController.sendOtpForResetPassword);
 user_route.post('/resetPassword', otpController.resetPassword);

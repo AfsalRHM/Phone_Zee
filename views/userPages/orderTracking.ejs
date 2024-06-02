@@ -1,0 +1,351 @@
+<%- include('../userLayouts/header.ejs') %>
+
+<div class="page-wrapper">
+    <%- include('../userLayouts/pageHeader.ejs') %>
+
+    <main class="main">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-4">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/profile">My Orders</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Order Details</li>
+                </ol>
+            </div><!-- End .container -->
+        </nav><!-- End .breadcrumb-nav -->
+
+        <div class="page-content">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card shadow-lg">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h2 class="card-title mb-0">Order Details</h2>
+                                    <button class="btn btn-outline-secondary" onclick="window.history.back()">Back</button>
+                                </div>
+                                
+                                <div class="order-info mb-4 p-4 bg-light rounded border">
+                                    <p class="mb-2"><strong>Order ID:</strong> #<%= pageOrderId %></p>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <p class="mb-0"><strong>Date:</strong> <%= formatconvertedDate %></p>
+                                        <% if (orderData.payment_type == 'payment-razorpay') { %>
+                                            <p class="mb-0"><strong>Payment Method:</strong> online payment</p>
+                                        <% } else if (orderData.payment_type == 'payment-cod') { %> 
+                                            <p class="mb-0"><strong>Payment Method:</strong> cash on delivery</p>
+                                        <% } else { %>
+                                            <p class="mb-0"><strong>Payment Method:</strong> wallet</p>
+                                        <% } %>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <% if (orderData.order_status == 'cancelOrder') { %>
+                                            <dd>
+                                                <p class="mb-0"><strong>Status:</strong> <span class="badge badge-danger">Order Cancelled</span></p>
+                                            </dd>
+                                        <% } else if (orderData.order_status == 'Pending') { %>
+                                            <dd>
+                                                <p class="mb-0"><strong>Status:</strong> <span class="badge badge-warning">Awaiting Payment</span></p>
+                                            </dd>
+                                        <% } else if (orderData.order_status == 'Confirmed') { %>
+                                            <dd>
+                                                <p class="mb-0"><strong>Status:</strong> <span class="badge badge-info">Confirmed</span></p>
+                                            </dd>
+                                        <% } else if (orderData.order_status == 'Shipped') { %>
+                                            <dd>
+                                                <p class="mb-0"><strong>Status:</strong> <span class="badge badge-warning">Shipped</span></p>
+                                            </dd>
+                                        <% } else if (orderData.order_status == 'Delivered') { %>
+                                            <dd>
+                                                <p class="mb-0"><strong>Status:</strong> <span class="badge badge-success">Delivered</span></p>
+                                            </dd>
+                                        <% } %>
+                                        <!-- <p class="mb-0"><strong>Status:</strong> <span class="badge badge-success">Shipped</span></p> -->
+                                        <% if (orderData.payment_type == 'payment-razorpay') { %>
+                                            <% if (orderData.order_status == 'cancelOrder') { %>
+                                                <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-warning">Refunded</span></p>
+                                            <% } else { %>
+                                                <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-success">Paid</span></p>
+                                            <% } %>
+                                        <% } else if (orderData.payment_type == 'payment-cod') { %> 
+                                            <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-info">Pending</span></p>
+                                        <% } else { %>
+                                            <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-success">Paid</span></p>
+                                        <% } %>
+                                    </div>
+                                </div>
+
+                                <h4 class="mb-4">Order Tracking</h4>
+                                <div class="tracking-info mb-4 p-4 bg-light rounded border">
+                                    <ul class="timeline">
+                                        <% if (orderData.order_status == 'cancelOrder') { %>
+                                            <dd>
+                                                <p class="ml-5"><span class="badge badge-danger">Order Cancelled</span></p>
+                                            </dd>
+                                        <% } else if (orderData.order_status == 'Pending') { %>
+                                            <li class="timeline-item">
+                                                <span class="timeline-date">May 30, 2024</span>
+                                                <span class="timeline-content">Order Placed</span>
+                                            </li>
+                                        <% } else if (orderData.order_status == 'Confirmed') { %>
+                                            <li class="timeline-item">
+                                                <span class="timeline-date">May 30, 2024</span>
+                                                <span class="timeline-content">Order Placed</span>
+                                            </li>
+                                            <li class="timeline-item">
+                                                <span class="timeline-date">May 31, 2024</span>
+                                                <span class="timeline-content">Order Processed</span>
+                                            </li>
+                                        <% } else if (orderData.order_status == 'Shipped') { %>
+                                            <li class="timeline-item">
+                                                <span class="timeline-date">May 30, 2024</span>
+                                                <span class="timeline-content">Order Placed</span>
+                                            </li>
+                                            <li class="timeline-item">
+                                                <span class="timeline-date">May 31, 2024</span>
+                                                <span class="timeline-content">Order Processed</span>
+                                            </li>
+                                            <li class="timeline-item">
+                                                <span class="timeline-date">June 1, 2024</span>
+                                                <span class="timeline-content">Order Shipped</span>
+                                            </li>
+                                        <% } else if (orderData.order_status == 'Delivered') { %>
+                                            <li class="timeline-item">
+                                                <span class="timeline-date">May 30, 2024</span>
+                                                <span class="timeline-content">Order Placed</span>
+                                            </li>
+                                            <li class="timeline-item">
+                                                <span class="timeline-date">May 31, 2024</span>
+                                                <span class="timeline-content">Order Processed</span>
+                                            </li>
+                                            <li class="timeline-item">
+                                                <span class="timeline-date">June 1, 2024</span>
+                                                <span class="timeline-content">Order Shipped</span>
+                                            </li>
+                                            <li class="timeline-item">
+                                                <span class="timeline-date">June 3, 2024</span>
+                                                <span class="timeline-content">Order Delivered</span>
+                                            </li>
+                                        <% } %>
+                                    </ul>
+                                </div>
+
+                                <h4 class="mb-4">Items in Your Order</h4>
+                                <ul class="list-group mb-4">
+                                    <% orderData.products.forEach((product, index) => { %>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="mb-1"><%= orderData.products[index].product.name %></h5>
+                                            <p class="mb-1 text-muted">Quantity: <%= orderData.products[index].quantity %></p>
+                                        </div>
+                                        <div>
+                                            <p class="mb-1 text-muted">Unit Price: ₹<%= orderData.products[index].product.offer == 0 ? orderData.products[index].product.price : orderData.products[index].product.salePrice %>.00</p>
+                                            <strong>Total: ₹<%= orderData.products[index].product.offer == 0 ? orderData.products[index].product.price * orderData.products[index].quantity : orderData.products[index].product.salePrice * orderData.products[index].quantity %>.00</strong>
+                                        </div>
+                                    </li>
+                                    <% }) %>
+                                </ul>
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <strong>Total:</strong>
+                                    <span class="h5">₹<%= orderData.order_total %>.00</span>
+                                </div>
+
+                                <button type="button" class="btn btn-primary btn-block shadow-sm" onclick="downloadInvoice('<%= orderData._id %>')">Download Invoice</button>
+                            </div><!-- End .card-body -->
+                        </div><!-- End .card -->
+                    </div><!-- End .col-lg-8 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .page-content -->
+    </main><!-- End .main -->
+
+    <%- include('../userLayouts/pageFooter.ejs') %>
+</div><!-- End .page-wrapper -->
+
+<button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+<%- include('../userLayouts/footer.ejs') %>
+
+<script>
+function downloadInvoice(orderId) {
+
+    fetch('/downloadInvoice', { // Corrected URL to include userId in the route
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ orderId }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to download the invoice');
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            // Create a URL for the blob
+            const url = window.URL.createObjectURL(blob);
+            // Create a temporary anchor element
+            const a = document.createElement('a');
+            // Set the href attribute to the URL of the blob
+            a.href = url;
+            // Set the download attribute to specify the file name
+            a.download = `invoice.pdf`;
+            // Append the anchor element to the body
+            document.body.appendChild(a);
+            // Click the anchor element to start the download
+            a.click();
+            // Remove the anchor element from the body
+            document.body.removeChild(a);
+            // Revoke the URL to release the object URL
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    
+};
+</script>
+
+<style>
+.card {
+    border: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+}
+
+.order-info, .tracking-info {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.order-info p, .tracking-info .timeline-item {
+    margin: 0 0 0.75rem;
+    font-size: 1.25rem; /* Increased font size */
+}
+
+.badge-success {
+    background-color: #28a745;
+    color: #fff;
+    padding: 0.4em 0.8em;
+    border-radius: 12px;
+    font-size: 1.25rem; /* Increased font size */
+}
+
+.badge-info {
+    background-color: #5d88ff;
+    color: #fff;
+    padding: 0.4em 0.8em;
+    border-radius: 12px;
+    font-size: 1.25rem; /* Increased font size */
+}
+
+.badge-warning {
+    background-color: #d5b91c;
+    color: #fff;
+    padding: 0.4em 0.8em;
+    border-radius: 12px;
+    font-size: 1.25rem; /* Increased font size */
+}
+
+.badge-danger {
+    background-color: #f42e2e;
+    color: #fff;
+    padding: 0.4em 0.8em;
+    border-radius: 12px;
+    font-size: 1.25rem; /* Increased font size */
+}
+
+.timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 25px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #e9ecef;
+}
+
+.timeline-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    position: relative;
+    padding-left: 50px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 15px;
+    width: 12px;
+    height: 12px;
+    background-color: #007bff;
+    border-radius: 50%;
+}
+
+.timeline-date {
+    color: #666;
+    font-size: 1.25rem; /* Increased font size */
+}
+
+.timeline-content {
+    color: #333;
+    font-size: 1.25rem; /* Increased font size */
+}
+
+.list-group-item {
+    border: none;
+    padding: 1.5rem; /* Increased padding */
+    background-color: #fff;
+    font-size: 1.25rem; /* Increased font size */
+    border-bottom: 1px solid #e9ecef;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.list-group-item h5 {
+    margin-bottom: 0.5rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    font-size: 1.25rem; /* Increased font size */
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+.btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+    font-size: 1.25rem; /* Increased font size */
+    transition: all 0.3s;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: #fff;
+}
+</style>

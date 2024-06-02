@@ -105,7 +105,7 @@
 																	<% } %>
 															</div>
 															<div class="button-details">
-																<a class="btn btn-info btn-sm">Details</a>
+																<a class="btn btn-info btn-sm" href="/ordertrack?orderId=<%= order._id %>">Details</a>
 																<% if (order.order_status == 'delivered') { %>
 																	<button onclick="returnOrder('<%= order._id %>')" class="btn btn-warning btn-sm">Return Order</button>
 																<% } else { %>

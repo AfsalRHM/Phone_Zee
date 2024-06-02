@@ -191,7 +191,9 @@ const placeOrder = async (req, res) => {
 
             if ( OrderData.payment_type == 'payment-cod' ) {
     
-                userData.coupon_claimed.push({couponId: cartData.coupon_id});
+                if (cartData.coupon_id !== 'nothing') {
+                    userData.coupon_claimed.push({couponId: cartData.coupon_id});
+                };
     
                 await userData.save();
         
@@ -212,6 +214,8 @@ const placeOrder = async (req, res) => {
                         currency: 'INR',
                         receipt: `receipt_${OrderData._id}`
                     });
+
+                    await Cart.findByIdAndUpdate(cartData._id, { $pull: { products: { _id: { $in: cartData.products.map(p => p._id) } } }, $set: { total_price: 0, discount_amount: 0, coupon_claimed: 0, coupon_id: 'nothing' } });
 
                     return res.status(200).json({
                         message: 'Razorpay order created',
@@ -329,6 +333,38 @@ const loadOrderSuccess = async (req, res) => {
     }
 };
 
+/*****************      To Place the Order     *********************/
+
+const loadOrderTrack = async (req, res) => {
+    try {
+
+        const { orderId } = req.query;
+        
+        const orderData = await Order.findOne({_id: orderId}).populate('user').populate('address').populate('products.product');
+
+        console.log(orderData);
+
+        const date = orderData.created_at;
+        
+        const formatconvertedDate = format(date, "MMM dd, yyyy");
+
+        const pageOrderIdFull = orderData._id.toString();
+
+        const pageOrderId = pageOrderIdFull.substring(0, 8);
+
+        const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
+        
+        if (cartDataForCount == null) {
+            res.render('orderTracking', { pageTitle: 'Order Tracking | PhoneZee', orderData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount, formatconvertedDate, pageOrderId });
+        } else {
+            res.render('orderTracking', { pageTitle: 'Order Tracking | PhoneZee', orderData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products, formatconvertedDate, pageOrderId });
+        };
+
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
 module.exports = {
     loadOrderList,
     loadOrderDetail,
@@ -337,5 +373,6 @@ module.exports = {
     placeOrder,
     cancelOrder,
     loadOrderSuccess,
-    confirmPayment
+    confirmPayment,
+    loadOrderTrack
 };
