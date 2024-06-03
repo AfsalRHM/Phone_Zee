@@ -6,6 +6,7 @@ const Wishlist = require('../models/wishlistModel');
 const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
 const Coupon = require('../models/couponModel');
+const Wallet = require('../models/walletModel');
 
 
 const crypto = require('crypto');
@@ -187,9 +188,7 @@ const placeOrder = async (req, res) => {
                 discount_price: cartData.discount_amount
             });
     
-            const OrderData = await order.save();
-
-            if ( OrderData.payment_type == 'payment-cod' ) {
+            if ( order.payment_type == 'payment-cod' ) {
     
                 if (cartData.coupon_id !== 'nothing') {
                     userData.coupon_claimed.push({couponId: cartData.coupon_id});
@@ -199,15 +198,19 @@ const placeOrder = async (req, res) => {
         
                 await Cart.findByIdAndUpdate(cartData._id, { $pull: { products: { _id: { $in: cartData.products.map(p => p._id) } } }, $set: { total_price: 0, discount_amount: 0, coupon_claimed: 0, coupon_id: 'nothing' } });
         
+                const OrderData = await order.save();
+
                 if (OrderData) {
                     res.status(200).json({ message: 'Success', orderId: OrderData._id });
                 } else {
                     res.status(500).json({ message: 'Failed' });
                 };
 
-            } else if ( OrderData.payment_type == 'payment-razorpay' ) {
+            } else if ( order.payment_type == 'payment-razorpay' ) {
 
                 try {
+
+                    const OrderData = await order.save();
 
                     const razorpayOrder = await razorpayInstance.orders.create({
                         amount: OrderData.order_total * 100, // Amount in smallest currency unit (e.g., paisa for INR)
@@ -230,6 +233,36 @@ const placeOrder = async (req, res) => {
                 } catch (err) {
                     console.error('Error creating Razorpay order:', err);
                     return res.status(500).send(err);
+                };
+
+            } else if ( order.payment_type == 'payment-wallet' ) {
+
+                const walletBalance = userData.wallet_balance;
+
+                if (order.order_total > walletBalance) {
+                    res.status(200).json({ message: 'Not enough balance on wallet' });
+                } else {
+
+                    const wallet = new Wallet ({
+                        user: req.session.user_id,
+                        type_of_transaction: 'Withdrawal',
+                        amount: order.order_total
+                    });
+    
+                    userData.wallet_balance -= wallet.amount;
+
+                    await userData.save();
+
+                    await wallet.save();
+
+                    const OrderData = await order.save();
+
+                    if (OrderData) {
+                        res.status(200).json({ message: 'Success', orderId: OrderData._id });
+                    } else {
+                        res.status(500).json({ message: 'Failed' });
+                    };
+
                 };
 
             } else {
@@ -288,11 +321,30 @@ const cancelOrder = async (req, res) => {
 
         const { OrderId } = req.body;
 
+        const userData = await User.findOne({_id: req.session.user_id});
+
         const orderData = await Order.findOne({_id: OrderId});
 
         if ( orderData ) {
 
             orderData.order_status = 'cancelOrder';
+
+            if (orderData.payment_type == 'payment-razorpay' || orderData.payment_type == 'payment-wallet') {
+
+                const wallet = new Wallet ({
+                    user: req.session.user_id,
+                    type_of_transaction: 'Deposit',
+                    amount: orderData.order_total
+                });
+
+                userData.wallet_balance += wallet.amount;
+
+                await wallet.save();
+                await userData.save();
+
+                res.status(200).json({ message: 'Success' });
+
+            };
 
             await orderData.save();
 

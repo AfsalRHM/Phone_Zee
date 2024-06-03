@@ -35,6 +35,9 @@
 								    <li class="nav-item">
 								        <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address" role="tab" aria-controls="tab-address" aria-selected="false">Adresses</a>
 								    </li>
+									<li class="nav-item">
+								        <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-wallet" role="tab" aria-controls="tab-address" aria-selected="false">Wallet</a>
+								    </li>
 								    <li class="nav-item">
 								        <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Account Details</a>
 								    </li>
@@ -122,10 +125,48 @@
 										<% } %>
 									</div><!-- .End .tab-pane -->																									
 
-								    <div class="tab-pane fade" id="tab-downloads" role="tabpanel" aria-labelledby="tab-downloads-link">
-								    	<p>No downloads available yet.</p>
-								    	<a href="category.html" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
-								    </div><!-- .End .tab-pane -->
+								    <div class="tab-pane fade" id="tab-wallet" role="tabpanel" aria-labelledby="tab-downloads-link">
+
+								    	<div class="card shadow-lg mb-4">
+											<div class="card-body ali">
+												<h2 class="card-title my-3" style="font-size: 3rem; color: #343a40; text-decoration: underline;">My Wallet</h2>
+												<div class="wallet-info mb-4 p-3 bg-light rounded border">
+													<p class="mb-1" style="font-size: 2rem;"><strong>Wallet Balance:</strong> ₹ <span id="wallet-balance" style="font-size: 2.5rem; color: #007bff;"><%= user.wallet_balance %>.00</span></p>
+												</div>
+												<h4 class="mb-3" style="color: #343a40;">Transaction History</h4>
+												<ul class="list-group">
+													<% if ( walletData != null || walletData.length != 0) { %>
+														<% for (let i = 0; i < walletData.length; i++) { %>
+															<% if (walletData[i].type_of_transaction == 'Deposit') { %>
+																<li class="list-group-item d-flex justify-content-between align-items-center">
+																	<div>
+																		<h5 class="mb-1" style="color: #495057;">Deposit</h5>
+																		<small style="color: #6c757d;">Date: June 1, 2024</small>
+																	</div>
+																	<div>
+																		<strong style="color: #28a745;">Amount: ₹ <%= walletData[i].amount %>.00</strong>
+																	</div>
+																</li>
+															<% } else { %>
+																<li class="list-group-item d-flex justify-content-between align-items-center">
+																	<div>
+																		<h5 class="mb-1" style="color: #495057;">Withdrawal</h5>
+																		<small style="color: #6c757d;">Date: <%= walletDate[i] %></small>
+																	</div>
+																	<div>
+																		<strong style="color: #dc3545;">Amount: ₹ <%= walletData[i].amount %>.00</strong>
+																	</div>
+																</li>
+															<% } %>
+														<% } %>
+													<% } else { %>
+														<p>No Transaction History.</p>
+													<% } %>
+												</ul>
+											</div><!-- End .card-body -->
+										</div><!-- End .card -->
+								    
+									</div><!-- .End .tab-pane -->
 
 								    <div class="tab-pane fade" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
 

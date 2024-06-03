@@ -119,8 +119,8 @@
 										<div class="card">
 											<div class="card-header" id="heading-2">
 												<h2 class="card-title">
-													<a id="payment-bank" class="collapsed" role="button" data-toggle="collapse" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
-														Direct bank transfer
+													<a id="payment-wallet" class="collapsed" role="button" data-toggle="collapse" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
+														Wallet
 													</a>
 												</h2>
 											</div><!-- End .card-header -->
@@ -398,6 +398,16 @@
 							icon: 'error',
 							title: 'Order Cancelled!',
 							text: 'Order Already Exists.',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							console.log('Order Failed');
+							window.location.href = '/checkout';
+						});
+                    } else if (data.message == 'Not enough balance on wallet') {
+                        Swal.fire({
+							icon: 'error',
+							title: 'Choose another payment Method!',
+							text: 'Not enough balance on wallet.',
 							confirmButtonText: 'OK'
 						}).then(() => {
 							console.log('Order Failed');

@@ -6,10 +6,13 @@ const Wishlist = require('../models/wishlistModel');
 const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
 const Offer = require('../models/offerModel');
+const Wallet = require('../models/walletModel');
 
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer');
 const Otp = require('../models/otpModel');
+
+const { parseISO, format } = require('date-fns');
 
 const otpController = require('../controllers/otpController');
 
@@ -314,17 +317,30 @@ const loadErrorPage = async (req, res) => {
 
 const loadProfile = async (req, res) => {
     try {
+
+        const walletDate = [];
         
         const addressData = await Address.find({user: req.session.user_id});
         const userData = await User.findOne({_id: req.session.user_id});
-        const orderData = await Order.find({ user: req.session.user_id }).populate('products.product').populate('address');
+        const orderData = await Order.find({ user: req.session.user_id }).populate('products.product').populate('address').sort({created_at: -1});
+
+        const walletData = await Wallet.find({user: req.session.user_id}).sort({created_at: -1});
+
+        for (let i = 0; i < walletData.length; i++) {
+
+            const date = walletData[i].created_at;
+        
+            const formatconvertedDate = format(date, "MMM dd, yyyy");
+
+            walletDate[i] = formatconvertedDate;
+        };
 
         const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
 
         if (cartDataForCount == null) {
-            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, cartItemsForCartCount: cartDataForCount });
+            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, walletData, walletDate, cartItemsForCartCount: cartDataForCount });
         } else {
-            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, cartItemsForCartCount: cartDataForCount.products });
+            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, walletData, walletDate, cartItemsForCartCount: cartDataForCount.products });
         };
 
     } catch (error) {
