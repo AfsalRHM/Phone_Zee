@@ -57,26 +57,39 @@ const loadAddProductRelatedProducts = async (req, res) => {
 
 const loadUserList = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1; // Get the page number from the query parameters
+        const limit = parseInt(req.query.limit) || 5; // Get the limit from the query parameters
 
         let search = '';
 
         if (req.query.search){
             search = req.query.search;
         };
-        
+
         const usersData = await User.find({
             is_admin: 0,
             $or : [
                 { name : { $regex:'.*' + search + '.*', $options: 'i' } },
                 { email : { $regex:'.*' + search + '.*', $options: 'i' } }
             ] 
-        });
-        res.render('userList', {activeUserMessage: 'active', users: usersData});
-        
+        }).skip((page - 1) * limit).limit(limit); // Apply pagination
+
+        const totalPages = Math.ceil(await User.countDocuments().exec() / limit); // Calculate total pages
+
+        const pagination = {
+            currentPage: page,
+            totalPages: totalPages,
+            previous: page > 1 ? { page: page - 1 } : null,
+            next: page < totalPages ? { page: page + 1 } : null
+        };
+
+        res.render('userList', { activeUserMessage: 'active', users: usersData, pagination: pagination });
+
     } catch (error) {
         console.log(error.message);
     };
 };
+
 
 const blockAndActive2 = async (req, res) => {
     try {

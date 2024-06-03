@@ -38,8 +38,35 @@ const razorpayInstance = new Razorpay({
 const loadOrderList = async (req, res) => {
     try {
         
-        const orderData = await Order.find({}).populate('user').populate('address').populate('products.product');
-        res.render('ordersList', {activeOrderMessage: 'active', orders: orderData});
+        const page = parseInt(req.query.page) || 1; // Get the page number from the query parameters
+        const limit = parseInt(req.query.limit) || 10; // Get the limit from the query parameters
+
+        // Calculate the skip value based on the page number and limit
+        const skip = (page - 1) * limit;
+
+        // Fetch orders with pagination using skip and limit
+        const orderData = await Order.find({})
+                                      .populate('user')
+                                      .populate('address')
+                                      .populate('products.product')
+                                      .skip(skip)
+                                      .limit(limit);
+
+        // Count total number of orders
+        const totalOrders = await Order.countDocuments();
+
+        // Calculate total pages
+        const totalPages = Math.ceil(totalOrders / limit);
+
+        // Construct pagination object
+        const pagination = {
+            currentPage: page,
+            totalPages: totalPages,
+            hasNextPage: page < totalPages,
+            hasPrevPage: page > 1
+        };
+
+        res.render('ordersList', {activeOrderMessage: 'active', orders: orderData, pagination: pagination});
 
     } catch (error) {
         console.log(error.message);

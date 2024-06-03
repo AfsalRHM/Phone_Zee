@@ -38,13 +38,39 @@ const loadAddProduct = async (req, res) => {
 const loadProductList = async (req, res) => {
     try {
 
+        const page = parseInt(req.query.page) || 1; // Get the page number from the query parameters
+        const limit = parseInt(req.query.limit) || 5; // Get the limit from the query parameters
+
+        // Calculate the skip value based on the page number and limit
+        const skip = (page - 1) * limit;
+
+        // Fetch all categories
         const categoryData = await Category.find({});
-        const productData = await Product.find({});
-        if (productData) {
-            res.render('productList', {activeProductMessage: 'active', product: productData, categories: categoryData});
-        } else {
-            res.render('addProductGeneral', {message: 'An error occured'});
+
+        // Fetch products with pagination using skip and limit
+        const productData = await Product.find({}).skip(skip).limit(limit);
+
+        // Count total number of products
+        const totalProducts = await Product.countDocuments();
+
+        // Calculate total pages
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        // Construct pagination object
+        const pagination = {
+            currentPage: page,
+            totalPages: totalPages,
+            hasPreviousPage: page > 1,
+            hasNextPage: page < totalPages,
+            previous: page > 1 ? { page: page - 1 } : null,
+            next: page < totalPages ? { page: page + 1 } : null
         };
+
+        if (productData) {
+            res.render('productList', {activeProductMessage: 'active', product: productData, categories: categoryData, pagination: pagination});
+        } else {
+            res.render('addProductGeneral', {message: 'An error occurred'});
+        }
         
     } catch (error) {
         console.log(error.message);

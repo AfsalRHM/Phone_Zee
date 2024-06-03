@@ -56,6 +56,15 @@ const userBlocked = require('../middlewares/userBlocked');
 // //requering the Helpers
 // const { otpMailValidator } = require('../helpers/validation');
 
+// Requering paginaton middleware
+const paginate = require('../middlewares/pagination');
+
+// Models for implementing pagination
+const User = require('../models/userModel');
+const Order = require('../models/orderModel');
+const Product = require('../models/productModel');
+
+
 // Starting The User Routes
 // Get Requests
 user_route.get('/', userBlocked.isBlocked, userController.loadHome);
@@ -65,7 +74,7 @@ user_route.get('/otp', userAuth.isLogout, otpController.loadOtpPage);
 user_route.get('/profile', userAuth.isLogin, userBlocked.isBlocked, userController.loadProfile);
 user_route.get('/ordertrack', userAuth.isLogin, orderController.loadOrderTrack);
 user_route.get('/product', productController.loadProduct);
-user_route.get('/shop', userController.loadCategory);
+user_route.get('/shop', paginate(Product), userController.loadCategory);
 user_route.get('/cart', userAuth.isLogin, userBlocked.isBlocked, cartController.loadCart);
 user_route.get('/Wishlist', userAuth.isLogin, userBlocked.isBlocked, wishlistController.loadWishlist);
 user_route.get('/faq', userController.loadFaq);

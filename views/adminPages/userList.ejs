@@ -93,14 +93,19 @@
                 <div class="pagination-area mt-15 mb-50">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-start">
-                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                            <li class="page-item"><a class="page-link" href="#">02</a></li>
-                            <li class="page-item"><a class="page-link" href="#">03</a></li>
-                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                            <li class="page-item"><a class="page-link" href="#">16</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
-                            </li>
+                            <% if (pagination.previous) { %>
+                                <li ><a class="page-link" href="/admin/userlist?page=<%= pagination.previous.page %>">Previous</a></li>
+                            <% } else { %>
+                                <li class="disabled"><a class="page-link" href="#">Previous</a></li>
+                            <% } %>
+                            <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+                                <li class="page-item <% if (i === pagination.currentPage) { %>active<% } %>"><a class="page-link" href="/admin/userlist?page=<%= i %>"><%= i %></a></li>
+                            <% } %>
+                            <% if (pagination.next) { %>
+                                <li ><a class="page-link" href="/admin/userlist?page=<%= pagination.next.page %>">Next</a></li>
+                            <% } else { %>
+                                <li class="disabled"><a class="page-link" href="#">Next</a></li>
+                            <% } %>
                         </ul>
                     </nav>
                 </div>

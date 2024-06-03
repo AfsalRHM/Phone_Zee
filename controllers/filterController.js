@@ -12,28 +12,41 @@ const searchFeature = async (req, res) => {
     try {
 
         let searchtext = '';
-
         const searchText = req.query.q;
+        const page = req.query.page || 1; // Default page to 1 if not provided
 
-        const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
+        const cartDataForCount = await Cart.findOne({ user: req.session.user_id }).populate('products');
 
         if (searchText) {
             searchtext = searchText;
-        };
+        }
 
-        const productData = await Product.find({is_hide: 0,
-            $or : [
-                { name : { $regex:'.*' + searchtext + '.*', $options: 'i' } },
-                { category : { $regex:'.*' + searchtext + '.*', $options: 'i' } },
-            ]});
+        const pageSize = 10; // Number of products per page
+        const skip = (page - 1) * pageSize; // Calculate number of products to skip based on page number
 
-        const categoryData = await Category.find({is_hide: 0});
+        const productData = await Product.find({
+            is_hide: 0,
+            $or: [
+                { name: { $regex: '.*' + searchtext + '.*', $options: 'i' } },
+                { category: { $regex: '.*' + searchtext + '.*', $options: 'i' } },
+            ]
+        }).limit(pageSize).skip(skip); // Limit and skip for pagination
 
-        if (cartDataForCount == null) {
-            res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount, sortMethod: 'undefined' });
-        } else {
-            res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: productData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products, sortMethod: 'undefined' });
-        };
+        const categoryData = await Category.find({ is_hide: 0 });
+
+        const totalProducts = await Product.countDocuments({ is_hide: 0 }); // Total number of products for pagination
+        const totalPages = Math.ceil(totalProducts / pageSize);
+
+        res.render('category', {
+            activeShopMessage: 'active',
+            pageTitle: 'products | PhoneZee',
+            product: productData,
+            categories: categoryData,
+            loginOrCart: req.session,
+            cartItemsForCartCount: cartDataForCount ? cartDataForCount.products : [],
+            sortMethod: 'undefined',
+            pagination: { currentPage: page, totalPages: totalPages }
+        });
 
     } catch (error) {
         console.log(error.message);

@@ -126,8 +126,26 @@
                             <% } %>
                         </div><!-- End .row -->
 
-                        <div class="load-more-container text-center">
-                            <a href="#" class="btn btn-outline-darker btn-load-more">More Products <i class="icon-refresh"></i></a>
+                        <div class="load-more-container" style="display: flex; justify-content: center;">
+                            <div class="pagination-area mt-15 mb-50">
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination justify-content-start">
+                                        <% if (pagination.previous) { %>
+                                            <li class="page-item"><a class="page-link text-dark" href="/shop?page=<%= pagination.previous.page %>">Previous</a></li>
+                                        <% } else { %>
+                                            <li class="page-item disabled"><a class="page-link text-muted" href="#">Previous</a></li>
+                                        <% } %>
+                                        <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+                                            <li class="page-item <% if (i === pagination.currentPage) { %>active<% } %>"><a class="page-link bg-primary text-white" href="/shop?page=<%= i %>"><%= i %></a></li>
+                                        <% } %>
+                                        <% if (pagination.next) { %>
+                                            <li class="page-item"><a class="page-link text-dark" href="/shop?page=<%= pagination.next.page %>">Next</a></li>
+                                        <% } else { %>
+                                            <li class="page-item disabled"><a class="page-link text-muted" href="#">Next</a></li>
+                                        <% } %>
+                                    </ul>
+                                </nav>
+                            </div>
                         </div><!-- End .load-more-container -->
                     </div><!-- End .products -->
 

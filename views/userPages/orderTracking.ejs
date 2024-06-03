@@ -129,7 +129,7 @@
                                     </ul>
                                 </div>
 
-                                <h4 class="mb-4">Items in Your Order</h4>
+                                <h4 >Items in Your Order</h4>
                                 <ul class="list-group mb-4">
                                     <% orderData.products.forEach((product, index) => { %>
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -144,6 +144,15 @@
                                     </li>
                                     <% }) %>
                                 </ul>
+
+                                <h4>Address</h4>
+                                <div class="list-group mb-4">
+                                    <div class="list-group-item">
+                                        <p class="mb-1">Locality: <%= orderData.address.locality %></p>
+                                        <p class="mb-1">Place: <%= orderData.address.city %>, <%= orderData.address.state %> - <%= orderData.address.pincode %></p>
+                                        <p class="mb-1">Country: India</p>
+                                    </div>
+                                </div>
 
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <strong>Total:</strong>

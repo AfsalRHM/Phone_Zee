@@ -32,6 +32,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage: storage});
 
+// Requering paginaton middleware
+const paginate = require('../middlewares/pagination');
+
+// Models for implementing pagination
+const User = require('../models/userModel');
+const Order = require('../models/orderModel');
+const Product = require('../models/productModel');
+
 // Requering the Controllers
 const adminController = require('../controllers/adminController');
 const categoryController = require('../controllers/categoryController');
@@ -50,10 +58,10 @@ admin_route.get('/addproduct', adminAuth.isLogin, productController.loadAddProdu
 admin_route.get('/addproductPrice', adminAuth.isLogin, adminController.loadAddProductPrice);
 admin_route.get('/addproductImages', adminAuth.isLogin, adminController.loadAddProductImages);
 admin_route.get('/addproductRelatedproducts', adminAuth.isLogin, adminController.loadAddProductRelatedProducts);
-admin_route.get('/productlist', adminAuth.isLogin, productController.loadProductList);
-admin_route.get('/orderlist', adminAuth.isLogin, orderController.loadOrderList);
+admin_route.get('/productlist', adminAuth.isLogin, paginate(Product), productController.loadProductList);
+admin_route.get('/orderlist', adminAuth.isLogin, paginate(Order), orderController.loadOrderList);
 admin_route.get('/orderdetail', adminAuth.isLogin, orderController.loadOrderDetail)
-admin_route.get('/userlist', adminAuth.isLogin, adminController.loadUserList);
+admin_route.get('/userlist', adminAuth.isLogin, paginate(User), adminController.loadUserList);
 admin_route.get('/categorylist', adminAuth.isLogin, categoryController.loadCategoryList);
 admin_route.get('/login', adminAuth.isLogout, adminController.loadAdminLogin);
 admin_route.get('/editcategory', adminAuth.isLogin, categoryController.loadEditCategory);
