@@ -2,107 +2,129 @@
 
 <%- include('../adminLayouts/pageHeader.ejs') %>
 
-<section class="content-main">
-    <div class="content-header">
-        <div>
-            <h2 class="content-title card-title">Products with Offers</h2>
-            <p>All products with applied offers.</p>
-        </div>
-        <div>
-            <input type="text" placeholder="Search product name" class="form-control bg-white" />
-        </div>
+<section class="content-main" style="background-color: rgb(236, 236, 236);">
+    <div class="content-header d-flex justify-content-between align-items-center" style="background-color: rgb(236, 236, 236);">
+        <h2 class="content-title">Sales Report</h2>
+        <button id="downloadReport" class="btn btn-primary">Download Report</button>
     </div>
-    <div class="card mb-4">
-        <header class="card-header">
-            <div class="row gx-3">
-                <div class="col-lg-4 col-md-6 me-auto">
-                    <input type="text" placeholder="Search..." class="form-control" />
-                </div>
-                <div class="col-lg-2 col-6 col-md-3">
-                    <select class="form-select">
-                        <option>Status</option>
-                        <option>Active</option>
-                        <option>Disabled</option>
-                        <option>Show all</option>
-                    </select>
-                </div>
-                <div class="col-lg-2 col-6 col-md-3">
-                    <select class="form-select">
-                        <option>Show 20</option>
-                        <option>Show 30</option>
-                        <option>Show 40</option>
-                    </select>
-                </div>
+    <section class="content-main d-flex justify-content-center align-items-center">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="content-title card-title mb-4">Generate Sales Report</h2>
+                <form method="post">
+                    <!-- Date Range Selector -->
+                    <div class="mb-4">
+                        <label for="dateRange" class="form-label">Select Date Range</label>
+                        <select id="dateRange" name="dateRange" class="form-select">
+                            <option value="today">Today</option>
+                            <option value="yesterday">Yesterday</option>
+                            <option value="lastWeek">Last Week</option>
+                            <option value="lastMonth">Last Month</option>
+                            <option value="lastYear">Last Year</option>
+                            <option value="custom">Custom</option>
+                            <option value="overall">Overall</option>
+                        </select>
+                    </div>
+                    <!-- Custom Date Range Selector -->
+                    <div id="customDateRange" style="display: none;">
+                        <div class="mb-4">
+                            <label for="startDate" class="form-label">Start Date</label>
+                            <input type="date" id="startDate" name="startDate" class="form-control"><br>
+                            <label for="endDate" class="form-label">End Date</label>
+                            <input type="date" id="endDate" name="endDate" class="form-control">
+                        </div>
+                    </div>
+
+                    <!-- Product Filter -->
+                    <!-- <div class="mb-4">
+                        <label for="productFilter" class="form-label">Select Product</label>
+                        <select id="productFilter" name="productFilter" class="form-select">
+                            <option value="all">All Products</option>
+                            <option value="productA">Product A</option>
+                            <option value="productB">Product B</option>
+                        </select>
+                    </div> -->
+
+                    <!-- Revenue Filter -->
+                    <!-- <div class="mb-4">
+                        <label for="revenueFilter" class="form-label">Select Revenue Range</label>
+                        <select id="revenueFilter" name="revenueFilter" class="form-select">
+                            <option value="all">All Revenue Ranges</option>
+                            <option value="0-50">$0 - $50</option>
+                            <option value="51-100">$51 - $100</option>
+                            <option value="101-500">$101 - $500</option>
+                        </select>
+                    </div> -->
+
+                    <div class="d-grid justify-content-center">
+                        <button type="submit" class="btn btn-primary">Generate Report</button>
+                    </div>
+                </form>
             </div>
-        </header>
-        <!-- card-header end// -->
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>#ID</th>
-                            <th scope="col">Product Name</th>
-                            <th scope="col">Original Price</th>
-                            <th scope="col">Offer Percentage</th>
-                            <th scope="col">Start Date</th>
-                            <th scope="col">End Date</th>
-                            <th scope="col">Status</th>
-                            <th scope="col" class="text-end">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if (true) { %>
-                            <p>No products with offers applied</p>
-                        <% } else { %>
-                            <% for (let i = 0; i < 5; i++) { %>
-                                <tr>
-                                    <td><%= i + 1 %></td>
-                                    <td><b>S22</b></td>
-                                    <td>₹ 7635267.00</td>
-                                    <td>39 %</td>
-                                    <td>28.05.2024</td>
-                                    <td>28.05.2024</td>
-                                    <td><span class="badge rounded-pill alert-success">Active</span></td>
-                                    <td class="text-end">
-                                        <a href="#" class="btn btn-md rounded font-sm">Detail</a>
-                                        <div class="dropdown">
-                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                            <div class="dropdown-menu">
-                                                <!-- <a class="dropdown-item" href="#">Edit info</a> -->
-                                                <a class="dropdown-item text-danger" ">Delete</a>
-                                            </div>
-                                        </div>
-                                        <!-- dropdown //end -->
-                                    </td>
-                                </tr>
-                            <% } %>
-                        <% } %>
-                    </tbody>
-                </table>
-            </div>
-            <!-- table-responsive //end -->
+            <!-- card body .// -->
         </div>
-        <!-- card-body end// -->
-    </div>
+        <!-- card .// -->
+    </section>
     <!-- card end// -->
-    <div class="pagination-area mt-15 mb-50">
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-start">
-                <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                <li class="page-item"><a class="page-link" href="#">02</a></li>
-                <li class="page-item"><a class="page-link" href="#">03</a></li>
-                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                <li class="page-item"><a class="page-link" href="#">16</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
-                </li>
-            </ul>
-        </nav>
-    </div>
 </section>
 <!-- content-main end// -->
+
+<!-- Sales Report Table -->
+<section class="content-main">
+    <div class="content-header">
+        <h2 class="content-title">Sales Report</h2>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>Product</th>
+                    <th>Product Price</th>
+                    <th>Quantity Sold</th>
+                    <th>Total Revenue</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Sample data (Replace with dynamic data) -->
+                <tr>
+                    <td>2024-06-01</td>
+                    <td>Product A</td>
+                    <td>$10.00</td>
+                    <td>10</td>
+                    <td>$100.00</td>
+                </tr>
+                <tr>
+                    <td>2024-06-02</td>
+                    <td>Product B</td>
+                    <td>$12.00</td>
+                    <td>8</td>
+                    <td>$96.00</td>
+                </tr>
+                <!-- More rows here -->
+            </tbody>
+        </table>
+    </div>
+</section>
+<!-- Sales Report Table End -->
 
 <%- include('../adminLayouts/pageFooter.ejs') %>
 
 <%- include('../adminLayouts/footer.ejs') %>
+
+<script>
+    // Show/Hide custom date range selector based on selection
+    document.getElementById('dateRange').addEventListener('change', function () {
+        if (this.value === "custom") {
+            document.getElementById('customDateRange').style.display = "block";
+        } else {
+            document.getElementById('customDateRange').style.display = "none";
+        }
+    });
+
+    // Download Report Functionality
+    document.getElementById('downloadReport').addEventListener('click', function () {
+        // Add logic to download the sales report here
+        alert('Downloading sales report...');
+    });
+</script>

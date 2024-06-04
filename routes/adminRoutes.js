@@ -47,6 +47,7 @@ const orderController = require('../controllers/orderController');
 const productController = require('../controllers/productController');
 const couponController =  require('../controllers/couponController');
 const offerController = require('../controllers/offerController');
+const statisticsController = require('../controllers/statisticsController');
 
 // Requerung the Admin Auth
 const adminAuth = require('../middlewares/adminAuth');
@@ -73,6 +74,7 @@ admin_route.get('/productofferlist', adminAuth.isLogin, offerController.loadProd
 admin_route.get('/categoryofferlist', adminAuth.isLogin, offerController.loadCategoryOfferList);
 admin_route.get('/addoffer', adminAuth.isLogin, offerController.loadAddOffer);
 admin_route.get('/editoffer', adminAuth.isLogin, offerController.loadEditOffer);
+admin_route.get('/salestatistics', adminAuth.isLogin, statisticsController.loadStatistics);
 admin_route.get('/adminLogout', adminAuth.isLogin, adminController.adminLogout);
 
 admin_route.get('/test', adminController.loadTesting);
@@ -95,6 +97,7 @@ admin_route.post('/addoffer', adminAuth.isLogin, offerController.createOffer);
 admin_route.post('/editoffer', adminAuth.isLogin, offerController.updateOffer);
 admin_route.post('/productofferlist', adminAuth.isLogin, offerController.switchProductOfferStatus, offerController.deleteProductOffer);
 admin_route.post('/categoryofferlist', adminAuth.isLogin, offerController.switchCategoryOfferStatus,  offerController.deleteCategoryOffer);
+admin_route.post('/salestatistics', adminAuth.isLogin, statisticsController.filterReports);
 
 
 // All Routes
