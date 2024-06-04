@@ -98,6 +98,7 @@ admin_route.post('/editoffer', adminAuth.isLogin, offerController.updateOffer);
 admin_route.post('/productofferlist', adminAuth.isLogin, offerController.switchProductOfferStatus, offerController.deleteProductOffer);
 admin_route.post('/categoryofferlist', adminAuth.isLogin, offerController.switchCategoryOfferStatus,  offerController.deleteCategoryOffer);
 admin_route.post('/salestatistics', adminAuth.isLogin, statisticsController.filterReports);
+admin_route.post('/sales-report/download', adminAuth.isLogin, statisticsController.downloadSalesReport);
 
 
 // All Routes

@@ -47,9 +47,24 @@
 <!-- content-main end// -->
 
 <!-- Sales Report Summary -->
-<section style="margin-left: 2.5rem;">
+<section style="margin-left: 2.5rem; margin-top: 3rem;">
     <div class="content-header">
         <h2 class="content-title">Sales Report Summary</h2>
+        <form id="downloadForm" method="POST" action="/admin/sales-report/download">
+            <input type="hidden" name="dateRange" value="<%= dateRange %>">
+            <input type="hidden" name="totalOrders" value="<%= totalOrders %>">
+            <input type="hidden" name="totalOrderAmount" value="<%= totalOrderAmount %>">
+            <input type="hidden" name="totalProfit" value="<%= totalProfit %>">
+            <input type="hidden" name="dateToShow" value="<%= dateToShow %>">
+            <% orderData.forEach((order, index) => { %>
+                <input type="hidden" name="orderData[<%= index %>][date]" value="<%= dates[index] %>">
+                <input type="hidden" name="orderData[<%= index %>][user]" value="<%= order.user.name %>">
+                <input type="hidden" name="orderData[<%= index %>][orderTotal]" value="<%= order.order_total %>">
+                <input type="hidden" name="orderData[<%= index %>][quantitySold]" value="<%= quantityArray[index] %>">
+                <input type="hidden" name="orderData[<%= index %>][totalRevenue]" value="<%= quantityArray[index] * 900 %>">
+            <% }); %>
+            <button type="submit" class="btn btn-primary" style="margin-right: 5rem;">Download Report</button>
+        </form>
     </div>
     <div class="summary">
         <p>Total Orders: <%= totalOrders %></p>
@@ -115,8 +130,5 @@
         }
     });
 
-    // Download Report Functionality
-    document.getElementById('downloadReport').addEventListener('click', function () {
-
-    });
+    
 </script>
