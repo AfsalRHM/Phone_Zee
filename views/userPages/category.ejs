@@ -37,7 +37,7 @@
         					<div class="toolbox-sort">
         						<label for="sortby">Sort by:</label>
         						<div class="select-custom">
-                                    <form action="/sortMethod" method="get" id="sortMethodForm">
+                                    <form action="/shop" method="get" id="sortMethodForm">
                                         <% if (sortMethod !== 'undefined') { %>
                                             <select name="sortby" id="sortby" onchange="submitForm('sortMethodForm')" class="form-control">
                                                 <option value="<%= sortValue %>" selected="selected" ><%= sortMethod %></option>
@@ -136,7 +136,13 @@
                                             <li class="page-item disabled"><a class="page-link text-muted" href="#">Previous</a></li>
                                         <% } %>
                                         <% for (let i = 1; i <= pagination.totalPages; i++) { %>
-                                            <li class="page-item <% if (i === pagination.currentPage) { %>active<% } %>"><a class="page-link bg-primary text-white" href="/shop?page=<%= i %>"><%= i %></a></li>
+                                            <% if (sortValue == 'undefined' && searchText == 'undefined') { %>
+                                                <li class="page-item <% if (i === pagination.currentPage) { %>active<% } %>"><a class="page-link bg-primary text-white" href="/shop?page=<%= i %>" ><%= i %></a></li>
+                                            <% } else if (sortValue != 'undefined') { %>
+                                                <li class="page-item <% if (i === pagination.currentPage) { %>active<% } %>"><a class="page-link bg-primary text-white" href="/shop?page=<%= i %><%= sortValue ? '&sortby=' + sortValue : '' %>" ><%= i %></a></li>
+                                            <% } else if (searchText != 'undefined') { %>
+                                                <li class="page-item <% if (i === pagination.currentPage) { %>active<% } %>"><a class="page-link bg-primary text-white" href="/shop?page=<%= i %><%= searchText ? '&q=' + searchText : '' %>" ><%= i %></a></li>
+                                            <% } %>
                                         <% } %>
                                         <% if (pagination.next) { %>
                                             <li class="page-item"><a class="page-link text-dark" href="/shop?page=<%= pagination.next.page %>">Next</a></li>
@@ -603,7 +609,7 @@
         function submitForm(formId) {
             const form = document.getElementById(formId);
             form.submit();
-        }
+        };
 
         // document.addEventListener('DOMContentLoaded', function () {
         //     // Get the select element

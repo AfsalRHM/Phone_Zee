@@ -11,18 +11,21 @@ const Order = require('../models/orderModel');
 const searchFeature = async (req, res) => {
     try {
 
+        const sortValue = 'undefined'
+
+        const page = parseInt(req.query.page) || 1; 
+        const limit = parseInt(req.query.limit) || 1; 
+
+        const skip = (page - 1) * limit;
+
         let searchtext = '';
         const searchText = req.query.q;
-        const page = req.query.page || 1; // Default page to 1 if not provided
 
         const cartDataForCount = await Cart.findOne({ user: req.session.user_id }).populate('products');
 
         if (searchText) {
             searchtext = searchText;
-        }
-
-        const pageSize = 10; // Number of products per page
-        const skip = (page - 1) * pageSize; // Calculate number of products to skip based on page number
+        };
 
         const productData = await Product.find({
             is_hide: 0,
@@ -30,12 +33,17 @@ const searchFeature = async (req, res) => {
                 { name: { $regex: '.*' + searchtext + '.*', $options: 'i' } },
                 { category: { $regex: '.*' + searchtext + '.*', $options: 'i' } },
             ]
-        }).limit(pageSize).skip(skip); // Limit and skip for pagination
+        }).skip(skip).limit(limit); // Limit and skip for pagination
 
         const categoryData = await Category.find({ is_hide: 0 });
 
-        const totalProducts = await Product.countDocuments({ is_hide: 0 }); // Total number of products for pagination
-        const totalPages = Math.ceil(totalProducts / pageSize);
+        const productForLength = await Product.find({
+            is_hide: 0,
+            $or: [
+                { name: { $regex: '.*' + searchtext + '.*', $options: 'i' } },
+                { category: { $regex: '.*' + searchtext + '.*', $options: 'i' } },
+            ]
+        }); // Total number of products for pagination
 
         res.render('category', {
             activeShopMessage: 'active',
@@ -45,7 +53,16 @@ const searchFeature = async (req, res) => {
             loginOrCart: req.session,
             cartItemsForCartCount: cartDataForCount ? cartDataForCount.products : [],
             sortMethod: 'undefined',
-            pagination: { currentPage: page, totalPages: totalPages }
+            sortValue,
+            pagination: {
+                currentPage: page,
+                totalPages: Math.ceil(productForLength.length / limit),
+                hasNextPage: skip + limit < productData.length,
+                hasPreviousPage: page > 1,
+                nextPage: page + 1,
+                previousPage: page - 1
+            },
+            searchText
         });
 
     } catch (error) {
@@ -55,40 +72,76 @@ const searchFeature = async (req, res) => {
 
 /*****************      To Search the product or category     *********************/
 
-const sortFunction = async (req, res) => {
+const sortFunction = async (req, res, next) => {
     try {
 
-        const sortValue = req.query.sortby;
+        const { q } = req.query;
 
-        const categoryData = await Category.find({is_hide: 0});
-
-        const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
-
-        let sortMethod = '';
-
-        let sortedData;
-        if (sortValue === 'lowToHigh') {
-            sortedData = await Product.find().sort({ price: 1 });
-            sortMethod = 'Price : Low - High';
-        } else if (sortValue === 'highToLow') {
-            sortedData = await Product.find().sort({ price: -1 });
-            sortMethod = 'Price : High - Low';
-        } else if (sortValue === 'aATozZ') {
-            sortedData = await Product.find({}).sort({ name: 1 });
-            sortMethod = 'Name : Aa - Zz';
-        } else if (sortValue === 'zZToaA') {
-            sortedData = await Product.find({}).sort({ name: -1 });
-            sortMethod = 'Name : Zz - Aa';
-        } else if (sortValue === 'date') {
-            sortedData = await Product.find({});
-            sortMethod = 'Dated';
-        };
-
-
-        if (cartDataForCount == null) {
-            res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: sortedData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount, sortMethod, sortValue })
+        if ( q ) {
+            next();
         } else {
-            res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: sortedData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products, sortMethod, sortValue })
+
+            const page = parseInt(req.query.page) || 1; 
+            const limit = parseInt(req.query.limit) || 8; 
+
+            const skip = (page - 1) * limit;
+
+            const sortValue = req.query.sortby;
+
+            const categoryData = await Category.find({is_hide: 0});
+
+            let productForLength = await Product.find({ is_hide: 0 });
+
+            const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
+
+            let sortMethod = '';
+
+            let sortedData;
+            if (sortValue === 'lowToHigh') {
+                productForLength = await Product.find().sort({ price: 1 });
+                sortedData = await Product.find().sort({ price: 1 }).skip(skip).limit(limit);
+                sortMethod = 'Price : Low - High';
+            } else if (sortValue === 'highToLow') {
+                productForLength = await Product.find().sort({ price: -1 });
+                sortedData = await Product.find().sort({ price: -1 }).skip(skip).limit(limit);
+                sortMethod = 'Price : High - Low';
+            } else if (sortValue === 'aATozZ') {
+                productForLength = await Product.find().sort({ name: 1 });
+                sortedData = await Product.find({}).sort({ name: 1 }).skip(skip).limit(limit);
+                sortMethod = 'Name : Aa - Zz';
+            } else if (sortValue === 'zZToaA') {
+                productForLength = await Product.find().sort({ name: -1 });
+                sortedData = await Product.find({}).sort({ name: -1 }).skip(skip).limit(limit);
+                sortMethod = 'Name : Zz - Aa';
+            } else if (sortValue === 'date') {
+                sortedData = await Product.find({}).skip(skip).limit(limit);
+                sortMethod = 'Dated';
+            };
+
+
+            if (cartDataForCount == null) {
+                res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: sortedData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount, sortMethod, sortValue,
+                pagination: {
+                    currentPage: page,
+                    totalPages: Math.ceil(productForLength.length / limit),
+                    hasNextPage: skip + limit < sortedData.length,
+                    hasPreviousPage: page > 1,
+                    nextPage: page + 1,
+                    previousPage: page - 1
+                } });
+            } else {
+                res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: sortedData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products, sortMethod, sortValue,
+                pagination: {
+                    currentPage: page,
+                    totalPages: Math.ceil(productForLength.length / limit),
+                    hasNextPage: skip + limit < sortedData.length,
+                    hasPreviousPage: page > 1,
+                    nextPage: page + 1,
+                    previousPage: page - 1
+                } });
+            };
+
+
         };
 
     } catch (error) {
