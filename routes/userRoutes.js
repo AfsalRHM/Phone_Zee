@@ -74,7 +74,7 @@ user_route.get('/otp', userAuth.isLogout, otpController.loadOtpPage);
 user_route.get('/profile', userAuth.isLogin, userBlocked.isBlocked, userController.loadProfile);
 user_route.get('/ordertrack', userAuth.isLogin, orderController.loadOrderTrack);
 user_route.get('/product', productController.loadProduct);
-user_route.get('/shop', paginate(Product), userController.loadCategory);
+user_route.get('/shop', paginate(Product), userController.loadCategory, filterController.sortFunction, filterController.searchFeature);
 user_route.get('/cart', userAuth.isLogin, userBlocked.isBlocked, cartController.loadCart);
 user_route.get('/Wishlist', userAuth.isLogin, userBlocked.isBlocked, wishlistController.loadWishlist);
 user_route.get('/faq', userController.loadFaq);
@@ -88,8 +88,8 @@ user_route.get('/editAddress', userAuth.isLogin, userBlocked.isBlocked, addressC
 user_route.get('/test', userController.loadTestPage);
 
 user_route.get('/resendOTP', otpController.resendOtp);
-user_route.get('/search', filterController.searchFeature);
-user_route.get('/sortMethod', filterController.sortFunction);
+// user_route.get('/search', filterController.searchFeature);
+// user_route.get('/sortMethod', filterController.sortFunction);
 user_route.get('/orderSuccess', userAuth.isLogin, orderController.loadOrderSuccess);
 user_route.get('/forgotPassword', userAuth.isLogout, otpController.loadForgotPassword);
 user_route.get('/resetPassword', userAuth.isLogout, otpController.loadResetPassword);

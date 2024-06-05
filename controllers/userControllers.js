@@ -202,43 +202,56 @@ const FailureGoogleLogin = async (req, res) => {
 
 /*****************      To load the Category page     *********************/
 
-const loadCategory = async (req, res) => {
+const loadCategory = async (req, res, next) => {
     try {
-        
-        const page = parseInt(req.query.page) || 1; 
-        const limit = parseInt(req.query.limit) || 8; 
 
-        const skip = (page - 1) * limit;
+        const sortValue = 'undefined';
 
-        const productForLength = await Product.find({ is_hide: 0 });
-        const productData = await Product.find({ is_hide: 0 }).skip(skip).limit(limit);
+        const searchText = 'undefined';
 
-        const categoryData = await Category.find({ is_hide: 0 });
+        const { sortby, q } = req.query;
 
-        const cartDataForCount = await Cart.findOne({ user: req.session.user_id }).populate('products');
+        if ( sortby || q ) {
+            next();
+        } else {
 
-        let cartItemsForCartCount = null;
-        if (cartDataForCount) {
-            cartItemsForCartCount = cartDataForCount.products;
+            const page = parseInt(req.query.page) || 1; 
+            const limit = parseInt(req.query.limit) || 8; 
+    
+            const skip = (page - 1) * limit;
+    
+            const productForLength = await Product.find({ is_hide: 0 });
+            const productData = await Product.find({ is_hide: 0 }).skip(skip).limit(limit);
+    
+            const categoryData = await Category.find({ is_hide: 0 });
+    
+            const cartDataForCount = await Cart.findOne({ user: req.session.user_id }).populate('products');
+    
+            let cartItemsForCartCount = null;
+            if (cartDataForCount) {
+                cartItemsForCartCount = cartDataForCount.products;
+            };
+    
+            res.render('category', {
+                activeShopMessage: 'active',
+                pageTitle: 'products | PhoneZee',
+                product: productData,
+                categories: categoryData,
+                loginOrCart: req.session,
+                cartItemsForCartCount: cartItemsForCartCount,
+                sortMethod: 'undefined',
+                pagination: {
+                    currentPage: page,
+                    totalPages: Math.ceil(productForLength.length / limit),
+                    hasNextPage: skip + limit < productData.length,
+                    hasPreviousPage: page > 1,
+                    nextPage: page + 1,
+                    previousPage: page - 1
+                },
+                sortValue,
+                searchText
+            });
         };
-
-        res.render('category', {
-            activeShopMessage: 'active',
-            pageTitle: 'products | PhoneZee',
-            product: productData,
-            categories: categoryData,
-            loginOrCart: req.session,
-            cartItemsForCartCount: cartItemsForCartCount,
-            sortMethod: 'undefined',
-            pagination: {
-                currentPage: page,
-                totalPages: Math.ceil(productForLength.length / limit),
-                hasNextPage: skip + limit < productData.length,
-                hasPreviousPage: page > 1,
-                nextPage: page + 1,
-                previousPage: page - 1
-            }
-        });
 
 
     } catch (error) {
