@@ -35,7 +35,7 @@ const searchFeature = async (req, res) => {
             ]
         }).skip(skip).limit(limit); // Limit and skip for pagination
 
-        const categoryData = await Category.find({ is_hide: 0 });
+        const categoryData = await Product.distinct( 'category' );
 
         const productForLength = await Product.find({
             is_hide: 0,
@@ -88,7 +88,7 @@ const sortFunction = async (req, res, next) => {
 
             const sortValue = req.query.sortby;
 
-            const categoryData = await Category.find({is_hide: 0});
+            const categoryData = await Product.distinct( 'category' );
 
             let productForLength = await Product.find({ is_hide: 0 });
 

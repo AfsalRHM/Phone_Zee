@@ -43,11 +43,25 @@ const loadHome = async (req, res) => {
         const cartData = await Cart.find({user: req.session.user_id});
         const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
 
+        const categoriesToFrontend = [];
+        const categoryImages = [];
+
+        for (let i = 0; i < categoryData.length; i++) {
+            let proData = await Product.findOne({ category: categoryData[i].name });
+            if (proData != null) {
+                categoriesToFrontend.push(categoryData[i]);
+                categoryImages.push(proData.product_image[0]);
+            };
+        };
+
+        const newArrivals = await Product.find().sort({created_at: -1}).limit(6);
+
+        const dealOfTheDay = await Product.findOne({offer: 1}).sort({created_at: -1}).limit(1)
 
         if (cartDataForCount == null) {
-            res.render('Home', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, categories: categoryData, cartItemsForCartCount: cartDataForCount});
+            res.render('Home', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, categories: categoriesToFrontend, cartItemsForCartCount: cartDataForCount, categoryImages, newArrivals, dealOfTheDay});
         } else {
-            res.render('Home', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, categories: categoryData, cartItemsForCartCount: cartDataForCount.products});
+            res.render('Home', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, categories: categoriesToFrontend, cartItemsForCartCount: cartDataForCount.products, categoryImages, newArrivals, dealOfTheDay});
         };
 
     } catch (error) {
@@ -205,11 +219,28 @@ const FailureGoogleLogin = async (req, res) => {
 const loadCategory = async (req, res, next) => {
     try {
 
+        let productData = '';
+
         const sortValue = 'undefined';
+
+        let priceRangeProducts = await Product.find({is_hide: 0});
 
         const searchText = 'undefined';
 
-        const { sortby, q } = req.query;
+        const { sortby, q, cat, off, price_range } = req.query;
+
+        if (price_range) { // Check if price_range is defined
+            // Split price_range into min and max prices
+            const priceRange = price_range.split('to');
+            const minPrice = parseInt(priceRange[0]);
+            const maxPrice = parseInt(priceRange[1]);
+
+            // Find products within the specified price range
+            priceRangeProducts = await Product.find({ is_hide: 0, price: { $gte: minPrice, $lte: maxPrice } });
+            console.log('priceRangeProducts - ', priceRangeProducts);
+        };
+        
+        // const priceRangeProducts = await Product.find({price})
 
         if ( sortby || q ) {
             next();
@@ -221,9 +252,26 @@ const loadCategory = async (req, res, next) => {
             const skip = (page - 1) * limit;
     
             const productForLength = await Product.find({ is_hide: 0 });
-            const productData = await Product.find({ is_hide: 0 }).skip(skip).limit(limit);
-    
-            const categoryData = await Category.find({ is_hide: 0 });
+
+            if ( !cat && !off ) {
+
+                productData = priceRangeProducts.slice(skip, skip + limit);
+
+            } else {
+
+                if ( !cat ) {
+
+                    productData = priceRangeProducts.filter(product => product.offer === 1).slice(skip, skip + limit);
+
+                } else {
+
+                    productData = priceRangeProducts.filter(product => product.category === cat).slice(skip, skip + limit);
+
+                };
+
+            };
+
+            const categoryData = await Product.distinct('category');
     
             const cartDataForCount = await Cart.findOne({ user: req.session.user_id }).populate('products');
     
