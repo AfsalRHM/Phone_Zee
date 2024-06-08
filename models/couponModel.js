@@ -43,6 +43,8 @@ const couponSchema = new mongoose.Schema({
         default: Date.now()
     }
 
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model('Coupon', couponSchema);
