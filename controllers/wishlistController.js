@@ -26,8 +26,6 @@ const loadWishlist = async (req, res) => {
 
         const wishlistData = await Wishlist.find({user: req.session.user_id}).populate('product');
 
-        console.log('Wishlist    ', wishlistData)
-
         const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
         
         if (cartDataForCount == null) {

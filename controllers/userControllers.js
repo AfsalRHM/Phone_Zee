@@ -6,6 +6,7 @@ const Wishlist = require('../models/wishlistModel');
 const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
 const Offer = require('../models/offerModel');
+const Coupon = require('../models/couponModel');
 const Wallet = require('../models/walletModel');
 
 const bcrypt = require('bcrypt')
@@ -405,13 +406,24 @@ const loadErrorPage = async (req, res) => {
 const loadProfile = async (req, res) => {
     try {
 
+        const orderDate = [];
         const walletDate = [];
+        const couponExpiryDate = [];
         
         const addressData = await Address.find({user: req.session.user_id});
         const userData = await User.findOne({_id: req.session.user_id});
         const orderData = await Order.find({ user: req.session.user_id }).populate('products.product').populate('address').sort({created_at: -1});
 
         const walletData = await Wallet.find({user: req.session.user_id}).sort({created_at: -1});
+
+        for (let i = 0; i < orderData.length; i++) {
+
+            const date = orderData[i].created_at;
+        
+            const formatconvertedDate = format(date, "MMM dd, yyyy");
+
+            orderDate[i] = formatconvertedDate;
+        };
 
         for (let i = 0; i < walletData.length; i++) {
 
@@ -424,10 +436,45 @@ const loadProfile = async (req, res) => {
 
         const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
 
+        const currentDate = new Date();
+
+        const couponData = await Coupon.find({ is_hide: 0, start_date: { $lte: currentDate }, end_Date: { $gte: currentDate } }).sort({ created_at: 1 })
+
+        for (let i = 0; i < couponData.length; i++) {
+
+            const date = couponData[i].end_Date;
+        
+            const formatconvertedDate = format(date, "MMM dd, yyyy");
+
+            couponExpiryDate[i] = formatconvertedDate;
+        };
+
+        let couponStatusArray = [];
+
+        couponData.forEach((element, index) => {
+
+            let flag = 0;
+
+            for ( let i = 0; i < userData.coupon_claimed.length; i++ ) {
+
+                if ( element._id.toString() == userData.coupon_claimed[i].couponId ) {
+
+                    flag = 1;
+                    
+                };
+
+            };
+
+            flag === 1 ? couponStatusArray[index] = 'claimed' : couponStatusArray[index] = 'unclaimed';
+
+            flag = 0;
+
+        });
+
         if (cartDataForCount == null) {
-            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, walletData, walletDate, cartItemsForCartCount: cartDataForCount });
+            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, walletData, orderDate, walletDate, cartItemsForCartCount: cartDataForCount, coupons: couponData, couponExpiryDate, couponStatusArray });
         } else {
-            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, walletData, walletDate, cartItemsForCartCount: cartDataForCount.products });
+            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, walletData, orderDate, walletDate, cartItemsForCartCount: cartDataForCount.products, coupons: couponData, couponExpiryDate, couponStatusArray });
         };
 
     } catch (error) {

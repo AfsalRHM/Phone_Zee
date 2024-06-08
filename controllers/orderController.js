@@ -207,7 +207,7 @@ const placeOrder = async (req, res) => {
                 user: req.session.user_id,
                 address: addressData[userData.address]._id,
                 payment_type: paymentMethod,
-                payment_status: paymentMethod == 'payment-cod' ? 'pending' : 'COD' ,
+                payment_status: paymentMethod == 'payment-cod' ? 'COD' : 'pending' ,
                 order_status: 'Pending',    
                 shipping_plan: 'Free-shipping',
                 products: cartData.products,
@@ -236,6 +236,8 @@ const placeOrder = async (req, res) => {
             } else if ( order.payment_type == 'payment-razorpay' ) {
 
                 try {
+
+                    order.payment_status = 'pending';
 
                     const OrderData = await order.save();
 
@@ -281,6 +283,8 @@ const placeOrder = async (req, res) => {
                     await userData.save();
 
                     await wallet.save();
+
+                    order.payment_status = 'Paid';
 
                     const OrderData = await order.save();
 
@@ -350,11 +354,19 @@ const cancelOrder = async (req, res) => {
 
         const userData = await User.findOne({_id: req.session.user_id});
 
-        const orderData = await Order.findOne({_id: OrderId});
+        const orderData = await Order.findOne({_id: OrderId}).populate('products.product');
 
         if ( orderData ) {
 
             orderData.order_status = 'cancelOrder';
+
+            console.log(orderData);
+
+            orderData.products.forEach(async (item) => {
+
+                await Product.findByIdAndUpdate(item.product._id, { $inc: { stock: item.quantity } });
+
+            });
 
             if (orderData.payment_type == 'payment-razorpay' || orderData.payment_type == 'payment-wallet') {
 
@@ -454,4 +466,5 @@ module.exports = {
     loadOrderSuccess,
     confirmPayment,
     loadOrderTrack
+
 };

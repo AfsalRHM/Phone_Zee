@@ -26,6 +26,8 @@
             <div class="page-content">
             	<div class="checkout">
 	                <div class="container">
+						<span class="text-danger ml-4">Check on coupons in profile. <a class="text-danger" href="/profile" >click here!</a></span>
+
             			<div class="checkout-discount">
 							<% if (cartItems.coupon_claimed == 0) { %>
 								<form id="couponForm" method="post">
@@ -126,7 +128,7 @@
 											</div><!-- End .card-header -->
 											<div id="collapse-2" class="collapse" aria-labelledby="heading-2" data-parent="#accordion-payment">
 												<div class="card-body">
-													Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.
+													<span style="font-weight: bold;">Wallet balance : </span><span style="font-weight: 600;">₹ <%= user.wallet_balance %>.00</span>
 												</div><!-- End .card-body -->
 											</div><!-- End .collapse -->
 										</div><!-- End .card -->
