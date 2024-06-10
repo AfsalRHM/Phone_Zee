@@ -104,11 +104,20 @@
 																<% if (order.discount_price !== 0) { %>
 																	<p class="total-price"><strong>Last Price:</strong> ₹ <%= order.order_total %>.00</p>
 																<% } %>
+
+																
 																<% if (order.order_status == 'cancelOrder') { %>
-																	<p class="order-status"><strong>Order Status:</strong> Order Cancelled</p>
-																<% } else { %>
-																	<p class="order-status"><strong>Order Status:</strong> <%= order.order_status %></p>
-																	<% } %>
+																		<p class="order-status"><strong>Order Status:</strong> Order Cancelled</p>
+																<% } else if (order.order_status == 'Pending') { %>
+																		<p class="order-status"><strong>Order Status:</strong> Order Pending</p>
+																<% } else if (order.order_status == 'Confirmed') { %>
+																		<p class="order-status"><strong>Order Status:</strong> Order Confirmed</p>
+																<% } else if (order.order_status == 'Shipped') { %>
+																		<p class="order-status"><strong>Order Status:</strong> Order Shipped</p>
+																<% } else if (order.order_status == 'Delivered') { %>
+																		<p class="order-status"><strong>Order Status:</strong> Order Delivered</p>
+																<% } %>
+
 															</div>
 															<div class="button-details">
 																<a class="btn btn-info btn-sm" href="/ordertrack?orderId=<%= order._id %>">Details</a>

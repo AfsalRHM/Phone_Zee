@@ -140,6 +140,7 @@ user_route.post('/addToWishlist', userAuth.isLogin, wishlistController.addToWish
 user_route.post('/Wishlist', userAuth.isLogin, wishlistController.deleteProductFromWishlist);
 user_route.post('/editAddress', userAuth.isLogin, addressContoller.updateAddress);
 user_route.post('/profile', userAuth.isLogin, addressContoller.deleteAddress, orderController.cancelOrder);
+user_route.post('/placeOrder', userAuth.isLogin, orderController.placeOrderProfile);
 user_route.post('/addToCart', userAuth.isLogin, cartController.addToCart);
 user_route.post('/cart', userAuth.isLogin, cartController.deleteProductFromCart, cartController.updateCart);
 user_route.post('/checkout', userAuth.isLogin, couponController.applyCoupon, couponController.removeCoupon, orderController.placeOrder);
