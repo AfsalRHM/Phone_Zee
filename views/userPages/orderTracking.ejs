@@ -64,10 +64,18 @@
                                             <% if (orderData.order_status == 'cancelOrder') { %>
                                                 <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-warning">Refunded</span></p>
                                             <% } else { %>
-                                                <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-success">Paid</span></p>
+                                                <% if (orderData.payment_status == 'pending') { %>
+                                                    <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-info">Pending</span></p>
+                                                <% } else { %>
+                                                    <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-success">Paid</span></p>
+                                                <% } %>
                                             <% } %>
                                         <% } else if (orderData.payment_type == 'payment-cod') { %> 
-                                            <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-info">Pending</span></p>
+                                            <% if (orderData.order_status == 'cancelOrder') { %>
+                                                <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-danger">Order Cancelled</span></p>
+                                            <% } else { %>
+                                                <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-info">Pending</span></p>
+                                            <% } %>
                                         <% } else { %>
                                             <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-success">Paid</span></p>
                                         <% } %>
@@ -82,10 +90,16 @@
                                                 <p class="ml-5"><span class="badge badge-danger">Order Cancelled</span></p>
                                             </dd>
                                         <% } else if (orderData.order_status == 'Pending') { %>
-                                            <li class="timeline-item">
-                                                <span class="timeline-date">May 30, 2024</span>
-                                                <span class="timeline-content">Order Placed</span>
-                                            </li>
+                                            <% if (orderData.payment_status == 'pending') { %>
+                                                <dd>
+                                                    <p class="ml-5"><span class="badge badge-warning">Awaiting Payment</span></p>
+                                                </dd>
+                                            <% } else { %>
+                                                <li class="timeline-item">
+                                                    <span class="timeline-date">May 30, 2024</span>
+                                                    <span class="timeline-content">Order Placed</span>
+                                                </li>
+                                            <% } %>
                                         <% } else if (orderData.order_status == 'Confirmed') { %>
                                             <li class="timeline-item">
                                                 <span class="timeline-date">May 30, 2024</span>
@@ -150,7 +164,20 @@
                                     <span class="h5">₹<%= orderData.order_total %>.00</span>
                                 </div>
 
+<<<<<<< Updated upstream
                                 <button type="button" class="btn btn-primary btn-block shadow-sm" onclick="downloadInvoice('<%= orderData._id %>')">Download Invoice</button>
+=======
+                                <% if (orderData.payment_type == 'payment-razorpay' || orderData.payment_type == 'payment-wallet') { %>
+                                    <% if (orderData.payment_status == 'pending') { %>
+                                        <button type="button" class="btn btn-info shadow-sm btn-block" onclick="placeOrder('<%= orderData.address._id %>', 'placeOrder', '<%= orderData._id %>')">Continue Payment</button>
+                                        <!-- <button type="button" class="btn btn-primary shadow-sm col-12 col-lg-5" onclick="downloadInvoice('<%= orderData._id %>')">Download Invoice</button> -->
+                                    <% } else { %>
+                                        <button type="button" class="btn btn-primary btn-block shadow-sm" onclick="downloadInvoice('<%= orderData._id %>')">Download Invoice</button>
+                                    <% } %>
+                                <% } else { %>
+                                    <button class="btn btn-outline-secondary btn-block" onclick="window.history.back()">Back</button>
+                                <% } %>
+>>>>>>> Stashed changes
                             </div><!-- End .card-body -->
                         </div><!-- End .card -->
                     </div><!-- End .col-lg-8 -->
@@ -167,44 +194,202 @@
 <%- include('../userLayouts/footer.ejs') %>
 
 <script>
-function downloadInvoice(orderId) {
 
-    fetch('/downloadInvoice', { // Corrected URL to include userId in the route
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ orderId }),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to download the invoice');
-            }
-            return response.blob();
-        })
-        .then(blob => {
-            // Create a URL for the blob
-            const url = window.URL.createObjectURL(blob);
-            // Create a temporary anchor element
-            const a = document.createElement('a');
-            // Set the href attribute to the URL of the blob
-            a.href = url;
-            // Set the download attribute to specify the file name
-            a.download = `invoice.pdf`;
-            // Append the anchor element to the body
-            document.body.appendChild(a);
-            // Click the anchor element to start the download
-            a.click();
-            // Remove the anchor element from the body
-            document.body.removeChild(a);
-            // Revoke the URL to release the object URL
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    
-};
+
+
+
+function placeOrder (addressId, message, orderId) {
+    const paymentMethod = 'payment-razorpay';
+			fetch('/placeOrder', { 
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ addressId: addressId, paymentMethod, orderId }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+					if (paymentMethod === 'payment-razorpay' && data.razorpayOrderId) {
+						// Initiate Razorpay payment
+						const options = {
+							key: data.key , 
+							amount: data.amount * 100 , // To convert to Paisa
+							currency: data.currency ,
+							name: 'Phone Zee' ,
+							// description: 'Order Payment',
+							order_id: data.razorpayOrderId ,
+							handler: function (response) {
+								// Handle payment success
+								fetch('/confirm-payment', {
+									method: 'post',
+									headers: {
+										'Content-Type': 'application/json'
+									},
+									body: JSON.stringify({
+										orderId: data.orderId,
+										razorpayPaymentId: response.razorpay_payment_id,
+										razorpayOrderId: response.razorpay_order_id,
+										razorpaySignature: response.razorpay_signature
+									})
+								})
+								.then(response => response.json())
+								.then(data => {
+									if (data.message === 'Success') {
+										Swal.fire({
+											icon: 'success',
+											title: 'Payment successfull!',
+											text: 'Your order has been successfully placed.',
+											confirmButtonText: 'OK'
+										}).then(() => {
+											console.log('Order Confirmed');
+											window.location.href = `/orderSuccess?id=${data.orderId}`;
+										});
+									} else if (data.message === 'Payment not confirmed') {
+										Swal.fire({
+											icon: 'error',
+											title: 'Payment not confirmed!',
+											text: 'Payment not confirmed. Please contact support.',
+											confirmButtonText: 'OK'
+										});
+									} else {
+										Swal.fire({
+											icon: 'error',
+											title: 'Payment Failed!',
+											text: 'Your payment was successful but order placement failed. Please contact support.',
+											confirmButtonText: 'OK'
+										});
+									}
+								})
+								.catch(error => {
+									console.error('Error:', error);
+								});
+							},
+							prefill: {
+								name: "Afsal",
+								email: "email@example.com",
+								contact: "9876543210"
+							},
+							theme: {
+								color: "#3399cc"
+							}
+						};
+						const rzp1 = new Razorpay(options);
+						rzp1.on('payment.failed', function (response) {
+							console.error(response.error);
+							Swal.fire({
+								icon: 'error',
+								title: 'Payment Failed!',
+								text: 'There was an issue with your payment. Please try again.',
+								confirmButtonText: 'OK'
+							});
+						});
+						rzp1.open();
+					} else  if(data.message == 'Success') {
+                        Swal.fire({
+							icon: 'success',
+							title: 'Order Confirmed!',
+							text: 'Your order has been successfully placed.',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							console.log('Order Confirmed');
+							console.log(data.orderId);
+							window.location.href = `/orderSuccess?id=${data.orderId}`;
+						});
+                    } else if (data.message == 'change order method') {
+                        Swal.fire({
+							icon: 'error',
+							title: 'Choose another payment method',
+							text: "order above ₹10,000 can't be done by Cash On Delivery.",
+							confirmButtonText: 'OK'
+						}).then(() => {
+							console.log('change order method');	
+						});
+                    } else if (data.message == 'Order Already Exists') {
+                        Swal.fire({
+							icon: 'error',
+							title: 'Order Cancelled!',
+							text: 'Order Already Exists.',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							console.log('Order Failed');
+							window.location.href = '/checkout';
+						});
+                    } else if (data.message == 'Not enough balance on wallet') {
+                        Swal.fire({
+							icon: 'error',
+							title: 'Choose another payment Method!',
+							text: 'Not enough balance on wallet.',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							console.log('Order Failed');
+							window.location.href = '/checkout';
+						});
+                    } else if (data.message == 'Payment Method not Available') {
+                        Swal.fire({
+							icon: 'error',
+							title: 'Payment Method unAvailable',
+							text: 'Choose another payment gateway',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							console.log('Payment Failed');
+						});
+                    } else {
+                        window.location.reload();
+                    };
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+		};
+
+
+
+
+
+
+        function downloadInvoice(orderId) {
+
+            fetch('/downloadInvoice', { // Corrected URL to include userId in the route
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ orderId }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to download the invoice');
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    // Create a URL for the blob
+                    const url = window.URL.createObjectURL(blob);
+                    // Create a temporary anchor element
+                    const a = document.createElement('a');
+                    // Set the href attribute to the URL of the blob
+                    a.href = url;
+                    // Set the download attribute to specify the file name
+                    a.download = `invoice.pdf`;
+                    // Append the anchor element to the body
+                    document.body.appendChild(a);
+                    // Click the anchor element to start the download
+                    a.click();
+                    // Remove the anchor element from the body
+                    document.body.removeChild(a);
+                    // Revoke the URL to release the object URL
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            
+        };
 </script>
 
 <style>

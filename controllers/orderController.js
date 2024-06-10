@@ -187,6 +187,7 @@ const placeOrder = async (req, res) => {
                 discount_price: cartData.discount_amount
             });
     
+<<<<<<< Updated upstream
             const OrderData = await order.save();
 
             if ( OrderData.payment_type == 'payment-cod' ) {
@@ -201,8 +202,32 @@ const placeOrder = async (req, res) => {
         
                 if (OrderData) {
                     res.status(200).json({ message: 'Success', orderId: OrderData._id });
+=======
+            if ( order.payment_type == 'payment-cod' ) {
+
+                if (order.order_total >= 10000) {
+                    
+                    res.status(200).json({ message: 'change order method' });
+
+>>>>>>> Stashed changes
                 } else {
-                    res.status(500).json({ message: 'Failed' });
+
+                    if (cartData.coupon_id !== 'nothing') {
+                        userData.coupon_claimed.push({couponId: cartData.coupon_id});
+                    };
+        
+                    await userData.save();
+            
+                    await Cart.findByIdAndUpdate(cartData._id, { $pull: { products: { _id: { $in: cartData.products.map(p => p._id) } } }, $set: { total_price: 0, discount_amount: 0, coupon_claimed: 0, coupon_id: 'nothing' } });
+            
+                    const OrderData = await order.save();
+    
+                    if (OrderData) {
+                        res.status(200).json({ message: 'Success', orderId: OrderData._id });
+                    } else {
+                        res.status(500).json({ message: 'Failed' });
+                    };
+
                 };
 
             } else if ( OrderData.payment_type == 'payment-razorpay' ) {
@@ -245,6 +270,43 @@ const placeOrder = async (req, res) => {
     };
 };
 
+/*****************      To Place the Order from the profile     *********************/
+
+const placeOrderProfile = async (req, res, next) => {
+    try {
+
+        const { addressId, paymentMethod, orderId } = req.body;
+
+        const userData = await User.findOne({_id: req.session.user_id});
+
+        const OrderData = await Order.findOne({_id: orderId});
+
+        const razorpayOrder = await razorpayInstance.orders.create({
+            amount: OrderData.order_total * 100, // Amount in smallest currency unit (e.g., paisa for INR)
+            currency: 'INR',
+            receipt: `receipt_${OrderData._id}`
+        });
+
+        // await Cart.findByIdAndUpdate(cartData._id, { $pull: { products: { _id: { $in: cartData.products.map(p => p._id) } } }, $set: { total_price: 0, discount_amount: 0, coupon_claimed: 0, coupon_id: 'nothing' } });
+
+        return res.status(200).json({
+            message: 'Razorpay order created',
+            razorpayOrderId: razorpayOrder.id,
+            userName: userData.name,
+            orderId: OrderData._id,
+            amount: OrderData.order_total,
+            currency: 'INR',
+            key: process.env.RAZORPAY_KEY_ID
+        });
+
+    } catch (err) {
+        console.error('Error creating Razorpay order:', err);
+        return res.status(500).send(err);
+    };
+};
+
+/*****************      To Confirm the payment through the razorpay official page    *********************/
+
 const confirmPayment = async (req, res) => {
     try {
         const { orderId, razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
@@ -265,6 +327,7 @@ const confirmPayment = async (req, res) => {
         if (generatedSignature === razorpaySignature) {
             // Payment is successful and verified
             order.payment_status = 'Paid';
+            order.order_status = 'Confirmed';
             await order.save();
 
             res.status(200).json({ message: 'Success', orderId: order._id });
@@ -371,6 +434,7 @@ module.exports = {
     updateOrderStatus,
     cancelOrderAdmin,
     placeOrder,
+    placeOrderProfile,
     cancelOrder,
     loadOrderSuccess,
     confirmPayment,

@@ -393,6 +393,15 @@
 							console.log(data.orderId);
 							window.location.href = `/orderSuccess?id=${data.orderId}`;
 						});
+                    } else if (data.message == 'change order method') {
+                        Swal.fire({
+							icon: 'error',
+							title: 'Choose another payment method',
+							text: "order above ₹10,000 can't be done by Cash On Delivery.",
+							confirmButtonText: 'OK'
+						}).then(() => {
+							console.log('change order method');	
+						});
                     } else if (data.message == 'Order Already Exists') {
                         Swal.fire({
 							icon: 'error',
