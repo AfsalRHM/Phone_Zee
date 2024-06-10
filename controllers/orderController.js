@@ -187,29 +187,12 @@ const placeOrder = async (req, res) => {
                 discount_price: cartData.discount_amount
             });
     
-<<<<<<< Updated upstream
-            const OrderData = await order.save();
-
-            if ( OrderData.payment_type == 'payment-cod' ) {
-    
-                if (cartData.coupon_id !== 'nothing') {
-                    userData.coupon_claimed.push({couponId: cartData.coupon_id});
-                };
-    
-                await userData.save();
-        
-                await Cart.findByIdAndUpdate(cartData._id, { $pull: { products: { _id: { $in: cartData.products.map(p => p._id) } } }, $set: { total_price: 0, discount_amount: 0, coupon_claimed: 0, coupon_id: 'nothing' } });
-        
-                if (OrderData) {
-                    res.status(200).json({ message: 'Success', orderId: OrderData._id });
-=======
             if ( order.payment_type == 'payment-cod' ) {
 
                 if (order.order_total >= 10000) {
                     
                     res.status(200).json({ message: 'change order method' });
 
->>>>>>> Stashed changes
                 } else {
 
                     if (cartData.coupon_id !== 'nothing') {
