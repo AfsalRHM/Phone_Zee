@@ -77,6 +77,8 @@ admin_route.get('/editoffer', adminAuth.isLogin, offerController.loadEditOffer);
 admin_route.get('/salestatistics', adminAuth.isLogin, statisticsController.loadStatistics);
 admin_route.get('/adminLogout', adminAuth.isLogin, adminController.adminLogout);
 
+admin_route.get('/sales-data', statisticsController.adminDataChart);
+
 admin_route.get('/test', adminController.loadTesting);
 
 // Post Requests

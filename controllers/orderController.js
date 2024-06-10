@@ -241,7 +241,7 @@ const placeOrder = async (req, res) => {
 
                 };
 
-            } else if ( OrderData.payment_type == 'payment-razorpay' ) {
+            } else if ( order.payment_type == 'payment-razorpay' ) {
 
                 try {
 

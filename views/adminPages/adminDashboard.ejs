@@ -64,11 +64,17 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xl-8 col-lg-12">
+                    <div class="col-xl-12 col-lg-12">
                         <div class="card mb-4">
                             <article class="card-body">
                                 <h5 class="card-title">Sale statistics</h5>
-                                <canvas id="myChart" height="120px"></canvas>
+                                <div class="filters">
+                                    <button onclick="updateChart('daily')" id="daily">Daily</button>
+                                    <button onclick="updateChart('weekly')" id="weekly">Weekly</button>
+                                    <button onclick="updateChart('monthly')" id="monthly" class="active">Monthly</button>
+                                    <button onclick="updateChart('yearly')" id="yearly">Yearly</button>
+                                </div>
+                                <canvas id="myChart" height="120"></canvas>
                             </article>
                         </div>
                         <div class="row">
@@ -187,7 +193,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-lg-12">
+                    <!-- <div class="col-xl-4 col-lg-12">
                         <div class="card mb-4">
                             <article class="card-body">
                                 <h5 class="card-title">Revenue Base on Area</h5>
@@ -219,7 +225,7 @@
                                 </div>
                             </article>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="card mb-4">
                     <header class="card-header">
@@ -419,6 +425,89 @@
             <!-- content-main end// -->
             
             <%- include('../adminLayouts/pageFooter.ejs') %>
+
+        <script>
+            let chart;
+            const ctx = document.getElementById('myChart').getContext('2d');
+        
+            async function fetchData(filter) {
+                // Mock API response
+                const response = await fetch(`/admin/sales-data?filter=${filter}`);
+                const data = await response.json();
+                return data;
+            }
+        
+            async function updateChart(filter) {
+                const data = await fetchData(filter);
+        
+                chart.data.labels = data.labels;
+                chart.data.datasets[0].data = data.data;
+                chart.update();
+        
+                // Update active button
+                document.querySelectorAll('.filters button').forEach(button => {
+                    button.classList.remove('active');
+                });
+                document.getElementById(filter).classList.add('active');
+            }
+        
+            function createChart(data) {
+                chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Sales',
+                            data: data.data,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0 // Set precision to 0 to display integer values only
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+        
+            window.addEventListener('load', async () => {
+                const initialData = await fetchData('monthly'); // Fetch initial data
+                createChart(initialData); // Initialize chart with initial data
+            });
+            
+        </script>
+            
+
+        <style>
+            .filters {
+                margin-bottom: 20px;
+                display: flex;
+                justify-content: center;
+            }
+            .filters button {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                margin: 0 5px;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            .filters button:hover {
+                background-color: #0056b3;
+            }
+            .filters button.active {
+                background-color: #0056b3;
+            }
+        </style>
 
     <%- include('../adminLayouts/footer.ejs') %>
 
