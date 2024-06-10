@@ -173,9 +173,6 @@
                                     <span class="h5">₹<%= orderData.order_total %>.00</span>
                                 </div>
 
-<<<<<<< Updated upstream
-                                <button type="button" class="btn btn-primary btn-block shadow-sm" onclick="downloadInvoice('<%= orderData._id %>')">Download Invoice</button>
-=======
                                 <% if (orderData.payment_type == 'payment-razorpay' || orderData.payment_type == 'payment-wallet') { %>
                                     <% if (orderData.payment_status == 'pending') { %>
                                         <button type="button" class="btn btn-info shadow-sm btn-block" onclick="placeOrder('<%= orderData.address._id %>', 'placeOrder', '<%= orderData._id %>')">Continue Payment</button>
@@ -186,7 +183,6 @@
                                 <% } else { %>
                                     <button class="btn btn-outline-secondary btn-block" onclick="window.history.back()">Back</button>
                                 <% } %>
->>>>>>> Stashed changes
                             </div><!-- End .card-body -->
                         </div><!-- End .card -->
                     </div><!-- End .col-lg-8 -->
