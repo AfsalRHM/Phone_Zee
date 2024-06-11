@@ -226,6 +226,7 @@ const placeOrder = async (req, res) => {
 
                     if (cartData.coupon_id !== 'nothing') {
                         userData.coupon_claimed.push({couponId: cartData.coupon_id});
+                        await userData.save();
                     };
         
                     await userData.save();
@@ -255,6 +256,11 @@ const placeOrder = async (req, res) => {
                         currency: 'INR',
                         receipt: `receipt_${OrderData._id}`
                     });
+
+                    if (cartData.coupon_id !== 'nothing') {
+                        userData.coupon_claimed.push({couponId: cartData.coupon_id});
+                        await userData.save();
+                    };
 
                     await Cart.findByIdAndUpdate(cartData._id, { $pull: { products: { _id: { $in: cartData.products.map(p => p._id) } } }, $set: { total_price: 0, discount_amount: 0, coupon_claimed: 0, coupon_id: 'nothing' } });
 
@@ -288,6 +294,11 @@ const placeOrder = async (req, res) => {
                     });
     
                     userData.wallet_balance -= wallet.amount;
+
+                    if (cartData.coupon_id !== 'nothing') {
+                        userData.coupon_claimed.push({couponId: cartData.coupon_id});
+                        await userData.save();
+                    };
 
                     await userData.save();
 
@@ -479,8 +490,6 @@ const loadOrderTrack = async (req, res) => {
         const { orderId } = req.query;
         
         const orderData = await Order.findOne({_id: orderId}).populate('user').populate('address').populate('products.product');
-
-        console.log(orderData);
 
         const date = orderData.created_at;
         

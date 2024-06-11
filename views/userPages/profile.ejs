@@ -127,7 +127,7 @@
 																	<% if (order.returnStatus == 'Not requested') { %>
 																		<button onclick="openReturnOrderModal('<%= order._id %>')" id="returnButtonId" class="btn btn-warning btn-sm">Return Order</button>
 																	<% } %>
-																<% } else if (order.order_status == 'returnOrder') { %>
+																<% } else if ( order.order_status == 'cancelOrder') { %>
 																<% } else { %>
 																	<button onclick="cancelOrder('<%= order._id %>')" class="btn btn-danger btn-sm">Cancel Order</button>
 																<% } %>
