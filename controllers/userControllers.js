@@ -617,6 +617,104 @@ const userLogin = async (req, res) => {
     };
 };
 
+/*****************      To Update the user Profile     *********************/
+
+const updateProfile = async (req, res) => {
+    try {
+
+        const { userName, userMail, userNumber, currentPassword, newPassword, newConfirmPassword } = req.body;
+
+        if (userName.trim() === '') {
+            req.flash('errorMessage', 'Please enter your name.');
+            res.redirect('/profile');
+        } else if (userMail.trim() === '') {
+            req.flash('errorMessage', 'Please enter your email address.');
+            res.redirect('/profile');
+        } else if (userNumber.length == 0) {
+            req.flash('errorMessage', 'Please enter your mobile number.');
+            res.redirect('/profile');
+        } else if (userMail.includes(' ')) {
+            req.flash('errorMessage', 'Inavlid Email Address. No spaces Allowed');
+            res.redirect('/profile');
+        } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(userMail)) {
+            req.flash('errorMessage', 'Invalid Email Address. Only lowercase letters are allowed.');
+            res.redirect('/profile');
+        } else if (userNumber.length != 10) {
+            req.flash('errorMessage', 'Inavlid Mobile Number.');
+            res.redirect('/profile');
+        } else {
+
+            const userData = await User.findOne({_id: req.session.user_id});
+
+            userName == userData.name ? userData.name : userData.name = userName ;
+            userMail == userData.email ? userData.email : userData.email = userMail;
+            userNumber == userData.number ? userData.number : userData.number = userNumber;
+    
+            if ( currentPassword ) {
+                const passwordMatch = bcrypt.compare(currentPassword, userData.password);
+    
+                if (!passwordMatch) {
+                    req.flash('errorMessage', 'Enter the correct Password.');
+                    res.redirect('/profile');
+                } else {
+    
+                    if (newPassword === '') {
+                        req.flash('errorMessage', 'Please enter your password.');
+                        res.redirect('/profile');
+                    } else if (confirmPassword === '') {
+                        req.flash('errorMessage', 'Please enter your password.');
+                        res.redirect('/profile');
+                    }else if (newPassword.includes(' ')) {
+                        req.flash('errorMessage', 'Password should not contain spaces.');
+                        res.redirect('/profile');
+                    } else if (newPassword.length < 8) {
+                        req.flash('errorMessage', 'Password must be at least 8 characters long.');
+                        res.redirect('/profile');
+                    } else if (!/[A-Z]/.test(newPassword)) {
+                        req.flash('errorMessage', 'Password must contain at least one uppercase letter.');
+                        res.redirect('/profile');
+                    } else if (!/[a-z]/.test(newPassword)) {
+                        req.flash('errorMessage', 'Password must contain at least one uppercase letter.');
+                        res.redirect('/profile');
+                    } else if (!/\d/.test(newPassword)) {
+                        req.flash('errorMessage', 'Password must contain at least one number.');
+                        res.redirect('/profile');
+                    } else if (!/[@$!%*?&]/.test(newPassword)) {
+                        req.flash('errorMessage', 'Password must contain at least one special character (@, $, !, %, *, &, ?)');
+                        res.redirect('/profile');          
+                    } else {
+
+                        if (newConfirmPassword == newPassword) {
+
+                            userData.password = await securePassword(newPassword);
+
+                            await userData.save();
+
+                            req.flash('successMessage', "Profile edited successfully.");
+                            res.redirect('profile');
+
+                        } else {
+                            req.flash('errorMessage', "Confirm password didn't Match.");
+                            res.redirect('/profile'); 
+                        };
+
+                    };
+    
+                };
+            } else {
+                await userData.save();
+
+                req.flash('successMessage', "Profile edited successfully.");
+                res.redirect('profile');
+            };
+    
+        };
+
+    } catch (error) {
+        console.log(error.message);
+    };
+};
+
 /*****************      To Logout the user     *********************/
 
 const userLogout = async (req, res) => {
@@ -665,6 +763,7 @@ module.exports = {
     loadProfile,
     userLogin,
     insertUser,
+    updateProfile,
     loadTestPage,
     userLogout,
 

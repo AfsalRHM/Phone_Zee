@@ -38,11 +38,11 @@
 									<li class="nav-item">
 								        <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-wallet" role="tab" aria-controls="tab-address" aria-selected="false">Wallet</a>
 								    </li>
-								    <li class="nav-item">
-								        <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Account Details</a>
-								    </li>
 									<li class="nav-item">
 								        <a class="nav-link" id="tab-coupon-link" data-toggle="tab" href="#tab-coupon" role="tab" aria-controls="tab-coupon" aria-selected="false">Coupons</a>
+								    </li>
+								    <li class="nav-item">
+								        <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Account Details</a>
 								    </li>
 								    <li class="nav-item">
 								        <a id="logoutLink" class="nav-link" href="/logout">Sign Out</a>
@@ -258,26 +258,37 @@
 								    </div><!-- .End .tab-pane -->
 
 								    <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
-								    	<form action="#">
+								    	<form action="/updateProfile" method="post">
 
+											<% if (typeof successMessage != 'undefined') { %>
+												<p style="color: rgb(54, 234, 93);" class="d-inline-flex p-2 " ><%= successMessage %></p>
+											<% } %>
+											<% if (typeof errorMessage != 'undefined') { %>
+												<p style="color: red;" class="d-inline-flex p-2 " ><%= errorMessage %></p>
+											<% } %>
+											<br>
 		            						<label>Display Name *</label>
-		            						<input type="text" class="form-control" required>
+		            						<input type="text" name="userName" class="form-control" value="<%- user.name %>">
 		            						<small class="form-text">This will be how your name will be displayed in the account section and in reviews</small>
 
 		                					<label>Email address *</label>
-		        							<input type="email" class="form-control" required>
+		        							<input type="email" name="userMail" class="form-control" value="<%- user.email %>">
 
                                             <label>Mobile Number (leave blank to leave unchanged)</label>
-		        							<input type="text" class="form-control">
+		        							<input type="text" name="userNumber" class="form-control" value="<%- user.number %>">
 
-		            						<label>Current password (leave blank to leave unchanged)</label>
-		            						<input type="password" class="form-control">
+											<% if (user.password != null) { %>
 
-		            						<label>New password (leave blank to leave unchanged)</label>
-		            						<input type="password" class="form-control">
-
-		            						<label>Confirm new password</label>
-		            						<input type="password" class="form-control mb-2">
+												<label>Current password (leave blank to leave unchanged)</label>
+												<input name="currentPassword" type="password" type="password" class="form-control">
+	
+												<label>New password (leave blank to leave unchanged)</label>
+												<input name="newPassword" type="password" class="form-control">
+	
+												<label>Confirm new password</label>
+												<input name="newConfirmPassword" type="password" class="form-control mb-2">
+											
+											<% } %>
 
 		                					<button type="submit" class="btn btn-outline-primary-2">
 			                					<span>SAVE CHANGES</span>
