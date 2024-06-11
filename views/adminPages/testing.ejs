@@ -2,129 +2,86 @@
 
 <%- include('../adminLayouts/pageHeader.ejs') %>
 
-<section class="content-main" style="background-color: rgb(236, 236, 236);">
-    <div class="content-header d-flex justify-content-between align-items-center" style="background-color: rgb(236, 236, 236);">
-        <h2 class="content-title">Sales Report</h2>
-        <button id="downloadReport" class="btn btn-primary">Download Report</button>
-    </div>
-    <section class="content-main d-flex justify-content-center align-items-center">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="content-title card-title mb-4">Generate Sales Report</h2>
-                <form method="post">
-                    <!-- Date Range Selector -->
-                    <div class="mb-4">
-                        <label for="dateRange" class="form-label">Select Date Range</label>
-                        <select id="dateRange" name="dateRange" class="form-select">
-                            <option value="today">Today</option>
-                            <option value="yesterday">Yesterday</option>
-                            <option value="lastWeek">Last Week</option>
-                            <option value="lastMonth">Last Month</option>
-                            <option value="lastYear">Last Year</option>
-                            <option value="custom">Custom</option>
-                            <option value="overall">Overall</option>
-                        </select>
-                    </div>
-                    <!-- Custom Date Range Selector -->
-                    <div id="customDateRange" style="display: none;">
-                        <div class="mb-4">
-                            <label for="startDate" class="form-label">Start Date</label>
-                            <input type="date" id="startDate" name="startDate" class="form-control"><br>
-                            <label for="endDate" class="form-label">End Date</label>
-                            <input type="date" id="endDate" name="endDate" class="form-control">
-                        </div>
-                    </div>
-
-                    <!-- Product Filter -->
-                    <!-- <div class="mb-4">
-                        <label for="productFilter" class="form-label">Select Product</label>
-                        <select id="productFilter" name="productFilter" class="form-select">
-                            <option value="all">All Products</option>
-                            <option value="productA">Product A</option>
-                            <option value="productB">Product B</option>
-                        </select>
-                    </div> -->
-
-                    <!-- Revenue Filter -->
-                    <!-- <div class="mb-4">
-                        <label for="revenueFilter" class="form-label">Select Revenue Range</label>
-                        <select id="revenueFilter" name="revenueFilter" class="form-select">
-                            <option value="all">All Revenue Ranges</option>
-                            <option value="0-50">$0 - $50</option>
-                            <option value="51-100">$51 - $100</option>
-                            <option value="101-500">$101 - $500</option>
-                        </select>
-                    </div> -->
-
-                    <div class="d-grid justify-content-center">
-                        <button type="submit" class="btn btn-primary">Generate Report</button>
-                    </div>
-                </form>
-            </div>
-            <!-- card body .// -->
-        </div>
-        <!-- card .// -->
-    </section>
-    <!-- card end// -->
-</section>
-<!-- content-main end// -->
-
-<!-- Sales Report Table -->
 <section class="content-main">
     <div class="content-header">
-        <h2 class="content-title">Sales Report</h2>
+        <div>
+            <h2 class="content-title card-title">Notifications</h2>
+            <p>All the notifications for the admin.</p>
+        </div>
     </div>
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Date</th>
-                    <th>Product</th>
-                    <th>Product Price</th>
-                    <th>Quantity Sold</th>
-                    <th>Total Revenue</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Sample data (Replace with dynamic data) -->
-                <tr>
-                    <td>2024-06-01</td>
-                    <td>Product A</td>
-                    <td>$10.00</td>
-                    <td>10</td>
-                    <td>$100.00</td>
-                </tr>
-                <tr>
-                    <td>2024-06-02</td>
-                    <td>Product B</td>
-                    <td>$12.00</td>
-                    <td>8</td>
-                    <td>$96.00</td>
-                </tr>
-                <!-- More rows here -->
-            </tbody>
-        </table>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th scope="col">Message</th>
+                            <th scope="col">Date</th>
+                            <th scope="col" class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>New order received.</td>
+                            <td>10.06.2024</td>
+                            <td class="text-end">
+                                <a href="#" onclick="markAsRead('1')" class="btn btn-md rounded font-sm">Mark as Read</a>
+                                <a href="#" onclick="deleteNotification('1')" class="btn btn-md rounded font-sm text-danger">Delete</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>User registered.</td>
+                            <td>09.06.2024</td>
+                            <td class="text-end">
+                                <a href="#" onclick="markAsRead('2')" class="btn btn-md rounded font-sm">Mark as Read</a>
+                                <a href="#" onclick="deleteNotification('2')" class="btn btn-md rounded font-sm text-danger">Delete</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Product out of stock.</td>
+                            <td>08.06.2024</td>
+                            <td class="text-end">
+                                <a href="#" onclick="markAsRead('3')" class="btn btn-md rounded font-sm">Mark as Read</a>
+                                <a href="#" onclick="deleteNotification('3')" class="btn btn-md rounded font-sm text-danger">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </section>
-<!-- Sales Report Table End -->
 
 <%- include('../adminLayouts/pageFooter.ejs') %>
 
-<%- include('../adminLayouts/footer.ejs') %>
-
 <script>
-    // Show/Hide custom date range selector based on selection
-    document.getElementById('dateRange').addEventListener('change', function () {
-        if (this.value === "custom") {
-            document.getElementById('customDateRange').style.display = "block";
-        } else {
-            document.getElementById('customDateRange').style.display = "none";
-        }
-    });
+    function markAsRead(notificationId) {
+        console.log('Marking notification ' + notificationId + ' as read.');
+        // Add fetch request to mark as read
+    }
 
-    // Download Report Functionality
-    document.getElementById('downloadReport').addEventListener('click', function () {
-        // Add logic to download the sales report here
-        alert('Downloading sales report...');
-    });
+    function deleteNotification(notificationId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Once deleted, you will not be able to recover this notification!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                console.log('Deleting notification ' + notificationId);
+                // Add fetch request to delete notification
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire('Cancelled', 'The notification deletion was cancelled', 'error');
+            }
+        });
+    }
 </script>
+
+<%- include('../adminLayouts/footer.ejs') %>

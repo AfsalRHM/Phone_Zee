@@ -58,10 +58,14 @@
                                             <dd>
                                                 <p class="mb-0"><strong>Status:</strong> <span class="badge badge-success">Delivered</span></p>
                                             </dd>
+                                        <% } else if (orderData.order_status == 'returnOrder') { %>
+                                            <dd>
+                                                <p class="mb-0"><strong>Status:</strong> <span class="badge badge-warning">Order Returned</span></p>
+                                            </dd>
                                         <% } %>
                                         <!-- <p class="mb-0"><strong>Status:</strong> <span class="badge badge-success">Shipped</span></p> -->
                                         <% if (orderData.payment_type == 'payment-razorpay') { %>
-                                            <% if (orderData.order_status == 'cancelOrder') { %>
+                                            <% if (orderData.order_status == 'cancelOrder' || orderData.order_status == 'returnOrder') { %>
                                                 <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-warning">Refunded</span></p>
                                             <% } else { %>
                                                 <% if (orderData.payment_status == 'pending') { %>
@@ -88,6 +92,10 @@
                                         <% if (orderData.order_status == 'cancelOrder') { %>
                                             <dd>
                                                 <p class="ml-5"><span class="badge badge-danger">Order Cancelled</span></p>
+                                            </dd>
+                                        <% } else if (orderData.order_status == 'returnOrder') { %>
+                                            <dd>
+                                                <p class="ml-5"><span class="badge badge-warning">Order Returned</span></p>
                                             </dd>
                                         <% } else if (orderData.order_status == 'Pending') { %>
                                             <% if (orderData.payment_status == 'pending') { %>

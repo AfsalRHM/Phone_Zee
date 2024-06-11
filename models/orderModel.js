@@ -46,6 +46,10 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    returnStatus: {
+        type: String,
+        default: "Not requested"
+    },
     created_at: {
         type: Date,
         default: Date.now()

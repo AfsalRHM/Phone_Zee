@@ -22,6 +22,10 @@
                                     <div class="col-lg-6 col-md-6 ms-auto text-md-end">
                                         <span>Order Status : <span class="text-success">Order Delivered</span></span>
                                     </div>
+                                <% } else if (orderData.order_status == 'returnOrder') { %>
+                                    <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                                        <span>Order Status : <span class="text-warning">Order Returned</span></span>
+                                    </div>
                                 <% } else { %>
                                     <div class="col-lg-6 col-md-6 ms-auto text-md-end">
                                         <select id="orderStatus" onchange="updateOrderStatus('<%= orderData._id %>', this.value)" class="form-select d-inline-block mb-lg-0 mr-5 mw-200">
@@ -159,9 +163,15 @@
                                                         <dl class="dlist">
                                                             <dt class="text-muted">Status:</dt>
                                                             <% if (orderData.payment_status == 'Paid') { %>
-                                                                <dd>
-                                                                    <span class="badge rounded-pill alert-success text-success">Payment done</span>
-                                                                </dd>
+                                                                <% if (orderData.order_status == 'cancelOrder' || orderData.order_status == 'returnOrder') { %>
+                                                                    <dd>
+                                                                        <span class="badge rounded-pill alert-danger text-danger">Payment Refunded</span>
+                                                                    </dd>
+                                                                <% } else { %>
+                                                                    <dd>
+                                                                        <span class="badge rounded-pill alert-success text-success">Payment done</span>
+                                                                    </dd>
+                                                                <% } %>
                                                             <% } else if (orderData.payment_status == 'pending') { %> 
                                                                 <dd>
                                                                     <span class="badge rounded-pill alert-warning text-warning">Payment Pending</span>

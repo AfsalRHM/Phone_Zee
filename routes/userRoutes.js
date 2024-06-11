@@ -151,5 +151,7 @@ user_route.post('/forgotPassword', otpController.sendOtpForResetPassword);
 user_route.post('/resetPassword', otpController.resetPassword);
 // user_route.post('/category', userController.sortItems);
 
+user_route.post('/returnorder', orderController.requestToReturnOrder );
+
 
 module.exports = user_route;

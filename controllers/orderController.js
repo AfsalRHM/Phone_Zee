@@ -7,6 +7,7 @@ const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
 const Coupon = require('../models/couponModel');
 const Wallet = require('../models/walletModel');
+const Notification = require('../models/notificationModel');
 
 
 const crypto = require('crypto');
@@ -502,16 +503,49 @@ const loadOrderTrack = async (req, res) => {
     };
 };
 
+/*****************      To load the Order list Page    *********************/
+
+const requestToReturnOrder = async (req, res) => {
+    try {
+
+        const { orderId, returnReason } = req.body;
+
+        const orderData = await Order.findOne({_id: orderId});
+
+        const notification = new Notification({
+            from: req.session.user_id,
+            orderId: orderId,
+            matter: 'returnOrderRequest',
+            description: returnReason,
+        });
+
+        orderData.returnStatus = 'requested';
+
+        orderData.save();
+
+        const requestData = await notification.save();
+
+        res.status(200).json({ message: 'return order req send' })
+        
+    } catch (error) {
+        console.log(error.messsage);
+    };
+};
+
+
+
 module.exports = {
     loadOrderList,
     loadOrderDetail,
     updateOrderStatus,
     cancelOrderAdmin,
+
     placeOrder,
     placeOrderProfile,
     cancelOrder,
     loadOrderSuccess,
     confirmPayment,
-    loadOrderTrack
+    loadOrderTrack,
+    requestToReturnOrder
 
 };

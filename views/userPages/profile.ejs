@@ -116,18 +116,20 @@
 																		<p class="order-status"><strong>Order Status:</strong> Order Shipped</p>
 																<% } else if (order.order_status == 'Delivered') { %>
 																		<p class="order-status"><strong>Order Status:</strong> Order Delivered</p>
+																<% }  else if (order.order_status == 'returnOrder') { %>
+																	<p class="order-status"><strong>Order Status:</strong> Order Returned</p>
 																<% } %>
 
 															</div>
 															<div class="button-details">
 																<a class="btn btn-info btn-sm" href="/ordertrack?orderId=<%= order._id %>">Details</a>
-																<% if (order.order_status == 'delivered') { %>
-																	<button onclick="returnOrder('<%= order._id %>')" class="btn btn-warning btn-sm">Return Order</button>
-																<% } else { %>
-																	<% if (order.order_status == 'cancelOrder') { %>
-																	<% } else { %>
-																		<button onclick="cancelOrder('<%= order._id %>')" class="btn btn-danger btn-sm">Cancel Order</button>
+																<% if (order.order_status == 'Delivered') { %>
+																	<% if (order.returnStatus == 'Not requested') { %>
+																		<button onclick="openReturnOrderModal('<%= order._id %>')" id="returnButtonId" class="btn btn-warning btn-sm">Return Order</button>
 																	<% } %>
+																<% } else if (order.order_status == 'returnOrder') { %>
+																<% } else { %>
+																	<button onclick="cancelOrder('<%= order._id %>')" class="btn btn-danger btn-sm">Cancel Order</button>
 																<% } %>
 															</div>
 														</div><!-- End .card-body -->
@@ -135,7 +137,31 @@
 												<% }); %>
 											</div><!-- End .orders-list -->
 										<% } %>
-									</div><!-- .End .tab-pane -->																									
+									</div><!-- .End .tab-pane -->	
+									
+									<!-- Return Order Modal -->
+									<div class="modal" id="returnOrderModal">
+										<div class="modal-dialog modal-dialog-centered modal-lg">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title">Return Order</h5>
+													<button type="button" class="close" data-dismiss="modal" onclick="hideModal()" aria-label="Close">
+														<span aria-hidden="true">&times;</span>
+													</button>
+												</div>
+												<div class="modal-body">
+													<form id="returnOrderForm">
+														<div class="form-group">
+															<label for="returnReason">Reason for Return</label>
+															<textarea class="form-control" id="returnReason" rows="3" required></textarea>
+														</div>
+														<input type="hidden" id="returnOrderId" value="">
+														<button type="submit" class="btn btn-warning btn-block">Submit Return</button>
+													</form>
+												</div>
+											</div>
+										</div>
+									</div>
 
 								    <div class="tab-pane fade" id="tab-wallet" role="tabpanel" aria-labelledby="tab-downloads-link">
 
@@ -422,6 +448,63 @@
 			});
 		};
 
+
+
+			function openReturnOrderModal(orderId) {
+				// Set the order ID in the hidden input field
+				document.getElementById('returnOrderId').value = orderId;
+				// Open the modal
+				showModal();
+			}
+
+			// Function to show the modal
+			function showModal() {
+				const modal = document.getElementById('returnOrderModal');
+				modal.style.display = 'block';
+			}
+
+			// Function to hide the modal
+			function hideModal() {
+				const modal = document.getElementById('returnOrderModal');
+				modal.style.display = 'none';
+			}
+
+			// Add an event listener to the form submission
+			document.getElementById('returnOrderForm').addEventListener('submit', function(event) {
+				event.preventDefault();
+				
+				const orderId = document.getElementById('returnOrderId').value;
+				const returnReason = document.getElementById('returnReason').value;
+				
+				// Use Axios to make a POST request to the server
+				axios.post('/returnorder', {
+					orderId: orderId,
+					returnReason: returnReason
+				})
+				.then(response => {
+					// Handle success response from the server
+					if (response.data.message == 'return order req send') {
+						Swal.fire({
+								title: 'Success!',
+								text: 'Return request submitted successfully.',
+								icon: 'success'
+							}).then(() => {
+								window.location.reload();
+							});
+						// alert('Return request submitted successfully.');
+
+						hideModal();
+					} else {
+						alert('Failed to submit return request.');
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+					alert('An error occurred while submitting the return request.');
+				});
+			});
+
+
 	</script>
 
 	<style>
@@ -462,6 +545,55 @@
 			margin-bottom: 0.5rem;
 			font-size: 1rem;
 		}
+
+
+
+		.modal-content {
+			border-radius: 10px;
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+			width: 100%; /* Adjust the width of the modal content */
+			max-width: 800px; /* Set maximum width if needed */
+			margin: 0 auto; /* Center the modal content horizontally */
+		}
+
+		.modal-header {
+			background-color: #f8f9fa;
+			border-bottom: none;
+			padding: 15px 20px;
+			border-radius: 10px 10px 0 0;
+		}
+
+		.modal-body {
+			padding: 20px;
+		}
+
+		.modal-title {
+			font-size: 1.25rem;
+		}
+
+		.form-group {
+			margin-bottom: 20px;
+		}
+
+		textarea.form-control {
+			resize: none;
+			width: 100%; /* Make the textarea full width */
+		}
+
+		.btn-warning {
+			background-color: #ffc107;
+			border-color: #ffc107;
+		}
+
+		.btn-warning:hover {
+			background-color: #ffca28;
+			border-color: #ffca28;
+		}
+
+		.btn-block {
+			width: 100%;
+		}
+
 	</style>
     
 <%- include('../userLayouts/footer.ejs') %>

@@ -9,20 +9,32 @@ const Order = require('../models/orderModel');
 
 const bcrypt = require('bcrypt');
 
+
+/*****************      To load the AdminDashboard     *********************/
+
 const loadAdminHome = async (req, res) => {
     try {
+
+        let fullRevenue = 0;
 
         // Just for pushing to git
         
         const productData = await Product.find({is_hide: 0});
         const categoryData = await Category.find({is_hide: 0});
-        const OrderData = await Order.find({ order_status: { $nin: 'cancelOrder' }  });
-        res.render('adminDashboard', {activeDashboardMessage: 'active', product: productData, categories: categoryData, orders: OrderData })
+        const OrderData = await Order.find({ order_status: { $nin: [ 'cancelOrder', 'returnOrder' ] }  });
+
+        for (let i = 0; i < OrderData.length; i++) {
+            fullRevenue += OrderData[i].order_total;
+        };
+
+        res.render('adminDashboard', {activeDashboardMessage: 'active', product: productData, categories: categoryData, orders: OrderData, fullRevenue })
 
     } catch (error) {
         console.log(error.message);
     };
 };
+
+/*****************      To load the page to add products     *********************/
 
 const loadAddProductPrice = async (req, res) => {
     try {
@@ -54,6 +66,8 @@ const loadAddProductRelatedProducts = async (req, res) => {
         console.log(error.message);
     };
 };
+
+/*****************      To load the User list     *********************/
 
 const loadUserList = async (req, res) => {
     try {
@@ -90,6 +104,7 @@ const loadUserList = async (req, res) => {
     };
 };
 
+/*****************      To block and unblock user     *********************/
 
 const blockAndActive2 = async (req, res) => {
     try {
@@ -112,6 +127,8 @@ const blockAndActive2 = async (req, res) => {
     }
 };
     
+/*****************      To list and unlist category     *********************/
+
 const activeOrInactive = async (req, res, next) => {
     try {
         const {categoryId}=req.body;
@@ -133,6 +150,8 @@ const activeOrInactive = async (req, res, next) => {
     }; 
 };
 
+/*****************      To load the admin login page     *********************/
+
 const loadAdminLogin = async (req, res) => {
     try {
 
@@ -143,6 +162,8 @@ const loadAdminLogin = async (req, res) => {
     };
 };
 
+/*****************      To load the Testing page     *********************/
+
 const loadTesting = async (req, res) => {
     try {
 
@@ -152,6 +173,8 @@ const loadTesting = async (req, res) => {
         console.log(error.message);
     };
 };
+
+/*****************      To Verify the admin     *********************/
 
 const adminVerifyLogin = async (req, res) => {
     try {

@@ -1,0 +1,155 @@
+<%- include('../adminLayouts/header.ejs') %>
+
+<%- include('../adminLayouts/pageHeader.ejs') %>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Notifications</h2>
+            <p>All the notifications for the admin.</p>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th scope="col">Message</th>
+                            <th scope="col">Reason</th>
+                            <th scope="col">Date</th>
+                            <th scope="col" class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (notificationData.length == 0) { %>
+                            <td></td>
+                            <td></td>
+                            <p>There has no notifications</p>
+                            <td></td>
+                            <td></td>
+                        <% } else { %>
+                            <% notificationData.forEach((notification, index) => { %>
+                                <% if (notification.matter != 'returnOrderRequest') { %>
+                                <% } else { %>
+                                    <tr>
+                                        <td><%= index + 1 %></td>
+                                        <% if (notification.matter == 'returnOrderRequest') { %>
+                                            <td>Return Order Request.</td>
+                                        <% } else { %>
+                                            <td>Return Order Request.</td>
+                                        <% } %>
+                                        <td><%= notification.description %></td>
+                                        <td><%= notificationDate[index] %></td>
+                                        <td class="text-end">
+                                            <a href="/admin/orderdetail?orderId=<%= notification.orderId._id %>" class="btn btn-md rounded font-sm">Details</a>
+                                            <a onclick="acceptNotification('<%= notification._id %>')" class="btn btn-outline-success rounded font-sm ">Accept</a>
+                                            <a onclick="denyNotification('<%= notification._id %>')" class="btn btn-outline-danger rounded font-sm ">Deny</a>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../adminLayouts/pageFooter.ejs') %>
+
+<script>
+    function acceptNotification(notificationId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to accept this return request?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, accept it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post('/admin/acceptnotification', {
+                    notificationId: notificationId
+                })
+                .then(response => {
+                    // Handle success response from the server
+                    if (response.data.message == 'return order Accepted') {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Return request accepted successfully.',
+                            icon: 'success'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Failed!',
+                            text: 'Failed to accept return request.',
+                            icon: 'error'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while submitting the return request.',
+                        icon: 'error'
+                    });
+                });
+            }
+        });
+    }
+
+    function denyNotification(notificationId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to reject this return request?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, reject it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post('/admin/denynotification', {
+                    notificationId: notificationId
+                })
+                .then(response => {
+                    // Handle success response from the server
+                    if (response.data.message == 'return order Rejected') {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Return request Rejected successfully.',
+                            icon: 'success'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Failed!',
+                            text: 'Failed to reject return request.',
+                            icon: 'error'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while submitting the return request.',
+                        icon: 'error'
+                    });
+                });
+            }
+        });
+    };
+
+
+</script>
+
+<%- include('../adminLayouts/footer.ejs') %>

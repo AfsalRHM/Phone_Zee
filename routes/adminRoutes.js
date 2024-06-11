@@ -48,6 +48,7 @@ const productController = require('../controllers/productController');
 const couponController =  require('../controllers/couponController');
 const offerController = require('../controllers/offerController');
 const statisticsController = require('../controllers/statisticsController');
+const notificationController = require('../controllers/notificationController');
 
 // Requerung the Admin Auth
 const adminAuth = require('../middlewares/adminAuth');
@@ -75,6 +76,7 @@ admin_route.get('/categoryofferlist', adminAuth.isLogin, offerController.loadCat
 admin_route.get('/addoffer', adminAuth.isLogin, offerController.loadAddOffer);
 admin_route.get('/editoffer', adminAuth.isLogin, offerController.loadEditOffer);
 admin_route.get('/salestatistics', adminAuth.isLogin, statisticsController.loadStatistics);
+admin_route.get('/notifications', adminAuth.isLogin, notificationController.loadNotificationList);
 admin_route.get('/adminLogout', adminAuth.isLogin, adminController.adminLogout);
 
 admin_route.get('/sales-data', statisticsController.adminDataChart);
@@ -101,6 +103,8 @@ admin_route.post('/productofferlist', adminAuth.isLogin, offerController.switchP
 admin_route.post('/categoryofferlist', adminAuth.isLogin, offerController.switchCategoryOfferStatus,  offerController.deleteCategoryOffer);
 admin_route.post('/salestatistics', adminAuth.isLogin, statisticsController.filterReports);
 admin_route.post('/sales-report/download', adminAuth.isLogin, statisticsController.downloadSalesReport);
+admin_route.post('/acceptnotification', adminAuth.isLogin, notificationController.acceptNotification);
+admin_route.post('/denynotification', adminAuth.isLogin, notificationController.denyNotification);
 
 
 // All Routes
