@@ -18,6 +18,10 @@ const categorySchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    count: {
+        type: Number,
+        default: 0
+    },
     created_at: {
         type: Date,
         default: Date.now()

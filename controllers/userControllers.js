@@ -44,8 +44,12 @@ const loadHome = async (req, res) => {
         const cartData = await Cart.find({user: req.session.user_id});
         const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
 
+        const topSellingProducts = await Product.find({is_hide: 0}).sort({count: -1}).limit(6);
+        const topSellingCategories = await Category.find({is_hide: 0}).sort({count: -1}).limit(6);
+
         const categoriesToFrontend = [];
         const categoryImages = [];
+        const topSellingCategoriesImage = [];
 
         for (let i = 0; i < categoryData.length; i++) {
             let proData = await Product.findOne({ category: categoryData[i].name });
@@ -55,14 +59,21 @@ const loadHome = async (req, res) => {
             };
         };
 
+        for (let i = 0; i < topSellingCategories.length; i++) {
+            let proData = await Product.findOne({ category: topSellingCategories[i].name });
+            if (proData != null) {
+                topSellingCategoriesImage.push(proData.product_image[0]);
+            } 
+        };
+
         const newArrivals = await Product.find().sort({created_at: -1}).limit(6);
 
         const dealOfTheDay = await Product.findOne({offer: 1}).sort({created_at: -1}).limit(1)
 
         if (cartDataForCount == null) {
-            res.render('Home', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, categories: categoriesToFrontend, cartItemsForCartCount: cartDataForCount, categoryImages, newArrivals, dealOfTheDay});
+            res.render('Home', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, categories: categoriesToFrontend, cartItemsForCartCount: cartDataForCount, categoryImages, newArrivals, dealOfTheDay, topSellingProducts, topSellingCategories, topSellingCategoriesImage});
         } else {
-            res.render('Home', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, categories: categoriesToFrontend, cartItemsForCartCount: cartDataForCount.products, categoryImages, newArrivals, dealOfTheDay});
+            res.render('Home', {pageTitle: 'PhoneZee | Your Shopping Destination', loginOrCart: req.session, categories: categoriesToFrontend, cartItemsForCartCount: cartDataForCount.products, categoryImages, newArrivals, dealOfTheDay, topSellingProducts, topSellingCategories, topSellingCategoriesImage});
         };
 
     } catch (error) {

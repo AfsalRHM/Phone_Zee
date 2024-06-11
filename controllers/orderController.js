@@ -192,7 +192,7 @@ const placeOrder = async (req, res) => {
             try {
                 let product = await Product.findByIdAndUpdate(
                     { _id: productId },
-                    { $inc: { stock: -quantity } }
+                    { $inc: { stock: -quantity, count: 1 } },
                 );
             } catch (error) {
                 console.error("Error updating product:", error);
