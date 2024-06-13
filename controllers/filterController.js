@@ -11,10 +11,12 @@ const Order = require('../models/orderModel');
 const searchFeature = async (req, res) => {
     try {
 
-        const sortValue = 'undefined'
+        const sortValue = 'undefined';
+
+        const overallProducts = await Product.find({is_hide: 0});
 
         const page = parseInt(req.query.page) || 1; 
-        const limit = parseInt(req.query.limit) || 1; 
+        const limit = parseInt(req.query.limit) || 8; 
 
         const skip = (page - 1) * limit;
 
@@ -45,6 +47,18 @@ const searchFeature = async (req, res) => {
             ]
         }); // Total number of products for pagination
 
+        const categoryDataProductsCount = [];
+
+        for (let i = 0; i < overallProducts.length; i++) {
+            let count = 0;
+            for (let j = 0; j < categoryData.length; j++) {
+                if (categoryData[j] == overallProducts[i].category) {
+                    count++;
+                };
+            };
+            categoryDataProductsCount.push(count);
+        };
+
         res.render('category', {
             activeShopMessage: 'active',
             pageTitle: 'products | PhoneZee',
@@ -62,7 +76,8 @@ const searchFeature = async (req, res) => {
                 nextPage: page + 1,
                 previousPage: page - 1
             },
-            searchText
+            searchText,
+            categoryDataProductsCount
         });
 
     } catch (error) {
@@ -74,6 +89,8 @@ const searchFeature = async (req, res) => {
 
 const sortFunction = async (req, res, next) => {
     try {
+
+        const overallProducts = await Product.find({is_hide: 0});
 
         const { q } = req.query;
 
@@ -118,9 +135,20 @@ const sortFunction = async (req, res, next) => {
                 sortMethod = 'Dated';
             };
 
+            const categoryDataProductsCount = [];
+
+            for (let i = 0; i < overallProducts.length; i++) {
+                let count = 0;
+                for (let j = 0; j < categoryData.length; j++) {
+                    if (categoryData[j] == overallProducts[i].category) {
+                        count++;
+                    };
+                };
+                categoryDataProductsCount.push(count);
+            };
 
             if (cartDataForCount == null) {
-                res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: sortedData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount, sortMethod, sortValue,
+                res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: sortedData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount, sortMethod, sortValue, categoryDataProductsCount,
                 pagination: {
                     currentPage: page,
                     totalPages: Math.ceil(productForLength.length / limit),
@@ -130,7 +158,7 @@ const sortFunction = async (req, res, next) => {
                     previousPage: page - 1
                 } });
             } else {
-                res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: sortedData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products, sortMethod, sortValue,
+                res.render('category', {activeShopMessage: 'active', pageTitle: 'products | PhoneZee', product: sortedData, categories: categoryData, loginOrCart: req.session, cartItemsForCartCount: cartDataForCount.products, sortMethod, sortValue, categoryDataProductsCount,
                 pagination: {
                     currentPage: page,
                     totalPages: Math.ceil(productForLength.length / limit),

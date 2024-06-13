@@ -284,6 +284,18 @@ const loadCategory = async (req, res, next) => {
             };
 
             const categoryData = await Product.distinct('category');
+
+            const categoryDataProductsCount = [];
+
+            for (let i = 0; i < productForLength.length; i++) {
+                let count = 0;
+                for (let j = 0; j < categoryData.length; j++) {
+                    if (categoryData[j] == productForLength[i].category) {
+                        count++;
+                    };
+                };
+                categoryDataProductsCount.push(count);
+            };
     
             const cartDataForCount = await Cart.findOne({ user: req.session.user_id }).populate('products');
     
@@ -300,6 +312,7 @@ const loadCategory = async (req, res, next) => {
                 loginOrCart: req.session,
                 cartItemsForCartCount: cartItemsForCartCount,
                 sortMethod: 'undefined',
+                categoryDataProductsCount,
                 pagination: {
                     currentPage: page,
                     totalPages: Math.ceil(productForLength.length / limit),
@@ -309,7 +322,8 @@ const loadCategory = async (req, res, next) => {
                     previousPage: page - 1
                 },
                 sortValue,
-                searchText
+                searchText,
+                categoryDataProductsCount
             });
         };
 
@@ -423,7 +437,9 @@ const loadProfile = async (req, res) => {
         
         const addressData = await Address.find({user: req.session.user_id});
         const userData = await User.findOne({_id: req.session.user_id});
-        const orderData = await Order.find({ user: req.session.user_id }).populate('products.product').populate('address').sort({created_at: -1});
+        const orderData = await Order.find({ user: req.session.user_id }).populate('products.product').populate('address').sort({createdAt: -1});
+
+        console.log('orderData = ', orderData);
 
         const walletData = await Wallet.find({user: req.session.user_id}).sort({created_at: -1});
 
@@ -627,17 +643,8 @@ const updateProfile = async (req, res) => {
         if (userName.trim() === '') {
             req.flash('errorMessage', 'Please enter your name.');
             res.redirect('/profile');
-        } else if (userMail.trim() === '') {
-            req.flash('errorMessage', 'Please enter your email address.');
-            res.redirect('/profile');
         } else if (userNumber.length == 0) {
             req.flash('errorMessage', 'Please enter your mobile number.');
-            res.redirect('/profile');
-        } else if (userMail.includes(' ')) {
-            req.flash('errorMessage', 'Inavlid Email Address. No spaces Allowed');
-            res.redirect('/profile');
-        } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(userMail)) {
-            req.flash('errorMessage', 'Invalid Email Address. Only lowercase letters are allowed.');
             res.redirect('/profile');
         } else if (userNumber.length != 10) {
             req.flash('errorMessage', 'Inavlid Mobile Number.');
@@ -647,7 +654,6 @@ const updateProfile = async (req, res) => {
             const userData = await User.findOne({_id: req.session.user_id});
 
             userName == userData.name ? userData.name : userData.name = userName ;
-            userMail == userData.email ? userData.email : userData.email = userMail;
             userNumber == userData.number ? userData.number : userData.number = userNumber;
     
             if ( currentPassword ) {
@@ -661,7 +667,7 @@ const updateProfile = async (req, res) => {
                     if (newPassword === '') {
                         req.flash('errorMessage', 'Please enter your password.');
                         res.redirect('/profile');
-                    } else if (confirmPassword === '') {
+                    } else if (newConfirmPassword === '') {
                         req.flash('errorMessage', 'Please enter your password.');
                         res.redirect('/profile');
                     }else if (newPassword.includes(' ')) {

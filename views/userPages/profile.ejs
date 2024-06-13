@@ -271,8 +271,8 @@
 		            						<input type="text" name="userName" class="form-control" value="<%- user.name %>">
 		            						<small class="form-text">This will be how your name will be displayed in the account section and in reviews</small>
 
-		                					<label>Email address *</label>
-		        							<input type="email" name="userMail" class="form-control" value="<%- user.email %>">
+		                					<label>Email address </label>
+		        							<input type="email" name="userMail" class="form-control" value="<%- user.email %>" disabled>
 
                                             <label>Mobile Number (leave blank to leave unchanged)</label>
 		        							<input type="text" name="userNumber" class="form-control" value="<%- user.number %>">
@@ -307,7 +307,10 @@
 													<div class="coupon-card card mb-4">
 														<div class="card-body">
 															<h5 class="card-title coupon-code" style="text-decoration: underline;"><%= coupon.name %></h5>
-															<p><strong>Coupon code:</strong> <%= coupon.coupon_code %></p>
+															<div class="row justify-content-between">
+																<div class="pl-3"><strong>Coupon code:</strong> <%= coupon.coupon_code %></div>
+																<div><a class="fa-solid fa-copy" href="" style="color: #495057;" onclick="copyCouponCode('<%= coupon.coupon_code %>')" title="copy coupon code"></a></div>
+															</div>
 															<p><strong>Discount price:</strong> <%= coupon.discount_price %></p>
 															<p><strong>Expiry Date:</strong> <%= couponExpiryDate[index] %></p>
 															<p><strong>Minimum price:</strong> <%= coupon.minimum_price %></p>
@@ -340,6 +343,16 @@
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
 
 	<script>
+
+		async function copyCouponCode (couponCode) {
+			try {
+
+				await navigator.clipboard.writeText(couponCode);
+				
+			} catch (error) {
+				console.log(error.message, 'Front End')
+			};
+		};
 
 		function deleteAddress(addressId) {
 			Swal.fire({

@@ -51,7 +51,8 @@ const loadOrderList = async (req, res) => {
                                       .populate('address')
                                       .populate('products.product')
                                       .skip(skip)
-                                      .limit(limit);
+                                      .limit(limit)
+                                      .sort({createdAt: -1});
 
         // Count total number of orders
         const totalOrders = await Order.countDocuments();

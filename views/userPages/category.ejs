@@ -75,7 +75,7 @@
 
                             <div class="toolbox-center">
                                 <div class="toolbox-info">
-                                    Showing <span>12 of 56</span> Products
+                                    Showing <span><%= product.length <= 8 ? product.length : 8 %> of <%= product.length %></span> Products
                                 </div><!-- End .toolbox-info -->
                             </div><!-- End .toolbox-center -->
 
@@ -277,7 +277,7 @@
                                                                 </label>
                                                             </div><!-- End .custom-checkbox -->
                                                             <span class="item-count">
-                                                                <%= (i+1) * 7 %>
+                                                                <%= categoryDataProductsCount[i] %>
                                                             </span>
                                                         </div><!-- End .filter-item -->
                                                         <% } } else { %>
