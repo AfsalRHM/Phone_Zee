@@ -65,7 +65,7 @@
                                             <% } %>
                                         </span></p>
 
-                                        <p>You Have Currently <span class="font-weight-normal text-dark"><strong><%= Orders.length %></strong></span> Orders</p>
+                                        <p>You Have Currently <span class="font-weight-normal text-dark"><strong><%- orderCountByDelivered %></strong></span> Orders</p>
 
 								    	<p>From your account dashboard you can view your <a href="#tab-orders" class="tab-trigger-link link-underline">recent orders</a>, manage your <a href="#tab-address" class="tab-trigger-link">shipping and billing addresses</a>, and <a href="#tab-account" class="tab-trigger-link">edit your password and account details</a>.</p>
 								    </div><!-- .End .tab-pane -->
@@ -115,7 +115,11 @@
 																<% } else if (order.order_status == 'Shipped') { %>
 																		<p class="order-status"><strong>Order Status:</strong> Order Shipped</p>
 																<% } else if (order.order_status == 'Delivered') { %>
+																	<% if (order.returnStatus == 'requested') { %>
+																		<p class="order-status"><strong>Order Status:</strong> Order Return Requested </p>
+																	<% } else { %>
 																		<p class="order-status"><strong>Order Status:</strong> Order Delivered</p>
+																	<% } %>
 																<% }  else if (order.order_status == 'returnOrder') { %>
 																	<p class="order-status"><strong>Order Status:</strong> Order Returned</p>
 																<% } %>
@@ -127,7 +131,8 @@
 																	<% if (order.returnStatus == 'Not requested') { %>
 																		<button onclick="openReturnOrderModal('<%= order._id %>')" id="returnButtonId" class="btn btn-warning btn-sm">Return Order</button>
 																	<% } %>
-																<% } else if ( order.order_status == 'cancelOrder') { %>
+																<% } else if ( order.order_status == 'returnOrder' || order.order_status == 'cancelOrder') { %>
+
 																<% } else { %>
 																	<button onclick="cancelOrder('<%= order._id %>')" class="btn btn-danger btn-sm">Cancel Order</button>
 																<% } %>

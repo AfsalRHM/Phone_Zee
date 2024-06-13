@@ -49,6 +49,8 @@ const acceptNotification = async(req, res) => {
 
         const orderData = await Order.findOne({_id: notificationData.orderId});
 
+        const userData = await User.findOne({_id: orderData.user});
+
         orderData.returnStatus = 'accepted';
         orderData.order_status = 'returnOrder';
 
@@ -59,6 +61,10 @@ const acceptNotification = async(req, res) => {
                 type_of_transaction: 'Deposit',
                 amount: orderData.order_total
             });
+
+            userData.wallet_balance += wallet.amount;
+
+            await userData.save();
 
             await wallet.save();
 

@@ -202,8 +202,14 @@
                     <ul class="nav">
                         <li class="nav-item">
                             <a class="nav-link btn-icon" href="/admin/notifications">
-                                <i class="material-icons md-notifications animation-shake"></i>
-                                <span class="badge rounded-pill">3</span>
+                                <% if ( locals.adminNotifications != 0) { %>
+                                    <i class="material-icons md-notifications animation-shake"></i>
+                                    <span class="badge rounded-pill"><%= locals.adminNotifications %></span>
+                                <% } else { %>
+                                    <i class="material-icons md-notifications"></i>
+                                    <span class="badge rounded-pill">0</span>
+                                <% } %>
+                                
                             </a>
                         </li>
                         <li class="nav-item">

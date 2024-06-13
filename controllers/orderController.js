@@ -229,6 +229,8 @@ const placeOrder = async (req, res) => {
                         userData.coupon_claimed.push({couponId: cartData.coupon_id});
                         await userData.save();
                     };
+
+                    order.order_status = 'Confirmed';
         
                     await userData.save();
             
@@ -301,9 +303,13 @@ const placeOrder = async (req, res) => {
                         await userData.save();
                     };
 
+                    await Cart.findByIdAndUpdate(cartData._id, { $pull: { products: { _id: { $in: cartData.products.map(p => p._id) } } }, $set: { total_price: 0, discount_amount: 0, coupon_claimed: 0, coupon_id: 'nothing' } });
+
                     await userData.save();
 
                     await wallet.save();
+
+                    order.order_status = 'Confirmed';
 
                     order.payment_status = 'Paid';
 
@@ -418,8 +424,6 @@ const cancelOrder = async (req, res) => {
         if ( orderData ) {
 
             orderData.order_status = 'cancelOrder';
-
-            console.log(orderData);
 
             orderData.products.forEach(async (item) => {
 

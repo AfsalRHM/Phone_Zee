@@ -34,7 +34,7 @@
                                         <% } else if (orderData.payment_type == 'payment-cod') { %> 
                                             <p class="mb-0"><strong>Payment Method:</strong> cash on delivery</p>
                                         <% } else { %>
-                                            <p class="mb-0"><strong>Payment Method:</strong> wallet</p>
+                                            <p class="mb-0"><strong>Payment Method:</strong> Wallet</p>
                                         <% } %>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
@@ -80,8 +80,12 @@
                                             <% } else { %>
                                                 <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-info">Pending</span></p>
                                             <% } %>
-                                        <% } else { %>
-                                            <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-success">Paid</span></p>
+                                        <% } else if (orderData.payment_type == 'payment-wallet') { %>
+                                            <% if (orderData.order_status == 'cancelOrder') { %>
+                                                <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-warning">Refunded</span></p>
+                                            <% } else { %>
+                                                <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-success">Paid</span></p>
+                                            <% } %>
                                         <% } %>
                                     </div>
                                 </div>

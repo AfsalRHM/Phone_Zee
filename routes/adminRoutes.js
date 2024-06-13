@@ -40,6 +40,20 @@ const User = require('../models/userModel');
 const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
 
+const Notifications = require('../models/notificationModel');
+
+// console.log('Here on adminRoute')
+
+admin_route.use(async (req, res, next) => {
+    try {
+        const adminNotificationsCount = await Notifications.find({ matter: 'returnOrderRequest' }).countDocuments();
+        res.locals.adminNotifications = adminNotificationsCount;
+        next();
+    } catch (error) {
+        console.log(error.message);
+    };
+});
+
 // Requering the Controllers
 const adminController = require('../controllers/adminController');
 const categoryController = require('../controllers/categoryController');
