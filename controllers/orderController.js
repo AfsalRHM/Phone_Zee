@@ -461,6 +461,8 @@ const cancelOrder = async (req, res) => {
     };
 };
 
+/*****************      To Load the Order sucess page     *********************/
+
 const loadOrderSuccess = async (req, res) => {
     try {
 

@@ -9,6 +9,8 @@ const Order = require('../models/orderModel');
 
 const bcrypt = require('bcrypt');
 
+const { parseISO, format } = require('date-fns');
+
 
 /*****************      To load the AdminDashboard     *********************/
 
@@ -17,17 +19,32 @@ const loadAdminHome = async (req, res) => {
 
         let fullRevenue = 0;
 
-        // Just for pushing to git
+        let orderDate = [];
+        let orderIds = [];
         
         const productData = await Product.find({is_hide: 0});
         const categoryData = await Category.find({is_hide: 0});
-        const OrderData = await Order.find({ order_status: { $nin: [ 'cancelOrder', 'returnOrder' ] }  });
+        const OrderData = await Order.find({ order_status: { $nin: [ 'cancelOrder', 'returnOrder' ] }, order_status: 'Delivered'  });
 
+        const toShowLatest6Orders = await Order.find().limit(6).populate('user').populate('products').sort({updatedAt: -1});
+
+        for (let i = 0; i < toShowLatest6Orders.length; i++ ) {
+
+            const pageOrderIdFull = toShowLatest6Orders[i]._id.toString();
+            const pageOrderId = pageOrderIdFull.substring(0, 8);
+            orderIds.push(pageOrderId);
+
+            const date = toShowLatest6Orders[i].createdAt;
+            const formatconvertedDate = format(date, "dd MMM, yyyy");
+            orderDate.push(formatconvertedDate);
+        
+        };
+        
         for (let i = 0; i < OrderData.length; i++) {
             fullRevenue += OrderData[i].order_total;
         };
 
-        res.render('adminDashboard', {activeDashboardMessage: 'active', product: productData, categories: categoryData, orders: OrderData, fullRevenue })
+        res.render('adminDashboard', {activeDashboardMessage: 'active', product: productData, categories: categoryData, orders: OrderData, fullRevenue, latestOrders: toShowLatest6Orders, orderDate, orderIds })
 
     } catch (error) {
         console.log(error.message);
