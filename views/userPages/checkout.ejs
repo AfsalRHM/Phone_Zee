@@ -384,7 +384,14 @@
 							});
 						});
 						rzp1.open();
-					} else  if(data.message == 'Success') {
+					} else  if(data.message == 'Maximum purchase amount is 5,00,000') {
+                        Swal.fire({
+							icon: 'error',
+							title: 'Maximum purchase amount is 5,00,000!',
+							text: 'Please contact us if you want to order large quantity.',
+							confirmButtonText: 'OK'
+						})
+                    } else  if(data.message == 'Success') {
                         Swal.fire({
 							icon: 'success',
 							title: 'Order Confirmed!',

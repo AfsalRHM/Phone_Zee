@@ -186,6 +186,16 @@ const placeOrder = async (req, res) => {
 
         const length = cartData.products.length;
 
+        if (cartData.discount_amount != 0) {
+            if ( ( cartData.total_price - cartData.discount_amount ) > 500000 ) {
+                res.status(200).json({ message: 'Maximum purchase amount is 5,00,000' });
+            };
+        } else {
+            if ( cartData.total_price > 500000 ) {
+                res.status(200).json({ message: 'Maximum purchase amount is 5,00,000' });
+            };
+        };
+
         for (let i = 0; i < length; i++) {
             const productId = cartData.products[i].product._id;
             const quantity = cartData.products[i].quantity;
