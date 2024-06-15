@@ -15,12 +15,12 @@
         <% } %>
         <form action="/otp" method="post">
             <div class="otp-fields">
-                <input type="number" name="otp-digit-1" maxlength="1" required>
-                <input type="number" name="otp-digit-2" maxlength="1" required>
-                <input type="number" name="otp-digit-3" maxlength="1" required>
-                <input type="number" name="otp-digit-4" maxlength="1" required>
-                <input type="number" name="otp-digit-5" maxlength="1" required>
-                <input type="number" name="otp-digit-6" maxlength="1" required>
+                <input type="text" name="otp-digit-1" maxlength="1" required>
+                <input type="text" name="otp-digit-2" maxlength="1" required>
+                <input type="text" name="otp-digit-3" maxlength="1" required>
+                <input type="text" name="otp-digit-4" maxlength="1" required>
+                <input type="text" name="otp-digit-5" maxlength="1" required>
+                <input type="text" name="otp-digit-6" maxlength="1" required>
             </div>
             <div class="button-container">
                 <button type="submit">Verify</button>
@@ -31,16 +31,6 @@
     </div>
 
     <script>
-
-            // let count = 47; // Initial countdown value
-            // const countdownInterval = setInterval(() => {
-            //     count--; // Decrement count
-            //     document.getElementById('resendOtpTime').innerHTML = count; // Update countdown display
-            //     if (count <= 0) {
-            //         document.getElementById('otpButton').style.display = 'block';
-            //         clearInterval(countdownInterval); // Stop the countdown when count reaches 0
-            //     };
-            // }, 1000);
 
             function startTimer() {
                 let count = localStorage.getItem('countdown'); // Initial countdown value
@@ -89,6 +79,21 @@
                     submitForm(); // Call the function to submit the form asynchronously
                 });
             };
+
+            function moveToNextInput(event) {
+                const currentInput = event.target;
+                if (currentInput.value.length === 1) {
+                    const nextInput = currentInput.nextElementSibling;
+                    if (nextInput && nextInput.tagName === 'INPUT') {
+                        nextInput.focus();
+                    }
+                }
+            }
+
+            // Add event listeners to input fields
+            document.querySelectorAll('.otp-fields input').forEach(input => {
+                input.addEventListener('input', moveToNextInput);
+            });
 
     </script>
 </body>
