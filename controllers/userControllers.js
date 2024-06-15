@@ -439,6 +439,8 @@ const loadProfile = async (req, res) => {
         const userData = await User.findOne({_id: req.session.user_id});
         const orderData = await Order.find({ user: req.session.user_id }).populate('products.product').populate('address').sort({createdAt: -1});
 
+        const OrderDataForLengthToUser = await Order.find({ user: req.session.user_id, order_status: { $nin: [ 'cancelOrder', 'returnOrder', 'Delivered' ] }  }).countDocuments();
+
         const walletData = await Wallet.find({user: req.session.user_id}).sort({created_at: -1});
 
         for (let i = 0; i < orderData.length; i++) {
@@ -496,12 +498,10 @@ const loadProfile = async (req, res) => {
 
         });
 
-        const orderCountByDelivered = await Order.find({ user: req.session.user_id, order_status: { $ne: 'cancelOrder' } }).countDocuments();
-
         if (cartDataForCount == null) {
-            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, walletData, orderDate, walletDate, cartItemsForCartCount: cartDataForCount, coupons: couponData, couponExpiryDate, couponStatusArray, orderCountByDelivered });
+            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, walletData, orderDate, walletDate, cartItemsForCartCount: cartDataForCount, coupons: couponData, couponExpiryDate, couponStatusArray, OrderDataForLengthToUser });
         } else {
-            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, walletData, orderDate, walletDate, cartItemsForCartCount: cartDataForCount.products, coupons: couponData, couponExpiryDate, couponStatusArray, orderCountByDelivered });
+            res.render('profile', {pageTitle: 'profile | PhoneZee', loginOrCart: req.session, user: userData, address: addressData, Orders: orderData, walletData, orderDate, walletDate, cartItemsForCartCount: cartDataForCount.products, coupons: couponData, couponExpiryDate, couponStatusArray, OrderDataForLengthToUser });
         };
 
     } catch (error) {

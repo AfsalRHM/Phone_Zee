@@ -53,22 +53,31 @@
 	                		<div class="col-md-8 col-lg-9">
 	                			<div class="tab-content">
 								    <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link">
-								    	<p>Hello <span class="font-weight-normal text-dark"><%- user.name %>,</span></p>
-
-                                        <p>Your Email : <span class="font-weight-normal text-dark"><%- user.email %></span></p>
-
-                                        <p>Your Mobile Number : <span class="font-weight-normal text-dark">
-                                            <% if (!user.number) { %>
-                                                <a href="#tab-account" class="tab-trigger-link link-underline">Add A Mobile Number</a>
-                                            <% } else { %>
-                                                <%- user.number  %>
-                                            <% } %>
-                                        </span></p>
-
-                                        <p>You Have Currently <span class="font-weight-normal text-dark"><strong><%- orderCountByDelivered %></strong></span> Orders</p>
-
-								    	<p>From your account dashboard you can view your <a href="#tab-orders" class="tab-trigger-link link-underline">recent orders</a>, manage your <a href="#tab-address" class="tab-trigger-link">shipping and billing addresses</a>, and <a href="#tab-account" class="tab-trigger-link">edit your password and account details</a>.</p>
-								    </div><!-- .End .tab-pane -->
+										<div id="dashboard-container">
+											<p>Hello <span class="font-weight-normal text-dark"><%- user.name %></span>,</p>
+								
+											<p>Your Email: <span class="font-weight-normal text-dark"><%- user.email %></span></p>
+								
+											<p>Your Mobile Number: <span class="font-weight-normal text-dark">
+												<% if (!user.number) { %>
+													<a href="#tab-account" class="tab-trigger-link link-underline"><i class="fas fa-plus-circle icon"></i>Add A Mobile Number</a>
+												<% } else { %>
+													<%- user.number %>
+												<% } %>
+											</span></p>
+								
+											<p>You currently have <span class="font-weight-normal text-dark highlight"><%- OrderDataForLengthToUser %></span> orders.</p>
+								
+											<p>From your account dashboard, you can:</p>
+											<div class="actions">
+												<a href="#tab-orders" class="tab-trigger-link"><i class="fas fa-box icon "></i>View Recent Orders</a>
+												<a href="#tab-address" class="tab-trigger-link"><i class="fas fa-map-marker-alt icon"></i>Manage Addresses</a>
+												<a href="#tab-account" class="tab-trigger-link"><i class="fas fa-user-cog icon"></i>Edit Account Details</a>
+												<a href="#tab-wallet" class="tab-trigger-link"><i class="fas fa-wallet icon"></i>View Wallet Balance</a>
+												<a href="#tab-coupons" class="tab-trigger-link"><i class="fas fa-tag icon"></i>View Available Coupons</a>
+											</div>
+										</div><!-- .End #dashboard-container -->
+									</div><!-- .End .tab-pane -->
 
 								    <div class="tab-pane fade" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
 										<% if (Orders.length === 0) { %>
