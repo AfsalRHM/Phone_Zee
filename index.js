@@ -14,6 +14,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine","ejs");
 
+// kjbdsvkhsbvkbkvbds-
 // for user routes
 const userRoute = require('./routes/userRoutes');
 app.use('/', userRoute);
