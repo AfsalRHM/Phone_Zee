@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-mongoose.connect("mongodb://127.0.0.1:27017/phonezee_Ecommerce");
+mongoose.connect("mongodb+srv://Afsal:afsal2552005@cluster0.qkah1sg.mongodb.net/phonezee?retryWrites=true&w=majority&appName=Cluster0");
 const nocache = require('nocache');
 const path = require('path');
 
