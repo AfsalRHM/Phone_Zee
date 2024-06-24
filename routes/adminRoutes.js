@@ -121,9 +121,4 @@ admin_route.post('/acceptnotification', adminAuth.isLogin, notificationControlle
 admin_route.post('/denynotification', adminAuth.isLogin, notificationController.denyNotification);
 
 
-// All Routes
-admin_route.get('*', (req, res) => {
-    res.redirect('/admin');
-});
-
 module.exports = admin_route;

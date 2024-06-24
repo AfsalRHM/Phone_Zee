@@ -14,7 +14,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine","ejs");
 
-// kjbdsvkhsbvkbkvbds-
 // for user routes
 const userRoute = require('./routes/userRoutes');
 app.use('/', userRoute);
@@ -22,6 +21,11 @@ app.use('/', userRoute);
 // for admin routes
 const adminRoute = require('./routes/adminRoutes')
 app.use('/admin', adminRoute);
+
+// Error page for unknown urls
+app.get('*', (req, res) => {
+    res.redirect('/404');
+}); 
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is Running On : http://localhost:${process.env.PORT}`);
