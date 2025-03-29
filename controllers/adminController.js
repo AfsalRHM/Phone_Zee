@@ -2,18 +2,11 @@ const Admin = require('../models/adminModel');
 const User = require('../models/userModel');
 const Product = require('../models/productModel');
 const Category = require('../models/categoryModel');
-const Address = require('../models/addressModel');
-const Wishlist = require('../models/wishlistModel');
-const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
 
-const bcrypt = require('bcrypt');
-
-const { parseISO, format } = require('date-fns');
-
+const { format } = require('date-fns');
 
 /*****************      To load the AdminDashboard     *********************/
-
 const loadAdminHome = async (req, res) => {
     try {
 
@@ -52,7 +45,6 @@ const loadAdminHome = async (req, res) => {
 };
 
 /*****************      To load the page to add products     *********************/
-
 const loadAddProductPrice = async (req, res) => {
     try {
         
@@ -63,6 +55,7 @@ const loadAddProductPrice = async (req, res) => {
     };
 };
 
+/*****************      To load the page to add Images     *********************/
 const loadAddProductImages = async (req, res) => {
     try {
         
@@ -73,6 +66,7 @@ const loadAddProductImages = async (req, res) => {
     };
 };
 
+/*****************      To load the page to add products related products    *********************/
 const loadAddProductRelatedProducts = async (req, res) => {
     try {
         
@@ -85,7 +79,6 @@ const loadAddProductRelatedProducts = async (req, res) => {
 };
 
 /*****************      To load the User list     *********************/
-
 const loadUserList = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1; // Get the page number from the query parameters
@@ -122,7 +115,6 @@ const loadUserList = async (req, res) => {
 };
 
 /*****************      To block and unblock user     *********************/
-
 const blockAndActive2 = async (req, res) => {
     try {
         const {userId} = req.body
@@ -132,8 +124,6 @@ const blockAndActive2 = async (req, res) => {
             return res.status(404).json({ message: 'Failed' });
         }
 
-        // Toggle the is_blocked field
-        // user.is_blocked = user.is_blocked === 0 ? 1 : 0;
         user.is_blocked = Number(!user.is_blocked);
         await user.save();
 
@@ -145,7 +135,6 @@ const blockAndActive2 = async (req, res) => {
 };
     
 /*****************      To list and unlist category     *********************/
-
 const activeOrInactive = async (req, res, next) => {
     try {
         const {categoryId}=req.body;
@@ -154,8 +143,6 @@ const activeOrInactive = async (req, res, next) => {
         if (!category) {
             return next();
         };
-
-        // Toggle the is_hide field
 
         category.is_hide = category.is_hide === 1 ? 0 : 1;
         await category.save();
@@ -168,7 +155,6 @@ const activeOrInactive = async (req, res, next) => {
 };
 
 /*****************      To load the admin login page     *********************/
-
 const loadAdminLogin = async (req, res) => {
     try {
 
@@ -180,7 +166,6 @@ const loadAdminLogin = async (req, res) => {
 };
 
 /*****************      To load the Testing page     *********************/
-
 const loadTesting = async (req, res) => {
     try {
 
@@ -192,7 +177,6 @@ const loadTesting = async (req, res) => {
 };
 
 /*****************      To Verify the admin     *********************/
-
 const adminVerifyLogin = async (req, res) => {
     try {
 
@@ -218,7 +202,6 @@ const adminVerifyLogin = async (req, res) => {
 };
 
 /*****************      To Logout the Admin     *********************/
-
 const adminLogout = async (req, res) => {
     try {
 
@@ -244,5 +227,4 @@ module.exports = {
     loadAddProductImages,
     loadAddProductRelatedProducts,
     adminLogout,
-
 };

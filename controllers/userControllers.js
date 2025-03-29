@@ -9,34 +9,25 @@ const Offer = require('../models/offerModel');
 const Coupon = require('../models/couponModel');
 const Wallet = require('../models/walletModel');
 
-const bcrypt = require('bcrypt')
-const nodemailer = require('nodemailer');
-const Otp = require('../models/otpModel');
+const bcrypt = require('bcryptjs')
 
-const { parseISO, format } = require('date-fns');
+const { format } = require('date-fns');
 
 const otpController = require('../controllers/otpController');
 
 /*****************      To Secure the password Using bcrypt     *********************/
-
 const securePassword = async(password) => {
     try {
 
-        const passwordHash = await bcrypt.hash(password, 10);
+        const passwordHash = bcrypt.hashSync(password, 10);
         return passwordHash;
 
-        
     } catch (error) {
         console.log(error.message);
     };
 };
 
-// const otpValue =  generateOTP();
-
-
-
 /*****************      To load the Home page     *********************/
-
 const loadHome = async (req, res) => {
     try {
 
@@ -106,7 +97,6 @@ const loadSignUpPage = async (req, res) => {
 };
 
 /*****************      To load after Success on Goole Login     *********************/
-
 const successGoogleLogin = async (req, res) => {
     try {
 
@@ -154,7 +144,6 @@ const successGoogleLogin = async (req, res) => {
 };
 
 /*****************      To load after Failure on Goole Login     *********************/
-
 const FailureGoogleLogin = async (req, res) => {
     try {
 
@@ -165,69 +154,7 @@ const FailureGoogleLogin = async (req, res) => {
     };
 };
 
-
-// /*****************      To load after Success on Goole Login     *********************/
-
-// const successFacebookLogin = async (req, res) => {
-//     try {
-
-//         console.log(req.user);
-//         // if (req.user) {
-//         //     console.log(req.user);
-//         //     const user = new User({
-//         //         name: req.user.displayName,
-//         //         email: req.user.email
-//         //     });
-
-//         //     const userAlready = await User.findOne({
-//         //         email: req.user.email
-//         //     });
-
-//         //     if (userAlready) {
-//         //         const userData = await User.findOne({email: req.user.email});
-
-//         //         if (userData) {
-//         //             req.session.user_id = userData._id;
-//         //             res.redirect('/');
-//         //         } else {
-//         //             res.render('login', {validationMessage: 'User Not Added', loginOrCart: req.session});
-//         //         };
-//         //     } else {
-
-//         //         const userData = await user.save();
-
-//         //         if (userData) {
-//         //             req.session.user_id = userData._id;
-//         //             res.redirect('/');
-//         //         } else {
-//         //             res.render('login', {validationMessage: 'User Not Added', loginOrCart: req.session});
-//         //         };
-//         //     };
-            
-           
-//         // } else {
-//         //     res.redirect('/facebookFailure');
-//         // };
-        
-//     } catch (error) {
-//         console.log(error.message);
-//     };
-// };
-
-// /*****************      To load after Failure on Goole Login     *********************/
-
-// const failureFacebookLogin = async (req, res) => {
-//     try {
-
-//         res.render('signup', {message: 'Facebook Login Failed', loginOrCart: req.session});
-        
-//     } catch (error) {
-//         console.log(error.message);
-//     };
-// };
-
 /*****************      To load the Category page     *********************/
-
 const loadCategory = async (req, res, next) => {
     try {
 
@@ -610,7 +537,7 @@ const userLogin = async (req, res) => {
             email: email
         });
 
-        const passwordMatch = await bcrypt.compare(password, userData.password);
+        const passwordMatch = bcrypt.compareSync(password, userData.password);
 
         if (passwordMatch) {
 
@@ -657,7 +584,7 @@ const updateProfile = async (req, res) => {
             userNumber == userData.number ? userData.number : userData.number = userNumber;
     
             if ( currentPassword ) {
-                const passwordMatch = bcrypt.compare(currentPassword, userData.password);
+                const passwordMatch = bcrypt.compareSync(currentPassword, userData.password);
     
                 if (!passwordMatch) {
                     req.flash('errorMessage', 'Enter the correct Password.');

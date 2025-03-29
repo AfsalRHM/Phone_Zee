@@ -68,11 +68,6 @@ function generateOTP() {
     return otp.toString(); 
 };
 
-
-
-
-
-
 /*****************      To load the OTP page     *********************/
 
 const loadOtpPage = async (req, res) => {
