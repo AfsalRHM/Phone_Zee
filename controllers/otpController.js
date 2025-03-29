@@ -8,7 +8,7 @@ const Order = require('../models/orderModel');
 
 const Otp = require('../models/otpModel');
 const nodemailer = require('nodemailer');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 
 /*****************      To Secure the password Using bcrypt     *********************/
