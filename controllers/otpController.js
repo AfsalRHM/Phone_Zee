@@ -55,7 +55,7 @@ async function VerifyMail (recieverEmail, recieverName) {
     const otp = await new Otp({
         otp: otpValue,
         email: recieverEmail,
-        expire_at: new Date(Date.now() + (10 * 1000 * 1))
+        expire_at: new Date(Date.now() + (1 * 60 * 1000))
     });
 
     const otpData = await otp.save();
