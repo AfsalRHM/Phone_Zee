@@ -221,8 +221,6 @@ const resetPassword = async (req, res) => {
 
         const { newPassword, confirmPassword } = req.body;
 
-        console.log('Now Here');
-
         const userData = await User.findOne({email: userEmail});
 
         if (req.body.newPassword.trim() === '') {

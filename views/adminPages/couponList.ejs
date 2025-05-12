@@ -77,9 +77,15 @@
                                     <td>₹ <%= couponData[i].minimum_price %>.00</td>
                                     <td>₹ <%= couponData[i].discount_price %>.00</td>
                                     <td><%= couponData[i].start_date.getDate() %> - <%= couponData[i].start_date.getMonth() + 1 %> - <%= couponData[i].start_date.getFullYear() %></td>
-                                    <td><%= couponData[i].end_Date.getDate() %> - <%= couponData[i].end_Date.getMonth() + 1 %> - <%= couponData[i].end_Date.getFullYear() %></td>
-                                    <% if (couponData[i].is_hide == 0) { %>
+                                    <td><%= couponData[i].end_date.getDate() %> - <%= couponData[i].end_date.getMonth() + 1 %> - <%= couponData[i].end_date.getFullYear() %></td>
+                                    <%
+                                        const now = new Date();
+                                        const endDate = new Date(couponData[i].end_date);
+                                    %>
+                                    <% if (couponData[i].is_hide == 0 && endDate >= now) { %>
                                         <td><span class="badge rounded-pill alert-success">Active</span></td>
+                                    <% } else if (endDate < now) { %>
+                                        <td><span class="badge rounded-pill alert-warning">Expired</span></td>
                                     <% } else { %>
                                         <td><span class="badge rounded-pill alert-danger">InActive</span></td>
                                     <% } %>

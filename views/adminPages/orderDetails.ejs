@@ -257,7 +257,6 @@
 
 
                 function cancelOrder(OrderId) {
-                    console.log('Here in admin cancelOrder ')
                     Swal.fire({
                         title: 'Are you sure you want to cannsel this order?',
                         text: 'Once cancelled, you will not be able to recover it!',
@@ -268,7 +267,6 @@
                         confirmButtonText: 'Yes, cancel it!'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            console.log('Here in admin cancelOrder - confirmed', OrderId)
                             fetch('/admin/cancelOrderAdmin', {
                                 method: 'post',
                                 headers: {

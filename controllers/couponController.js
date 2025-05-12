@@ -51,6 +51,7 @@ const loadAddCoupon = async(req, res) => {
 const insertCoupon = async(req, res) => {
     try {
 
+        console.log(req.body, "this is the body-----------------")
         const { couponName, couponCode, minimumPrice, discountPrice, startDate, endDate, couponQuantity } = req.body;
 
         const coupon = new Coupon ({
@@ -59,7 +60,7 @@ const insertCoupon = async(req, res) => {
             minimum_price: minimumPrice,
             discount_price: discountPrice,
             start_date: startDate,
-            end_Date: endDate,
+            end_date: endDate,
             coupon_quantity: couponQuantity,
             remaining_quantity: couponQuantity
         });
@@ -100,7 +101,13 @@ const insertCoupon = async(req, res) => {
 
                 const couponSaved = await coupon.save();
 
-                const couponData = await Coupon.find();
+                let couponData = await Coupon.find().lean();;
+                
+                couponData = couponData.map(coupon => ({
+                    ...coupon,
+                    start_date: new Date(coupon.start_date),
+                    end_date: new Date(coupon.end_date)
+                }));
 
                 if (couponSaved) {
     
@@ -185,7 +192,7 @@ const updateCoupon = async(req, res) => {
                 coupon.minimum_price = minimumPrice; 
                 coupon.discount_price = discountPrice; 
                 coupon.start_date = startDate; 
-                coupon.end_Date = endDate;
+                coupon.end_date = endDate;
                 coupon.coupon_quantity == couponQuantity ? coupon.remaining_quantity = coupon.remaining_quantity : coupon.remaining_quantity = couponQuantity;
                 coupon.coupon_quantity = couponQuantity;
 
@@ -195,7 +202,7 @@ const updateCoupon = async(req, res) => {
                     minimum_price: coupon.minimum_price,
                     discount_price: coupon.discount_price,
                     start_date: coupon.start_date,
-                    end_Date: coupon.end_Date,
+                    end_date: coupon.end_date,
                     coupon_quantity: coupon.coupon_quantity,
                     remaining_quantity: coupon.remaining_quantity,
                     is_hide: coupon.is_hide

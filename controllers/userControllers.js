@@ -176,7 +176,6 @@ const loadCategory = async (req, res, next) => {
 
             // Find products within the specified price range
             priceRangeProducts = await Product.find({ is_hide: 0, price: { $gte: minPrice, $lte: maxPrice } });
-            console.log('priceRangeProducts - ', priceRangeProducts);
         };
         
         // const priceRangeProducts = await Product.find({price})
@@ -392,11 +391,11 @@ const loadProfile = async (req, res) => {
 
         const currentDate = new Date();
 
-        const couponData = await Coupon.find({ is_hide: 0, start_date: { $lte: currentDate }, end_Date: { $gte: currentDate } }).sort({ created_at: 1 })
+        const couponData = await Coupon.find({ is_hide: 0, start_date: { $lte: currentDate }, end_date: { $gte: currentDate } }).sort({ created_at: 1 })
 
         for (let i = 0; i < couponData.length; i++) {
 
-            const date = couponData[i].end_Date;
+            const date = couponData[i].end_date;
         
             const formatconvertedDate = format(date, "MMM dd, yyyy");
 

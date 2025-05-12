@@ -22,7 +22,7 @@ const couponSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    end_Date: {
+    end_date: {
         type: Date,
         required: true
     },
