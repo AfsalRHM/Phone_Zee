@@ -4,6 +4,8 @@ const Product = require('../models/productModel');
 const Category = require('../models/categoryModel');
 const Order = require('../models/orderModel');
 
+const bcrypt = require('bcryptjs')
+
 const { format } = require('date-fns');
 
 /*****************      To load the AdminDashboard     *********************/
@@ -187,7 +189,9 @@ const adminVerifyLogin = async (req, res) => {
             email: email
         });
 
-        if (adminData.password == password) {
+        const passwordMatch = bcrypt.compareSync(password, adminData.password);
+
+        if (passwordMatch) {
 
             req.session.admin_id = adminData._id;
             res.redirect('/admin');
