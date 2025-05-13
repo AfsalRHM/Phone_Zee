@@ -284,7 +284,7 @@ const placeOrder = async (req, res) => {
                         orderId: OrderData._id,
                         amount: OrderData.order_total,
                         currency: 'INR',
-                        key: process.env.RAZORPAY_KEY_ID
+                        key: process.env.RAZORPAY_CLIENT_ID
                     });
 
                 } catch (err) {
@@ -372,11 +372,11 @@ const placeOrderProfile = async (req, res, next) => {
             orderId: OrderData._id,
             amount: OrderData.order_total,
             currency: 'INR',
-            key: process.env.RAZORPAY_KEY_ID
+            key: process.env.RAZORPAY_CLIENT_ID 
         });
 
     } catch (err) {
-        console.error('Error creating Razorpay order:', err);
+        console.error('Error creating Razorpay from profile:', err);
         return res.status(500).send(err);
     };
 };
