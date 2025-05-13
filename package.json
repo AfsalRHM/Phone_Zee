@@ -35,7 +35,6 @@
     "puppeteer": "^22.10.0",
     "razorpay": "^2.9.4",
     "sharp": "^0.33.3",
-    "stripe": "^18.1.0",
     "sweetalert2": "^11.10.8"
   }
 }
