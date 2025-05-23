@@ -96,7 +96,6 @@ const loadOtpPage = async (req, res) => {
 /*****************      To Validate the otp entered by user     *********************/
 
 const validateOTP = async (req, res) => {
-    console.log("here reaching on the validate otp controlle")
   try {
     const joinedOTP =
       req.body["otp-digit-1"] +
@@ -105,20 +104,16 @@ const validateOTP = async (req, res) => {
       req.body["otp-digit-4"] +
       req.body["otp-digit-5"] +
       req.body["otp-digit-6"];
-      console.log("this is the joined otp", joinedOTP)
     const otpData = await Otp.findOne({ otp: joinedOTP });
-    console.log("this is te otp data", otpData);
-    
+
     if (!otpData) {
-        console.log("error working")
-        const lastFourDigits = req.session.user_number.toString().slice(-4);
-        return res.render("otp", {
-            message: "Entered OTP is Incorrect",
-            userEmail: req.session.user_email,
-            userMobile: lastFourDigits,
-        });
+      const lastFourDigits = req.session.user_number.toString().slice(-4);
+      return res.render("otp", {
+        message: "Entered OTP is Incorrect",
+        userEmail: req.session.user_email,
+        userMobile: lastFourDigits,
+      });
     } else {
-        console.log("success working")
       const Email = await otpData.email;
       const userData = await User.updateOne(
         { email: Email },
@@ -131,7 +126,6 @@ const validateOTP = async (req, res) => {
 
       userData.is_verified = 1;
       req.flash("successMessage", "User Registered successfully.");
-      console.log("Everything worked")
       res.redirect("/login");
     }
   } catch (error) {
