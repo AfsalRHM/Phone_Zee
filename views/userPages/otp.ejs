@@ -68,6 +68,8 @@
             const form = document.getElementById('otpForm');
             const formData = new FormData(form);
 
+            console.log("this is the form data", formData)
+
             // Make an AJAX request to submit the form data
             fetch(form.action, {
                 method: form.method,
