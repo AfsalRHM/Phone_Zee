@@ -54,6 +54,7 @@
 
                 if (count <= 0) {
                     clearInterval(countdownInterval);
+                    localStorage.removeItem('countdown');
                     document.getElementById('otpButton').style.display = 'block';
                 }
             }, 1000);
