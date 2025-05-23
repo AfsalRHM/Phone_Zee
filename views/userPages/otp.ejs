@@ -33,21 +33,34 @@
     <script>
 
             function startTimer() {
-                let count = localStorage.getItem('countdown'); // Initial countdown value
-                if (count <= 0) {
-                    count = 47
+                let count = parseInt(localStorage.getItem('countdown'), 10);
+
+                if (isNaN(count) || count <= 0) {
+                    count = 600; 
                 }
+
+                if (count > 0) {
+                    document.getElementById('otpButton').style.display = 'none';
+                    document.getElementById('resendMessage').textContent = 'Please wait to resend OTP';
+                }
+
                 const countdownInterval = setInterval(() => {
-                    count--; // Decrement count
-                    document.getElementById('resendOtpTime').innerHTML = count; // Update countdown display
-                    localStorage.setItem('countdown', count); // Store countdown value in local storage
+                    count--;
+                    localStorage.setItem('countdown', count);
+
+                    const minutes = Math.floor(count / 60);
+                    const seconds = count % 60;
+                    document.getElementById('resendOtpTime').innerHTML = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
                     if (count <= 0) {
-                        clearInterval(countdownInterval); // Stop the countdown when count reaches 0
-                        document.getElementById('otpButton').style.display = 'block'; // Show resend button
-                        document.getElementById('resendMessage').textContent = 'Resend OTP available'; // Update resend message
+                        clearInterval(countdownInterval);
+                        localStorage.setItem('countdown', 0);
+                        document.getElementById('otpButton').style.display = 'block';
+                        document.getElementById('resendMessage').textContent = 'Resend OTP available';
                     }
                 }, 1000);
             }
+
 
             // Function to handle form submission
             function submitForm() {
