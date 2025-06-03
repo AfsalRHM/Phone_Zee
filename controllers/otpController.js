@@ -105,7 +105,9 @@ const validateOTP = async (req, res) => {
       req.body["otp-digit-5"] +
       req.body["otp-digit-6"];
 
-      console.log("User entered the OTP", joinedOTP);
+    console.log(
+      `User: ${req.session.user_email} entered the OTP: ${joinedOTP}`
+    );
     const otpData = await Otp.findOne({ otp: joinedOTP });
 
     if (!otpData) {
