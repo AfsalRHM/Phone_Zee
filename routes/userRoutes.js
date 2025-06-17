@@ -150,6 +150,7 @@ user_route.post('/addressChange', userAuth.isLogin, addressContoller.addressChan
 user_route.post('/forgotPassword', otpController.sendOtpForResetPassword);
 user_route.post('/resetPassword', otpController.resetPassword);
 user_route.post('/updateProfile', userAuth.isLogin, userController.updateProfile);
+user_route.patch('/cancel-item', userAuth.isLogin, orderController.cancelItem)
 // user_route.post('/category', userController.sortItems);
 
 user_route.post('/returnorder', orderController.requestToReturnOrder );

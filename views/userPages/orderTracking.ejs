@@ -38,60 +38,64 @@
                                         <% } %>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <% if (orderData.order_status == 'cancelOrder') { %>
-                                            <dd>
-                                                <p class="mb-0"><strong>Status:</strong> <span class="badge badge-danger">Order Cancelled</span></p>
-                                            </dd>
-                                        <% } else if (orderData.order_status == 'Pending') { %>
-                                            <dd>
-                                                <p class="mb-0"><strong>Status:</strong> <span class="badge badge-warning">Awaiting Payment</span></p>
-                                            </dd>
-                                        <% } else if (orderData.order_status == 'Confirmed') { %>
-                                            <dd>
-                                                <p class="mb-0"><strong>Status:</strong> <span class="badge badge-info">Confirmed</span></p>
-                                            </dd>
-                                        <% } else if (orderData.order_status == 'Shipped') { %>
-                                            <dd>
-                                                <p class="mb-0"><strong>Status:</strong> <span class="badge badge-warning">Shipped</span></p>
-                                            </dd>
-                                        <% } else if (orderData.order_status == 'Delivered') { %>
-                                            <dd>
-                                                <p class="mb-0"><strong>Status:</strong> <span class="badge badge-success">Delivered</span></p>
-                                            </dd>
-                                        <% } else if (orderData.order_status == 'returnOrder') { %>
-                                            <dd>
-                                                <p class="mb-0"><strong>Status:</strong> <span class="badge badge-warning">Order Returned</span></p>
-                                            </dd>
-                                        <% } %>
+                                        <div id="order-status">
+                                            <% if (orderData.order_status == 'cancelOrder') { %>
+                                                <dd>
+                                                    <p class="mb-0"><strong>Status:</strong> <span class="badge badge-danger">Order Cancelled</span></p>
+                                                </dd>
+                                            <% } else if (orderData.order_status == 'Pending') { %>
+                                                <dd>
+                                                    <p class="mb-0"><strong>Status:</strong> <span class="badge badge-warning">Awaiting Payment</span></p>
+                                                </dd>
+                                            <% } else if (orderData.order_status == 'Confirmed') { %>
+                                                <dd>
+                                                    <p class="mb-0"><strong>Status:</strong> <span class="badge badge-info">Confirmed</span></p>
+                                                </dd>
+                                            <% } else if (orderData.order_status == 'Shipped') { %>
+                                                <dd>
+                                                    <p class="mb-0"><strong>Status:</strong> <span class="badge badge-warning">Shipped</span></p>
+                                                </dd>
+                                            <% } else if (orderData.order_status == 'Delivered') { %>
+                                                <dd>
+                                                    <p class="mb-0"><strong>Status:</strong> <span class="badge badge-success">Delivered</span></p>
+                                                </dd>
+                                            <% } else if (orderData.order_status == 'returnOrder') { %>
+                                                <dd>
+                                                    <p class="mb-0"><strong>Status:</strong> <span class="badge badge-warning">Order Returned</span></p>
+                                                </dd>
+                                            <% } %>
+                                        </div>
                                         <!-- <p class="mb-0"><strong>Status:</strong> <span class="badge badge-success">Shipped</span></p> -->
-                                        <% if (orderData.payment_type == 'payment-razorpay') { %>
-                                            <% if (orderData.order_status == 'cancelOrder' || orderData.order_status == 'returnOrder') { %>
-                                                <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-warning">Refunded</span></p>
-                                            <% } else { %>
-                                                <% if (orderData.payment_status == 'pending') { %>
-                                                    <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-info">Pending</span></p>
-                                                <% } else { %>
-                                                    <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-success">Paid</span></p>
-                                                <% } %>
-                                            <% } %>
-                                        <% } else if (orderData.payment_type == 'payment-cod') { %> 
-                                            <% if (orderData.order_status == 'cancelOrder') { %>
-                                                <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-danger">Order Cancelled</span></p>
-                                            <% } else { %>
-                                                <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-info">Pending</span></p>
-                                            <% } %>
-                                        <% } else if (orderData.payment_type == 'payment-wallet') { %>
-                                            <% if (orderData.order_status == 'cancelOrder') { %>
-                                                <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-warning">Refunded</span></p>
-                                            <% } else { %>
-                                                <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-success">Paid</span></p>
-                                            <% } %>
-                                        <% } %>
+                                         <div id="payment-status">
+                                             <% if (orderData.payment_type == 'payment-razorpay') { %>
+                                                 <% if (orderData.order_status == 'cancelOrder' || orderData.order_status == 'returnOrder') { %>
+                                                     <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-warning">Refunded</span></p>
+                                                 <% } else { %>
+                                                     <% if (orderData.payment_status == 'pending') { %>
+                                                         <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-info">Pending</span></p>
+                                                     <% } else { %>
+                                                         <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-success">Paid</span></p>
+                                                     <% } %>
+                                                 <% } %>
+                                             <% } else if (orderData.payment_type == 'payment-cod') { %> 
+                                                 <% if (orderData.order_status == 'cancelOrder') { %>
+                                                     <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-danger">Order Cancelled</span></p>
+                                                 <% } else { %>
+                                                     <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-info">Pending</span></p>
+                                                 <% } %>
+                                             <% } else if (orderData.payment_type == 'payment-wallet') { %>
+                                                 <% if (orderData.order_status == 'cancelOrder') { %>
+                                                     <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-warning">Refunded</span></p>
+                                                 <% } else { %>
+                                                     <p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-success">Paid</span></p>
+                                                 <% } %>
+                                             <% } %>
+                                         </div>
                                     </div>
                                 </div>
 
                                 <h4 class="mb-4">Order Tracking</h4>
-                                <div class="tracking-info mb-4 p-4 bg-light rounded border">
+                                <div class="tracking-info mb-4 p-4 bg-light rounded border" id="timeline">
                                     <ul class="timeline">
                                         <% if (orderData.order_status == 'cancelOrder') { %>
                                             <dd>
@@ -157,19 +161,34 @@
 
                                 <h4 >Items in Your Order</h4>
                                 <ul class="list-group mb-4">
-                                    <% orderData.products.forEach((product, index) => { %>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <% orderData.products.forEach((product) => { %>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                                         <div>
-                                            <h5 class="mb-1"><%= orderData.products[index].product.name %></h5>
-                                            <p class="mb-1 text-muted">Quantity: <%= orderData.products[index].quantity %></p>
+                                            <h5 class="mb-1"><%= product.product.name %></h5>
+                                            <p class="mb-1 text-muted">Quantity: <%= product.quantity %></p>
                                         </div>
+                                    
                                         <div>
-                                            <p class="mb-1 text-muted">Unit Price: ₹<%= orderData.products[index].product.offer == 0 ? orderData.products[index].product.price : orderData.products[index].product.salePrice %>.00</p>
-                                            <strong>Total: ₹<%= orderData.products[index].product.offer == 0 ? orderData.products[index].product.price * orderData.products[index].quantity : orderData.products[index].product.salePrice * orderData.products[index].quantity %>.00</strong>
+                                            <p class="mb-1 text-muted">
+                                            Unit Price: ₹<%= product.product.offer === 0 ? product.product.price : product.product.salePrice %>.00
+                                            </p>
+                                            <strong class="mb-2 fw-bold">
+                                            Total: ₹<%= product.product.offer === 0 ? product.product.price * product.quantity : product.product.salePrice * product.quantity %>.00
+                                            </strong>
                                         </div>
-                                    </li>
+                                    
+                                        <div class="d-flex flex-column align-items-end" id="<%= product.product._id %>-item-status">
+                                            <% if (product.item_cancelled == true) { %>
+                                                <strong class="text-danger" >Item Cancelled</strong>
+                                            <% } else if (orderData.order_status == 'cancelOrder') { %>
+                                                <strong class="text-danger" >Order Cancelled</strong>
+                                            <% } else { %>
+                                                <button class="btn btn-sm btn-danger" onclick="cancelItem('<%= product.product._id %>', '<%= orderData._id %>')">Cancel Item</button>
+                                            <% } %>
+                                        </div>
+                                        </li>
                                     <% }) %>
-                                </ul>
+                                </ul>                                  
 
                                 <h4>Address</h4>
                                 <div class="list-group mb-4">
@@ -182,7 +201,7 @@
 
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <strong>Total:</strong>
-                                    <span class="h5">₹<%= orderData.order_total %>.00</span>
+                                    <span class="h5" id="order_total">₹<%= orderData.order_total %>.00</span>
                                 </div>
 
                                 <% if (orderData.payment_type == 'payment-razorpay' || orderData.payment_type == 'payment-wallet') { %>
@@ -212,7 +231,45 @@
 
 <script>
 
+function cancelItem(productId, orderId) {
+    Swal.fire({
+    title: 'Are you sure?',
+    text: "Do you really want to cancel this item?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, cancel it!',
+    cancelButtonText: 'No, keep it'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      console.log("Cancelled item with ID:", productId);
+      axios.patch("/cancel-item", {
+        productId,
+        orderId
+      }).then((data) => {
+        console.log(data, "this is the response");
+        document.getElementById("order_total").innerHTML = `${data.data.orderData.order_total}.00`;
+        document.getElementById(`${productId}-item-status`).innerHTML = '<strong class="text-danger" >Item Cancelled</strong>';
+        if (data.data.orderData.order_status == "cancelOrder") {
+            document.getElementById("timeline").innerHTML = '<p class="ml-5"><span class="badge badge-danger">Order Cancelled</span></p>';
+            document.getElementById("order-status").innerHTML = '<p class="mb-0"><strong>Status:</strong> <span class="badge badge-danger">Order Cancelled</span></p>';
+            if (data.data.orderData.payment_type == "payment-razorpay"  || data.data.orderData.payment_type == 'payment-wallet') {
+                document.getElementById("payment-status").innerHTML = '<p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-warning">Refunded</span></p>';
+            } else {
+                document.getElementById("payment-status").innerHTML = '<p class="mb-0"><strong>Payment Status:</strong> <span class="badge badge-danger">Order Cancelled</span></p>';
+            }
+        }
+      })
 
+      Swal.fire(
+        'Cancelled!',
+        'The item has been removed from your order.',
+        'success'
+      );
+    }
+  });
+}
 
 
 function placeOrder (addressId, message, orderId) {

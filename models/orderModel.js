@@ -35,6 +35,10 @@ const orderSchema = new mongoose.Schema({
             quantity: {
                 type: Number,
                 required: true
+            },
+            item_cancelled: {
+                type: Boolean,
+                default: false
             }
         }
     ],

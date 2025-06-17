@@ -417,7 +417,72 @@ const confirmPayment = async (req, res) => {
 };
 
 
+/*****************      To Delete a Order     *********************/
 
+const cancelItem = async (req, res) => {
+    try {
+        const { productId, orderId } = req.body;
+
+        const userData = await User.findById(req.session.user_id)
+
+        if (productId && orderId) {
+            let productQuantity = 0;
+            let allItemCancelledFlag = 1;
+            const orderData = await Order.findById(orderId);
+
+            orderData.products.forEach((productData) => {
+                if (productData.product == productId) {
+                    productData.item_cancelled = true
+                    productQuantity = productData.quantity;
+                };
+
+                if (productData.item_cancelled == false) {
+                    allItemCancelledFlag = 0;
+                } 
+            })
+
+            if (allItemCancelledFlag !== 0) {
+                orderData.order_status = 'cancelOrder'
+            }
+
+            const productData = await Product.findById(productId);
+
+            const productTotal = productData.offer == 0 ? productData.price * productQuantity : productData.salePrice * productQuantity;
+
+            productData.stock += productQuantity;
+            
+            orderData.order_total -= productTotal;
+
+            productData.save();
+
+            orderData.save();
+
+            if (orderData.payment_type == 'payment-razorpay' || orderData.payment_type == 'payment-wallet') {
+
+                const wallet = new Wallet ({
+                    user: req.session.user_id,
+                    type_of_transaction: 'Deposit',
+                    amount: productTotal
+                });
+
+                userData.wallet_balance += wallet.amount;
+
+                await wallet.save();
+                await userData.save();
+
+                res.status(200).json({ message: 'Success', orderData });
+                return;
+            };
+
+            res.status(200).json({ message: 'Success', orderData });
+        } else {
+            res.status(500).json({ message: 'Product Not Found' });
+        }
+
+    } catch (error) {
+        console.log(error.message);
+    };
+} 
 
 
 /*****************      To Delete a Order     *********************/
@@ -568,6 +633,7 @@ module.exports = {
 
     placeOrder,
     placeOrderProfile,
+    cancelItem,
     cancelOrder,
     loadOrderSuccess,
     confirmPayment,
