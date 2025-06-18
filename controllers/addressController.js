@@ -197,7 +197,7 @@ const deleteAddress = async (req, res, next) => {
     }; 
 };
 
-/*****************      To Cahnge the address     *********************/
+/*****************      To Change the address     *********************/
 
 const addressChange =  async (req, res, next) => {
     try {

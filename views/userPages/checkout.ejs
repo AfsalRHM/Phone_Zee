@@ -421,19 +421,9 @@
 		};
 
 
-			/*********************     
-			 * 
-			 * 
-			 * 
-			 * 
-			 *   Other functions
-			 * 
-			 * 
-			 * 
-			 * 
-			 *********************/
+		/*********************     Other functions    *********************/
 
-
+		/********   Address Selection UI   *********/
 		var modal = document.getElementById("myModal");
 
 		var btn = document.getElementById("openModalButton");
@@ -485,18 +475,6 @@
 				.catch(error => {
 					console.error('Error:', error);
 				});
-
-
-
-
-                // // Pass the selected address back to the main page
-                // // You can use any appropriate method here, like setting a hidden input value
-                // document.getElementById("selectedAddressName").textContent = address1.name;
-				// document.getElementById("selectedAddressPlace").innerHTML = address1.locality + ", " + address1.city + ", " + address1.state;
-				// document.getElementById("selectedAddressPincode").innerHTML = address1.pincode;
-				// document.getElementById("selectedAddressNumber").innerHTML = address1.mobileNumber;
-				// // document.getElementById("selectedAddress").value = address1._id;
-                // closeModal();
             } else {
                 alert("Please select an address.");
             };
@@ -519,14 +497,7 @@
             };
         };
 
-		
-		
-		//
-		//
-		// To apply the coupon
-		//
-		//
-		
+		/********   To apply the coupon   *********/
 		function couponApply (validMessage) {
 			const couponHtmlForm = document.getElementById('couponForm');
 			const couponHtml = document.getElementById('couponAmountHtml');
@@ -636,13 +607,7 @@
 			});
 		};
 
-
-		//
-		//
-		// To Remove the Coupon
-		//
-		//
-
+		/********   To Remove the Coupon   *********/
 		function removeCoupon() {
 
 			const validMessage = 'couponRemovalMessage';
@@ -691,16 +656,7 @@
 				};
 			})
 			.catch(error => {
-				// console.error('Error:', error);
-				// Swal.fire({
-				// 	icon: 'error',
-				// 	title: 'Network Error!',
-				// 	text: 'There was a problem removing your coupon. Please try again later.',
-				// 	confirmButtonText: 'OK'
-				// }).then(() => {
-				// 	console.log('Network error');
-				// });
-				console.log('Network error');
+				console.log('Network error', error);
 			});
 		};
 

@@ -137,23 +137,25 @@ user_route.post('/login', userController.userLogin);
 user_route.post('/otp', otpController.validateOTP);
 user_route.post('/addAddress', userAuth.isLogin, addressContoller.insertAddress);
 user_route.post('/addToWishlist', userAuth.isLogin, wishlistController.addToWishlist);
-user_route.post('/Wishlist', userAuth.isLogin, wishlistController.deleteProductFromWishlist);
-user_route.post('/editAddress', userAuth.isLogin, addressContoller.updateAddress);
-user_route.post('/profile', userAuth.isLogin, addressContoller.deleteAddress, orderController.cancelOrder);
 user_route.post('/placeOrder', userAuth.isLogin, orderController.placeOrderProfile);
 user_route.post('/addToCart', userAuth.isLogin, cartController.addToCart);
-user_route.post('/cart', userAuth.isLogin, cartController.deleteProductFromCart, cartController.updateCart);
-user_route.post('/checkout', userAuth.isLogin, couponController.applyCoupon, couponController.removeCoupon, orderController.placeOrder);
 user_route.post('/confirm-payment', userAuth.isLogin, orderController.confirmPayment);
 user_route.post('/downloadInvoice', userAuth.isLogin, invoiceController.generateInvoice);
 user_route.post('/addressChange', userAuth.isLogin, addressContoller.addressChange);
 user_route.post('/forgotPassword', otpController.sendOtpForResetPassword);
 user_route.post('/resetPassword', otpController.resetPassword);
-user_route.post('/updateProfile', userAuth.isLogin, userController.updateProfile);
-user_route.patch('/cancel-item', userAuth.isLogin, orderController.cancelItem)
+user_route.post('/returnorder', orderController.requestToReturnOrder );
 // user_route.post('/category', userController.sortItems);
 
-user_route.post('/returnorder', orderController.requestToReturnOrder );
+/*********      Put Requests      **********/ 
+user_route.post('/editAddress', userAuth.isLogin, addressContoller.updateAddress);
+user_route.post('/updateProfile', userAuth.isLogin, userController.updateProfile);
 
+/*********      Patch Requests      **********/ 
+user_route.post('/Wishlist', userAuth.isLogin, wishlistController.deleteProductFromWishlist);
+user_route.post('/profile', userAuth.isLogin, addressContoller.deleteAddress, orderController.cancelOrder);
+user_route.post('/cart', userAuth.isLogin, cartController.deleteProductFromCart, cartController.updateCart);
+user_route.post('/checkout', userAuth.isLogin, couponController.applyCoupon, couponController.removeCoupon, orderController.placeOrder);
+user_route.patch('/cancel-item', userAuth.isLogin, orderController.cancelItem)
 
 module.exports = user_route;
