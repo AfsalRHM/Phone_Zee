@@ -18,7 +18,7 @@ passport.deserializeUser(function(user, done) {
 passport.use(new googleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://phonezee.live/auth/google/callback",
+    callbackURL: "https://phone-zee.onrender.com/auth/google/callback",
     passReqToCallback: true
 },
 function(request, accessToken, refreshToken, profile, done) {
