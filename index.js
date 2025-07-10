@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-mongoose.connect("mongodb+srv://Afsal:afsal2552005@cluster0.qkah1sg.mongodb.net/phonezee?retryWrites=true&w=majority&appName=Cluster0");
 const nocache = require('nocache');
 const path = require('path');
 
@@ -8,6 +7,10 @@ dotenv.config();
 
 const express = require("express");
 const app = express();
+
+mongoose.connect(process.env.MONGO_URL).then(() => {
+    console.log("Mongo Connected...");
+});
 
 app.use(nocache());
 app.use(express.static(path.join(__dirname, "public")));
