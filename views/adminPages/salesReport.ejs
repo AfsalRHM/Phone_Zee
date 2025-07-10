@@ -63,7 +63,9 @@
                 <input type="hidden" name="orderData[<%= index %>][quantitySold]" value="<%= quantityArray[index] %>">
                 <input type="hidden" name="orderData[<%= index %>][totalRevenue]" value="<%= quantityArray[index] * 900 %>">
             <% }); %>
-            <button type="submit" class="btn btn-primary" style="margin-right: 5rem;">Download Report</button>
+            <% if (orderData.length !== 0) { %>
+                <button type="submit" class="btn btn-primary" style="margin-right: 5rem;">Download Report</button>
+            <% } %> 
         </form>
     </div>
     <div class="summary">

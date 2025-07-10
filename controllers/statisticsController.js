@@ -258,130 +258,143 @@ const filterReports = async (req, res) => {
 
 const downloadSalesReport = (req, res) => {
     try {
-        const { dateRange, totalOrders, totalOrderAmount, totalProfit, orderData, dateToShow } = req.body;
+        const {
+            dateRange,
+            totalOrders,
+            totalOrderAmount,
+            totalProfit,
+            orderData,
+            dateToShow
+        } = req.body;
 
-        // Ensure the reports directory exists
         const reportsDir = path.join(__dirname, '..', 'public', 'reports');
         if (!fs.existsSync(reportsDir)) {
             fs.mkdirSync(reportsDir, { recursive: true });
         }
 
-        // Create a new PDF document
         const doc = new PDFDocument({ margin: 30 });
         const filePath = path.join(reportsDir, 'sales-report.pdf');
-
-        // Define a stream to write the PDF to the file system
         const writeStream = fs.createWriteStream(filePath);
         doc.pipe(writeStream);
 
-        // Add company logo
+        // Logo
         const logoPath = path.join(__dirname, '..', 'public', 'images', 'logo.png');
         if (fs.existsSync(logoPath)) {
             doc.image(logoPath, doc.page.width / 2 - 50, 15, { width: 100 }).moveDown();
         }
 
-        // Add a title with styling
+        // Title
         doc.fontSize(24)
             .font('Helvetica-Bold')
             .fillColor('#003366')
             .text('Sales Report', { align: 'center' });
         doc.moveDown(1.5);
 
-        // Draw a horizontal line
+        // Horizontal Line
         doc.moveTo(doc.page.margins.left, doc.y)
             .lineTo(doc.page.width - doc.page.margins.right, doc.y)
             .strokeColor('#cccccc')
             .stroke();
         doc.moveDown(1.5);
 
-        // subtitle date 
+        // Date Range Subtitle
         doc.fontSize(12)
             .font('Helvetica-Oblique')
             .fillColor('#666666')
             .text(`Date Range: ${dateToShow}`, { align: 'center' });
         doc.moveDown(1.5);
 
-        // Table headers with background color and text color
-        const tableHeaders = [
-            { label: 'Date', width: 80 },
-            { label: 'User', width: 200 },
-            { label: 'Order Total', width: 100 },
-            { label: 'Quantity Sold', width: 100 },
-            { label: 'Total Revenue', width: 100 }
-        ];
+        // Table Constants
+        const rowHeight = 25;
+        const columnWidths = [80, 200, 100, 100, 100];
+        const tableStartX = doc.page.margins.left;
+        let currentY = doc.y;
 
-        doc.fontSize(10)
+        // Header Row
+        doc.rect(tableStartX, currentY, columnWidths.reduce((a, b) => a + b), rowHeight)
+            .fill('#000000');
+        doc.fillColor('#FFD700')
             .font('Helvetica-Bold')
-            .fillColor('#ffffff')
-            .rect(doc.page.margins.left, doc.y, doc.page.width - doc.page.margins.left - doc.page.margins.right, 20)
-            .fill('#000000')
-            .stroke();
+            .fontSize(10);
 
-        let x = doc.page.margins.left;
-        tableHeaders.forEach(header => {
-            doc.text(header.label, x, doc.y , { width: header.width, align: 'center' });
-            x += header.width;
+        let currentX = tableStartX;
+        ['Date', 'User', 'Order Total', 'Quantity Sold', 'Total Revenue'].forEach((label, i) => {
+            doc.text(label, currentX, currentY + 7, {
+                width: columnWidths[i],
+                align: 'center'
+            });
+            currentX += columnWidths[i];
         });
-        doc.moveDown(1.5);
 
-        // Table rows with alternating row colors
+        currentY += rowHeight;
+
+        // Table Rows
         orderData.forEach((order, index) => {
             const fillColor = index % 2 === 0 ? '#f9f9f9' : '#e6f7ff';
-            doc.rect(doc.page.margins.left, doc.y, doc.page.width - doc.page.margins.left - doc.page.margins.right, 20)
-                .fill(fillColor)
-                .stroke();
+            doc.rect(tableStartX, currentY, columnWidths.reduce((a, b) => a + b), rowHeight)
+                .fill(fillColor);
 
-            doc.fontSize(10)
-                .font('Helvetica')
-                .fillColor('#333333');
+            doc.fillColor('#333333')
+                .font(path.join(__dirname, '..', 'public', 'fonts', 'NotoSans-Regular.ttf'))
+                .fontSize(10);
 
-            x = doc.page.margins.left;
-            doc.text(order.date, x, doc.y , { width: 80, align: 'center' });
-            x += 80;
-            doc.text(order.user, x, doc.y , { width: 200, align: 'center' });
-            x += 200;
-            doc.text(`₹ ${order.orderTotal}`, x, doc.y , { width: 100, align: 'center' });
-            x += 100;
-            doc.text(order.quantitySold, x, doc.y , { width: 100, align: 'center' });
-            x += 100;
-            doc.text(`₹ ${order.totalRevenue}`, x, doc.y , { width: 100, align: 'center' });
+            let currentX = tableStartX;
 
+            [
+                order.date,
+                order.user,
+                `₹ ${order.orderTotal}`,
+                order.quantitySold,
+                `₹ ${order.totalRevenue}`
+            ].forEach((text, i) => {
+                doc.text(text, currentX, currentY + 7, {
+                    width: columnWidths[i],
+                    align: 'center'
+                });
+
+                // Draw border around each cell
+                doc.rect(currentX, currentY, columnWidths[i], rowHeight)
+                    .strokeColor('#cccccc')
+                    .stroke();
+
+                currentX += columnWidths[i];
+            });
+
+            currentY += rowHeight;
         });
 
-        // Draw another horizontal line
-        doc.moveTo(doc.page.margins.left, doc.y)
-            .lineTo(doc.page.width - doc.page.margins.right, doc.y)
-            .strokeColor('#cccccc')
-            .stroke();
-        doc.moveDown(1.5);
+        doc.moveDown(2);
 
-        // Summary section with styling
-        doc.fontSize(14)
+        // Summary Box
+        const summaryBoxX = doc.page.margins.left;
+        const summaryBoxY = currentY + 10;
+        const summaryBoxWidth = 350;
+        const summaryBoxHeight = 70;
+
+        doc.rect(summaryBoxX, summaryBoxY, summaryBoxWidth, summaryBoxHeight)
+            .fill('#f2f2f2');
+
+        doc.fillColor('#003366')
             .font('Helvetica-Bold')
-            .fillColor('#003366')
-            .text('Summary', { align: 'center' });
-        doc.moveDown(1);
+            .fontSize(12)
+            .text('Summary', summaryBoxX + 10, summaryBoxY + 8);
 
-        doc.fontSize(9)
-            .font('Helvetica')
+        doc.font(path.join(__dirname, '..', 'public', 'fonts', 'NotoSans-Regular.ttf'))
+            .fontSize(10)
             .fillColor('#555555')
-            .text(`Total Orders: ${totalOrders}`, { align: 'left' })
-            .moveDown(0.5)
-            .text(`Total Order Amount: ₹ ${totalOrderAmount}`, { align: 'left' })
-            .moveDown(0.5)
-            .text(`Total Profit: ₹ ${totalProfit}`, { align: 'left' });
+            .text(`Total Orders: ${totalOrders}`, summaryBoxX + 10, summaryBoxY + 28)
+            .text(`Total Order Amount: ₹ ${totalOrderAmount}`, summaryBoxX + 10, summaryBoxY + 43)
+            .text(`Total Profit: ₹ ${totalProfit}`, summaryBoxX + 10, summaryBoxY + 58);
 
-        // Finalize the PDF and end the stream
+        // Finalize PDF
         doc.end();
 
-        // Send the file as a response once writing is finished
         writeStream.on('finish', () => {
             res.download(filePath, 'sales-report.pdf', (err) => {
                 if (err) {
                     console.log(err);
                     res.status(500).send('Could not download the report.');
                 }
-                // Delete the file after sending it
                 fs.unlink(filePath, (err) => {
                     if (err) console.log(err);
                 });
@@ -393,6 +406,7 @@ const downloadSalesReport = (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
 
 
 
