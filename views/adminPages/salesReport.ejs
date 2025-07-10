@@ -1,11 +1,11 @@
 <%- include('../adminLayouts/header.ejs') %>
-
 <%- include('../adminLayouts/pageHeader.ejs') %>
 
 <section class="content-main" style="background-color: rgb(236, 236, 236);">
     <div class="content-header d-flex justify-content-between align-items-center" style="background-color: rgb(236, 236, 236);">
         <h2 class="content-title">Sales Report</h2>
     </div>
+
     <section class="content-main d-flex justify-content-center align-items-center">
         <div class="card">
             <div class="card-body">
@@ -38,42 +38,61 @@
                     </div>
                 </form>
             </div>
-            <!-- card body .// -->
         </div>
-        <!-- card .// -->
     </section>
-    <!-- card end// -->
 </section>
-<!-- content-main end// -->
 
 <!-- Sales Report Summary -->
+<% if (orderData.length !== 0) { %>
 <section style="margin-left: 2.5rem; margin-top: 3rem;">
     <div class="content-header">
         <h2 class="content-title">Sales Report Summary</h2>
-        <form id="downloadForm" method="POST" action="/admin/sales-report/download">
-            <input type="hidden" name="dateRange" value="<%= dateRange %>">
-            <input type="hidden" name="totalOrders" value="<%= totalOrders %>">
-            <input type="hidden" name="totalOrderAmount" value="<%= totalOrderAmount %>">
-            <input type="hidden" name="totalProfit" value="<%= totalProfit %>">
-            <input type="hidden" name="dateToShow" value="<%= dateToShow %>">
-            <% orderData.forEach((order, index) => { %>
-                <input type="hidden" name="orderData[<%= index %>][date]" value="<%= dates[index] %>">
-                <input type="hidden" name="orderData[<%= index %>][user]" value="<%= order.user.name %>">
-                <input type="hidden" name="orderData[<%= index %>][orderTotal]" value="<%= order.order_total %>">
-                <input type="hidden" name="orderData[<%= index %>][quantitySold]" value="<%= quantityArray[index] %>">
-                <input type="hidden" name="orderData[<%= index %>][totalRevenue]" value="<%= quantityArray[index] * 900 %>">
-            <% }); %>
-            <% if (orderData.length !== 0) { %>
-                <button type="submit" class="btn btn-primary" style="margin-right: 5rem;">Download Report</button>
-            <% } %> 
-        </form>
+
+        <!-- Buttons Group -->
+        <div class="d-flex gap-3">
+            <!-- PDF Download Button Form -->
+            <form method="POST" action="/admin/sales-report/download">
+                <input type="hidden" name="dateRange" value="<%= dateRange %>">
+                <input type="hidden" name="totalOrders" value="<%= totalOrders %>">
+                <input type="hidden" name="totalOrderAmount" value="<%= totalOrderAmount %>">
+                <input type="hidden" name="totalProfit" value="<%= totalProfit %>">
+                <input type="hidden" name="dateToShow" value="<%= dateToShow %>">
+                <% orderData.forEach((order, index) => { %>
+                    <input type="hidden" name="orderData[<%= index %>][date]" value="<%= dates[index] %>">
+                    <input type="hidden" name="orderData[<%= index %>][user]" value="<%= order.user.name %>">
+                    <input type="hidden" name="orderData[<%= index %>][orderTotal]" value="<%= order.order_total %>">
+                    <input type="hidden" name="orderData[<%= index %>][quantitySold]" value="<%= quantityArray[index] %>">
+                    <input type="hidden" name="orderData[<%= index %>][totalRevenue]" value="<%= quantityArray[index] * 900 %>">
+                <% }); %>
+                <button type="submit" class="btn btn-primary">Download PDF</button>
+            </form>
+
+            <!-- CSV Download Button Form -->
+            <form method="POST" action="/admin/sales-report/download-csv">
+                <input type="hidden" name="dateRange" value="<%= dateRange %>">
+                <input type="hidden" name="totalOrders" value="<%= totalOrders %>">
+                <input type="hidden" name="totalOrderAmount" value="<%= totalOrderAmount %>">
+                <input type="hidden" name="totalProfit" value="<%= totalProfit %>">
+                <input type="hidden" name="dateToShow" value="<%= dateToShow %>">
+                <% orderData.forEach((order, index) => { %>
+                    <input type="hidden" name="orderData[<%= index %>][date]" value="<%= dates[index] %>">
+                    <input type="hidden" name="orderData[<%= index %>][user]" value="<%= order.user.name %>">
+                    <input type="hidden" name="orderData[<%= index %>][orderTotal]" value="<%= order.order_total %>">
+                    <input type="hidden" name="orderData[<%= index %>][quantitySold]" value="<%= quantityArray[index] %>">
+                    <input type="hidden" name="orderData[<%= index %>][totalRevenue]" value="<%= quantityArray[index] * 900 %>">
+                <% }); %>
+                <button type="submit" class="btn" style="margin-right: 35px; background-color: rgb(3, 75, 156); color: white;">Download CSV</button>
+            </form>
+        </div>
     </div>
-    <div class="summary">
-        <p>Total Orders: <%= totalOrders %></p>
-        <p>Total Order Amount: ₹ <%= totalOrderAmount %></p>
-        <p>Total Profit: ₹ <%= totalProfit %></p>
+
+    <div class="summary mt-3">
+        <p><strong>Total Orders:</strong> <%= totalOrders %></p>
+        <p><strong>Total Order Amount:</strong> ₹ <%= totalOrderAmount %></p>
+        <p><strong>Total Profit:</strong> ₹ <%= totalProfit %></p>
     </div>
 </section>
+<% } %>
 
 <!-- Sales Report Table -->
 <section class="content-main">
@@ -104,22 +123,15 @@
                     <% }
                 } else { %>
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td>There has no orders in these days</td>
-                        <td></td>
-                        <td></td>
+                        <td colspan="5" class="text-center text-danger">There are no orders in this date range.</td>
                     </tr>
                 <% } %>
-                <!-- More rows here -->
             </tbody>
         </table>
     </div>
 </section>
-<!-- Sales Report Table End -->
 
 <%- include('../adminLayouts/pageFooter.ejs') %>
-
 <%- include('../adminLayouts/footer.ejs') %>
 
 <script>
@@ -131,6 +143,4 @@
             document.getElementById('customDateRange').style.display = "none";
         }
     });
-
-    
 </script>

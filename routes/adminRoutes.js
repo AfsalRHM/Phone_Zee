@@ -117,6 +117,7 @@ admin_route.post('/productofferlist', adminAuth.isLogin, offerController.switchP
 admin_route.post('/categoryofferlist', adminAuth.isLogin, offerController.switchCategoryOfferStatus,  offerController.deleteCategoryOffer);
 admin_route.post('/salestatistics', adminAuth.isLogin, statisticsController.filterReports);
 admin_route.post('/sales-report/download', adminAuth.isLogin, statisticsController.downloadSalesReport);
+admin_route.post('/sales-report/download-csv', adminAuth.isLogin, statisticsController.downloadSalesCSV);
 admin_route.post('/acceptnotification', adminAuth.isLogin, notificationController.acceptNotification);
 admin_route.post('/denynotification', adminAuth.isLogin, notificationController.denyNotification);
 

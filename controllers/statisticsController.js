@@ -14,6 +14,7 @@ const PDFDocument = require('pdfkit');
 const path = require('path');
 const fs = require('fs');
 const ejs = require('ejs');
+const { Parser } = require('json2csv');
 
 // To load the report page with some data
 
@@ -407,12 +408,59 @@ const downloadSalesReport = (req, res) => {
     }
 };
 
+// To show the report to admin as a chart 
+const downloadSalesCSV = (req, res) => {
+    try {
+        const { orderData, dateToShow } = req.body;
 
+        // Directory setup
+        const reportsDir = path.join(__dirname, '..', 'public', 'reports');
+        if (!fs.existsSync(reportsDir)) {
+            fs.mkdirSync(reportsDir, { recursive: true });
+        }
 
+        // Define file path
+        const fileName = `sales-report-${Date.now()}.csv`;
+        const filePath = path.join(reportsDir, fileName);
 
+        // Define fields (headers)
+        const fields = [
+            { label: 'Date', value: 'date' },
+            { label: 'User', value: 'user' },
+            { label: 'Order Total (₹)', value: row => `₹ ${row.orderTotal}` },
+            { label: 'Quantity Sold', value: 'quantitySold' },
+            { label: 'Total Revenue (₹)', value: row => `₹ ${row.totalRevenue}` }
+        ];
+
+        // Create parser and convert JSON to CSV
+        const json2csvParser = new Parser({ fields });
+
+        const bom = '\uFEFF'; // UTF-8 BOM
+        const csvData = bom + json2csvParser.parse(orderData);
+
+        // Write to file
+        fs.writeFileSync(filePath, csvData);
+
+        // Send for download
+        res.download(filePath, fileName, (err) => {
+            if (err) {
+                console.error(err);
+                res.status(500).send('Failed to download CSV file');
+            }
+
+            // Clean up
+            fs.unlink(filePath, (err) => {
+                if (err) console.error('File cleanup error:', err);
+            });
+        });
+
+    } catch (error) {
+        console.error('CSV export error:', error.message);
+        res.status(500).send('Internal Server Error');
+    }
+};
 
 // To show the report to admin as a chart 
-
 const adminDataChart = async (req, res) => {
     try {
         const filter = req.query.filter;
@@ -577,7 +625,7 @@ module.exports = {
     loadStatistics,
     filterReports,
     downloadSalesReport,
-
+    downloadSalesCSV,
 
     adminDataChart
 };
