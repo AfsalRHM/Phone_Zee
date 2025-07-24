@@ -20,7 +20,7 @@
     "dotenv": "^16.4.5",
     "easyinvoice": "^3.0.47",
     "ejs": "^3.1.9",
-    "express": "^4.19.1",
+    "express": "^4.21.2",
     "express-session": "^1.18.0",
     "json2csv": "^6.0.0-alpha.2",
     "mongodb": "^6.7.0",

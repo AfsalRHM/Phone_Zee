@@ -7,6 +7,8 @@ const Wishlist = require('../models/wishlistModel');
 const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
 const Coupon = require('../models/couponModel');
+const statusCode = require('../constants/statusCode');
+const responseMessage = require('../constants/responseMessage');
 
 /*********************     
  * 
@@ -248,10 +250,10 @@ const couponStatusChange = async (req, res, next) => {
         coupon.is_hide = coupon.is_hide === 1 ? 0 : 1;
         await coupon.save();
 
-        res.status(200).json({ message: 'Success' });
+        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: 'Server error' });
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
     }; 
 };
 
@@ -265,9 +267,9 @@ const deleteCoupon = async (req, res) => {
         const couponDeletionData = await Coupon.deleteOne({ _id: couponId });
 
         if (couponDeletionData) {
-            res.status(200).json({ message: 'Success' });
+            res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
         } else {
-            res.status(500).json({ message: 'Failed' });
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.FAILED });
         }
         
     } catch (error) {
@@ -290,104 +292,6 @@ const deleteCoupon = async (req, res) => {
 
 /*****************      To Apply the Coupon on Checkout Page    *********************/
 
-// const applyCoupon = async (req, res, next) => {
-//     try {
-//         const { couponCode, validMessage } = req.body;
-
-//         if (validMessage != 'couponReqeust') {
-//             next();
-//         }
-//         // Check if couponCode is provided
-//         if (!couponCode) {
-//             return res.status(400).json({ message: 'Coupon code is required' });
-//         }
-
-//         // Find the coupon by code
-//         const coupon = await Coupon.findOne({ coupon_code: couponCode });
-
-//         const cartData = await Cart.findOne({ user: req.session.user_id });
-
-//         const currentData = Date.now();
-
-//         if (!coupon) {
-//             return res.status(200).json({ message: 'Wrong Coupon Code' });
-//         } else if (coupon.remaining_quantity <= 0) {
-//             return res.status(200).json({ message: 'Coupon quantity depleted' });
-//         } else if (coupon.end_Date <= currentData) {
-//             return res.status(200).json({ message: 'Coupon expired' });
-//         } else if (cartData.total_price <= coupon.minimum_price) {
-//             return res.status(200).json({ message: 'Minimum purchase amount not met', minimumPurchaseAmount: coupon.minimum_price });
-//         } else {
-
-//             cartData.coupon_id = coupon._id;
-
-//             cartData.discount_amount = coupon.discount_price;
-
-//             cartData.coupon_claimed = 1;
-
-//             coupon.remaining_quantity -= 1;
-
-//             const savedCoupon = await coupon.save();
-
-//             const savedCart = await cartData.save();
-
-//             const discountAmountToTotal = savedCart.discount_amount;
-
-//             const totalAmountWithDiscount = savedCart.total_price - discountAmountToTotal;
-
-//             return res.status(200).json({ message: 'Success', discountAmountToTotal, totalAmountWithDiscount});
-
-//         };
-        
-//     } catch (error) {
-//         console.log(error.message);
-//         return res.status(500).json({ message: 'Internal Server Error' });
-//     }
-// };
-
-/*****************      To Remove the Coupon on Checkout Page    *********************/
-
-// const removeCoupon = async (req, res, next) => {
-//     try {
-        
-//         const { validMessage } = req.body;
-
-//         if (validMessage !== 'couponRemovalMessage') {
-//              next();
-//         }else{
-
-        
-
-//         const cartData = await Cart.findOne({ user: req.session.user_id });
-
-//         const couponData = await Coupon.findById(cartData.coupon_id);
-
-//         cartData.discount_amount -= couponData.discount_price;
-
-//         cartData.coupon_claimed = 0;
-
-//         cartData.coupon_id = 'nothing';
-
-//         console.log('Here is also working323232')
-
-//         couponData.remaining_quantity += 1;
-
-//         const savedCoupon = await couponData.save();
-
-//         const savedCart = await cartData.save();
-    
-//         const totalAmountWithDiscount = savedCart.total_price;
-
-//          res.status(200).json({ message: 'Success', totalAmountWithDiscount });
-//         }
-
-//     } catch (error) {
-//         console.log(error.message);
-//     };
-// };
-
-/*****************      To Apply the Coupon on Checkout Page    *********************/
-
 const applyCoupon = async (req, res, next) => {
     try {
         const { couponCode, validMessage } = req.body;
@@ -398,7 +302,7 @@ const applyCoupon = async (req, res, next) => {
 
         // Check if couponCode is provided
         if (couponCode === 'No Code') {
-            return res.status(400).json({ message: 'Coupon code is required' });
+            return res.status(statusCode.BAD_REQUEST).json({ message: 'Coupon code is required' });
         }
 
         // Find the coupon by code
@@ -411,19 +315,19 @@ const applyCoupon = async (req, res, next) => {
         const currentDate = Date.now();
 
         if (!coupon) {
-            return res.status(200).json({ message: 'Wrong Coupon Code' });
+            return res.status(statusCode.OK).json({ message: 'Wrong Coupon Code' });
         } else if (coupon.remaining_quantity <= 0) {
-            return res.status(200).json({ message: 'Coupon quantity depleted' });
+            return res.status(statusCode.OK).json({ message: 'Coupon quantity depleted' });
         } else if (coupon.end_Date <= currentDate) {
-            return res.status(200).json({ message: 'Coupon expired' });
+            return res.status(statusCode.OK).json({ message: 'Coupon expired' });
         } else if (cartData.total_price <= coupon.minimum_price) {
-            return res.status(200).json({ message: 'Minimum purchase amount not met', minimumPurchaseAmount: coupon.minimum_price });
+            return res.status(statusCode.OK).json({ message: 'Minimum purchase amount not met', minimumPurchaseAmount: coupon.minimum_price });
         } else {
 
             const couponClaimed = userData.coupon_claimed.some(couponM => couponM.couponId === coupon._id.toString());
 
             if (couponClaimed) {
-                return res.status(200).json({ message: 'Coupon Claimed' });
+                return res.status(statusCode.OK).json({ message: 'Coupon Claimed' });
             }  
 
             cartData.coupon_id = coupon._id;
@@ -438,12 +342,12 @@ const applyCoupon = async (req, res, next) => {
             const discountAmountToTotal = savedCart.discount_amount;
             const totalAmountWithDiscount = savedCart.total_price - discountAmountToTotal;
 
-            return res.status(200).json({ message: 'Success', discountAmountToTotal, totalAmountWithDiscount });
+            return res.status(statusCode.OK).json({ message: responseMessage.SUCCESS, discountAmountToTotal, totalAmountWithDiscount });
         }
         
     } catch (error) {
         console.log(error.message);
-        return res.status(500).json({ message: 'Internal Server Error' });
+        return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
     }
 };
 
@@ -460,13 +364,13 @@ const removeCoupon = async (req, res, next) => {
         const cartData = await Cart.findOne({ user: req.session.user_id });
 
         if (!cartData) {
-            return res.status(404).json({ message: 'Cart not found' }); // Handle case where cart is not found
+            return res.status(statusCode.NOT_FOUND).json({ message: 'Cart not found' }); // Handle case where cart is not found
         }
 
         const couponData = await Coupon.findById(cartData.coupon_id);
 
         if (!couponData) {
-            return res.status(404).json({ message: 'Coupon not found' }); // Handle case where coupon is not found
+            return res.status(statusCode.NOT_FOUND).json({ message: 'Coupon not found' }); // Handle case where coupon is not found
         }
 
         cartData.discount_amount -= couponData.discount_price;
@@ -480,11 +384,11 @@ const removeCoupon = async (req, res, next) => {
 
         const totalAmountWithDiscountValue = savedCart.total_price ;
 
-        return res.status(200).json({ message: 'Success', totalAmountWithDiscountValue });
+        return res.status(statusCode.OK).json({ message: responseMessage.SUCCESS, totalAmountWithDiscountValue });
 
     } catch (error) {
         console.log(error.message);
-        return res.status(500).json({ message: 'Internal Server Error' });
+        return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
     }
 };
 

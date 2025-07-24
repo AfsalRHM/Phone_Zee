@@ -6,6 +6,7 @@ const Wishlist = require('../models/wishlistModel');
 const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
 const Offer = require('../models/offerModel');
+const statusCode = require('../constants/statusCode');
 
 
 /*********************     
@@ -92,10 +93,10 @@ const activeOrInactive2 = async (req, res, next) => {
         product.is_hide = product.is_hide === 1 ? 0 : 1;
         await product.save();
 
-        res.status(200).json({ message: 'Success' });
+        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: 'Server error' });
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
     }; 
 };
 
@@ -200,7 +201,7 @@ const updateProduct = async (req, res) => {
   
         // Check if product exists
         if (!product) {
-            return res.status(404).json({ message: 'Product not found' });
+            return res.status(statusCode.NOT_FOUND).json({ message: 'Product not found' });
         }else if (req.body.productName.trim() == '') {
             res.render('editProduct',{message: 'Enter A Valid Product Name', product: product, categories: categoryData});
         } else if (req.body.productDescription.trim() == '') {
@@ -254,7 +255,7 @@ const updateProduct = async (req, res) => {
         };
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
     };
 };
 

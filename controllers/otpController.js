@@ -9,6 +9,8 @@ const Order = require("../models/orderModel");
 const Otp = require("../models/otpModel");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcryptjs");
+const statusCode = require("../constants/statusCode");
+const responseMessage = require("../constants/responseMessage");
 
 /*****************      To Secure the password Using bcrypt     *********************/
 
@@ -204,9 +206,9 @@ const sendOtpForResetPassword = async (req, res) => {
     const userData = await User.findOne({ email: emailOfUser });
 
     if (userData.password == null) {
-      res.status(200).json({ message: "User not Found" });
+      res.status(statusCode.OK).json({ message: "User not Found" });
     } else {
-      res.status(200).json({ message: "Success" });
+      res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
 
       let ans = await passwordResetMail(emailOfUser).catch(console.error);
 

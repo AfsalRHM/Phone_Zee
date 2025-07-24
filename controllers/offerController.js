@@ -8,7 +8,8 @@ const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
 const Coupon = require('../models/couponModel');
 const Offer = require('../models/offerModel');
-
+const statusCode = require('../constants/statusCode');
+const responseMessage = require('../constants/responseMessage');
 
 
 /*****************      To load the product offer list page     *********************/
@@ -330,10 +331,10 @@ const switchProductOfferStatus = async (req, res, next) => {
         await product.save();
         await offer.save();
 
-        res.status(200).json({ message: 'Success' });
+        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: 'Server error' });
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
     }; 
 };
 
@@ -353,10 +354,10 @@ const switchCategoryOfferStatus = async (req, res, next) => {
         offer.is_hide = offer.is_hide === 1 ? 0 : 1;
         await offer.save();
 
-        res.status(200).json({ message: 'Success' });
+        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: 'Server error' });
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
     }; 
 };
 
@@ -370,9 +371,9 @@ const deleteProductOffer = async (req, res) => {
         const offerDeletionData = await Offer.deleteOne({ _id: offerId });
 
         if (offerDeletionData) {
-            res.status(200).json({ message: 'Success' });
+            res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
         } else {
-            res.status(500).json({ message: 'Failed' });
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.FAILED });
         }
         
     } catch (error) {
@@ -390,9 +391,9 @@ const deleteCategoryOffer = async (req, res) => {
         const offerDeletionData = await Offer.deleteOne({ _id: offerId });
 
         if (offerDeletionData) {
-            res.status(200).json({ message: 'Success' });
+            res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
         } else {
-            res.status(500).json({ message: 'Failed' });
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.FAILED });
         }
         
     } catch (error) {

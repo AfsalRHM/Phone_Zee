@@ -9,9 +9,8 @@ const Coupon = require('../models/couponModel');
 const Wallet = require('../models/walletModel');
 const Notification = require('../models/notificationModel');
 
-
 const { parseISO, format } = require('date-fns');
-
+const statusCode = require('../constants/statusCode');
 
 
 /*****************      To load the Notification list     *********************/
@@ -76,7 +75,7 @@ const acceptNotification = async(req, res) => {
 
         await notificationData.save();
 
-        res.status(200).json({ message: 'return order Accepted' })
+        res.status(statusCode.OK).json({ message: 'Notification Accepted' })
         
     } catch (error) {
         console.log(error.message);
@@ -102,7 +101,7 @@ const denyNotification = async(req, res) => {
 
         await notificationData.save();
 
-        res.status(200).json({ message: 'return order Accepted' })
+        res.status(statusCode.OK).json({ message: 'Notification Denied' })
         
     } catch (error) {
         console.log(error.message);

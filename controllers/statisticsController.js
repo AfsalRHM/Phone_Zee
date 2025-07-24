@@ -15,6 +15,8 @@ const path = require('path');
 const fs = require('fs');
 const ejs = require('ejs');
 const { Parser } = require('json2csv');
+const statusCode = require('../constants/statusCode');
+const responseMessage = require('../constants/responseMessage');
 
 // To load the report page with some data
 
@@ -187,75 +189,7 @@ const filterReports = async (req, res) => {
     };
 };
 
-// const downloadSalesReport = (req, res) => {
-//     try {
-//         const { dateRange, startDate, endDate, totalOrders, totalOrderAmount, totalProfit, orderData } = req.body;
-
-//         // Ensure the reports directory exists
-//         const reportsDir = path.join(__dirname, '..', 'public', 'reports');
-//         if (!fs.existsSync(reportsDir)) {
-//             fs.mkdirSync(reportsDir, { recursive: true });
-//         }
-
-//         // Create a new PDF document
-//         const doc = new PDFDocument();
-//         const filePath = path.join(reportsDir, 'sales-report.pdf');
-
-//         doc.pipe(fs.createWriteStream(filePath));
-
-//         // Add title
-//         doc.fontSize(20).text('Sales Report', { align: 'center' });
-//         doc.moveDown();
-
-//         // Add date range
-//         // doc.fontSize(12).text(`Date Range: ${startDate} - ${endDate}`);
-//         // doc.moveDown();
-
-//         // Table headers
-//         doc.fontSize(12).text('Date', { width: 100, continued: true });
-//         doc.text('Product', { width: 200, continued: true });
-//         doc.text('Order Total', { width: 100, continued: true });
-//         doc.text('Quantity Sold', { width: 100, continued: true });
-//         doc.text('Total Revenue', { width: 100 });
-//         doc.moveDown();
-
-//         // Table rows
-//         orderData.forEach(order => {
-//             doc.text(order.date, { width: 100, continued: true });
-//             doc.text(order.product, { width: 200, continued: true });
-//             doc.text(`₹ ${order.orderTotal}`, { width: 100, continued: true });
-//             doc.text(order.quantitySold, { width: 100, continued: true });
-//             doc.text(`₹ ${order.totalRevenue}`, { width: 100 });
-//             doc.moveDown();
-//         });
-
-//         // Summary
-//         doc.moveDown();
-//         doc.fontSize(12).text(`Total Orders: ${totalOrders}`);
-//         doc.text(`Total Order Amount: ₹ ${totalOrderAmount}`);
-//         doc.text(`Total Profit: ₹ ${totalProfit}`);
-
-//         doc.end();
-
-//         // Send the file as a response
-//         doc.pipe(fs.createWriteStream(filePath)).on('finish', () => {
-//             res.download(filePath, 'sales-report.pdf', (err) => {
-//                 if (err) {
-//                     console.log(err);
-//                     res.status(500).send('Could not download the report.');
-//                 }
-//                 // Delete the file after sending it
-//                 fs.unlink(filePath, (err) => {
-//                     if (err) console.log(err);
-//                 });
-//             });
-//         });
-
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).send('Internal Server Error');
-//     }
-// };
+// To Download the Sales report pdf
 
 const downloadSalesReport = (req, res) => {
     try {
@@ -394,7 +328,7 @@ const downloadSalesReport = (req, res) => {
             res.download(filePath, 'sales-report.pdf', (err) => {
                 if (err) {
                     console.log(err);
-                    res.status(500).send('Could not download the report.');
+                    res.status(statusCode.INTERNAL_SERVER_ERROR).send('Could not download the report.');
                 }
                 fs.unlink(filePath, (err) => {
                     if (err) console.log(err);
@@ -404,11 +338,11 @@ const downloadSalesReport = (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        res.status(500).send('Internal Server Error');
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({message: responseMessage.INTERNAL_SERVER_ERROR});
     }
 };
 
-// To show the report to admin as a chart 
+// To Download the Sales report csv
 const downloadSalesCSV = (req, res) => {
     try {
         const { orderData, dateToShow } = req.body;
@@ -445,7 +379,7 @@ const downloadSalesCSV = (req, res) => {
         res.download(filePath, fileName, (err) => {
             if (err) {
                 console.error(err);
-                res.status(500).send('Failed to download CSV file');
+                res.status(statusCode.INTERNAL_SERVER_ERROR).send('Failed to download CSV file');
             }
 
             // Clean up
@@ -456,7 +390,7 @@ const downloadSalesCSV = (req, res) => {
 
     } catch (error) {
         console.error('CSV export error:', error.message);
-        res.status(500).send('Internal Server Error');
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({message: responseMessage.INTERNAL_SERVER_ERROR});
     }
 };
 
@@ -490,7 +424,7 @@ const adminDataChart = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: responseMessage.INTERNAL_SERVER_ERROR });
     };
 };
 

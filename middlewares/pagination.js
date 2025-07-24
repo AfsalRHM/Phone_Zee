@@ -1,3 +1,6 @@
+const responseMessage = require("../constants/responseMessage");
+const statusCode = require("../constants/statusCode");
+
 const paginate = (model) => {
     return async (req, res, next) => {
         try {
@@ -30,7 +33,7 @@ const paginate = (model) => {
             next();
         } catch (error) {
             console.log(error.message);
-            res.status(500).json({ message: 'Server error' });
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({message: responseMessage.INTERNAL_SERVER_ERROR});
         }
     };
 };

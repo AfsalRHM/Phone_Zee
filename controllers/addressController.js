@@ -5,6 +5,8 @@ const Address = require('../models/addressModel');
 const Wishlist = require('../models/wishlistModel');
 const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
+const statusCode = require('../constants/statusCode');
+const responseMessage = require('../constants/responseMessage');
 
 
 /*****************      To load the Add Address page     *********************/
@@ -190,10 +192,10 @@ const deleteAddress = async (req, res, next) => {
             return next();
         };
 
-        res.status(200).json({ message: 'Success' });
+        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: 'Server error' });
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
     }; 
 };
 
@@ -222,14 +224,14 @@ const addressChange =  async (req, res, next) => {
         };
 
         if (!addressFound) {
-            return res.status(404).json({ message: 'Address not found' });
+            return res.status(statusCode.NOT_FOUND).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
         };
 
-        res.status(200).json({ message: 'Success' });
+        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
 
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: 'Server error' });
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
     }; 
 };
 

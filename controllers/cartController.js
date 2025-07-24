@@ -5,6 +5,8 @@ const Address = require('../models/addressModel');
 const Wishlist = require('../models/wishlistModel');
 const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
+const statusCode = require('../constants/statusCode');
+const responseMessage = require('../constants/responseMessage');
 
 
 /*****************      To load the Cart page     *********************/
@@ -55,13 +57,13 @@ const addToCart = async (req, res) => {
         };
 
         if (product.stock == 0) {
-            res.status(200).json({ message: 'Product out of stock' });
+            res.status(statusCode.OK).json({ message: 'Product out of stock' });
         } else {
 
             if (!existingCart) {
 
                 if (product.stock < qty) {
-                    res.status(200).json({ message: 'Not Enough Product' });
+                    res.status(statusCode.OK).json({ message: 'Not Enough Product' });
                 } else {
     
                     if (!qty) {
@@ -76,7 +78,7 @@ const addToCart = async (req, res) => {
 
                             await cart.save();
             
-                            res.status(200).json({ message: 'Success' });
+                            res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
 
                         } else {
 
@@ -88,7 +90,7 @@ const addToCart = async (req, res) => {
 
                             await cart.save();
             
-                            res.status(200).json({ message: 'Success' });
+                            res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
 
                         };
     
@@ -104,7 +106,7 @@ const addToCart = async (req, res) => {
                     
                             await cart.save();
                     
-                            res.status(200).json({ message: 'Success' });
+                            res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
 
                         } else {
 
@@ -116,7 +118,7 @@ const addToCart = async (req, res) => {
                     
                             await cart.save();
                     
-                            res.status(200).json({ message: 'Success' });
+                            res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
 
                         };
     
@@ -131,7 +133,7 @@ const addToCart = async (req, res) => {
                 if (!existingProductOnCart) {
     
                     if (product.stock < qty) {
-                        res.status(200).json({ message: 'Not Enough Product' });
+                        res.status(statusCode.OK).json({ message: 'Not Enough Product' });
                     } else {
         
                         if (!qty) {
@@ -146,7 +148,7 @@ const addToCart = async (req, res) => {
         
                                 await existingCart.save();
                     
-                                res.status(200).json({ message: 'Success' });
+                                res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
     
                             } else {
     
@@ -158,19 +160,9 @@ const addToCart = async (req, res) => {
         
                                 await existingCart.save();
                     
-                                res.status(200).json({ message: 'Success' });
+                                res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
     
                             };
-    
-                            // const productTotal = product.price * 1;
-    
-                            // existingCart.products.push({ product: productId, quantity: 1, product_total: productTotal });
-    
-                            // existingCart.total_price += productTotal;
-    
-                            // await existingCart.save();
-                
-                            // res.status(200).json({ message: 'Success' });
         
                         } else {
 
@@ -184,7 +176,7 @@ const addToCart = async (req, res) => {
             
                                 await existingCart.save();
                     
-                                res.status(200).json({ message: 'Success' });
+                                res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
     
                             } else {
     
@@ -196,7 +188,7 @@ const addToCart = async (req, res) => {
             
                                 await existingCart.save();
                     
-                                res.status(200).json({ message: 'Success' });
+                                res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
     
                             };
         
@@ -204,7 +196,7 @@ const addToCart = async (req, res) => {
                     };
     
                 } else {
-                    res.status(200).json({ message: 'Already Exists' });
+                    res.status(statusCode.OK).json({ message: 'Already Exists' });
                 };
                 
             };
@@ -237,7 +229,7 @@ const deleteProductFromCart = async (req, res, next) => {
 
             await cartData.updateOne({ $pull: { products: { product: cartItemId } }, total_price: updatedTotalPrice});
 
-            res.status(200).json({ message: 'Success' });
+            res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
 
         }
 
@@ -264,7 +256,7 @@ const updateCart =  async (req, res) => {
             TotalPrice = productToUpdate.product.salePrice * newQuantity; 
 
             if (newQuantity > productToUpdate.product.stock ) {
-                res.status(200).json({ message: 'out of stock'});
+                res.status(statusCode.OK).json({ message: 'out of stock'});
             } else {
 
                 productToUpdate.quantity = newQuantity;
@@ -276,7 +268,7 @@ const updateCart =  async (req, res) => {
     
                 await cartData.save();
                 
-                res.status(200).json({ message: 'Success', totalPrice: TotalPrice, cartTotal:  cartTotal });
+                res.status(statusCode.OK).json({ message: responseMessage.SUCCESS, totalPrice: TotalPrice, cartTotal:  cartTotal });
 
             };
 
@@ -285,7 +277,7 @@ const updateCart =  async (req, res) => {
             TotalPrice = productToUpdate.product.price * newQuantity; 
 
             if (newQuantity > productToUpdate.product.stock ) {
-                res.status(200).json({ message: 'out of stock' , quantity: productToUpdate.quantity});
+                res.status(statusCode.OK).json({ message: 'out of stock' , quantity: productToUpdate.quantity});
             } else {
 
                 productToUpdate.quantity = newQuantity;
@@ -297,7 +289,7 @@ const updateCart =  async (req, res) => {
 
                 await cartData.save();
                 
-                res.status(200).json({ message: 'Success', totalPrice: TotalPrice, cartTotal:  cartTotal });
+                res.status(statusCode.OK).json({ message: responseMessage.SUCCESS, totalPrice: TotalPrice, cartTotal:  cartTotal });
 
             }
 

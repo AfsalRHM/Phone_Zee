@@ -7,6 +7,8 @@ const Order = require('../models/orderModel');
 const bcrypt = require('bcryptjs')
 
 const { format } = require('date-fns');
+const statusCode = require('../constants/statusCode');
+const responseMessage = require('../constants/responseMessage');
 
 /*****************      To load the AdminDashboard     *********************/
 const loadAdminHome = async (req, res) => {
@@ -123,16 +125,16 @@ const blockAndActive2 = async (req, res) => {
         const user = await User.findById(userId);
 
         if (!user) {
-            return res.status(404).json({ message: 'Failed' });
+            return res.status(statusCode.NOT_FOUND).json({ message: responseMessage.FAILED });
         }
 
         user.is_blocked = Number(!user.is_blocked);
         await user.save();
 
-        res.status(200).json({ message: 'Success' });
+        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: 'Server error' });
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
     }
 };
     
@@ -149,10 +151,10 @@ const activeOrInactive = async (req, res, next) => {
         category.is_hide = category.is_hide === 1 ? 0 : 1;
         await category.save();
 
-        res.status(200).json({ message: 'Success' });
+        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: 'Server error' });
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
     }; 
 };
 

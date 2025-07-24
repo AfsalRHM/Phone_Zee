@@ -1,3 +1,5 @@
+const responseMessage = require('../constants/responseMessage');
+const statusCode = require('../constants/statusCode');
 const User = require('../models/userModel');
 
 const isBlocked = async (req, res, next) => {
@@ -15,7 +17,7 @@ const isBlocked = async (req, res, next) => {
 
     } catch (error) {
         console.log(error.message);
-        res.status(500).send('Internal Server Error');
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({message: responseMessage.INTERNAL_SERVER_ERROR});
     }
 };
 

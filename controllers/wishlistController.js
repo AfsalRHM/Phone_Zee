@@ -5,6 +5,8 @@ const Address = require('../models/addressModel');
 const Wishlist = require('../models/wishlistModel');
 const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
+const statusCode = require('../constants/statusCode');
+const responseMessage = require('../constants/responseMessage');
 
 
 /*********************     
@@ -50,7 +52,7 @@ const addToWishlist = async (req, res) => {
         const cartExist = await Cart.findOne({user: req.session.user_id, 'products.product': productId});
 
         if (cartExist != null) {
-            res.status(200).json({ message: 'Product Exist In Cart' });
+            res.status(statusCode.OK).json({ message: 'Product Exist In Cart' });
         } else if (cartExist == null) {
             const existingProduct = await Wishlist.findOne({user: req.session.user_id, product: productId});
 
@@ -67,16 +69,16 @@ const addToWishlist = async (req, res) => {
         
                 await wishlist.save();
         
-                res.status(200).json({ message: 'Success' });
+                res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
     
             } else {
-                res.status(200).json({ message: 'Already Exists' });
+                res.status(statusCode.OK).json({ message: 'Already Exists' });
             }
         };
 
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: 'Server error' });
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
     };
 };
 
@@ -89,7 +91,7 @@ const deleteProductFromWishlist = async (req, res) => {
 
         await Wishlist.deleteOne({_id: wislistItemId}); 
 
-        res.status(200).json({ message: 'Success' });
+        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
 
     } catch (error) {
         console.log(error.message);

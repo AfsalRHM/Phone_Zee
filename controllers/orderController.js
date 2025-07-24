@@ -14,6 +14,8 @@ const crypto = require('crypto');
 const Razorpay = require('razorpay');
 
 const { parseISO, format } = require('date-fns');
+const statusCode = require('../constants/statusCode');
+const responseMessage = require('../constants/responseMessage');
 
 const razorpayInstance = new Razorpay({ 
   
@@ -111,7 +113,7 @@ const updateOrderStatus = async (req, res) => {
         const orderData = await Order.findOne({_id: orderDataId});
 
         if (!orderData) {
-            return res.status(404).json({ message: 'Failed' });
+            return res.status(statusCode.NOT_FOUND).json({ message: responseMessage.FAILED });
         }
 
         // Toggle the is_blocked field
@@ -128,7 +130,7 @@ const updateOrderStatus = async (req, res) => {
 
         await orderData.save();
 
-        res.status(200).json({ message: 'Success' });
+        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
         
     } catch (error) {
         console.log(error.message);
@@ -150,10 +152,10 @@ const cancelOrderAdmin = async (req, res) => {
 
             await orderData.save();
 
-            res.status(200).json({ message: 'Success' });
+            res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
 
         } else {
-            res.status(500).json({ message: 'Order Not Found' });
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: 'Order Not Found' });
         }
         
     } catch (error) {
@@ -188,11 +190,11 @@ const placeOrder = async (req, res) => {
 
         if (cartData.discount_amount != 0) {
             if ( ( cartData.total_price - cartData.discount_amount ) > 500000 ) {
-                res.status(200).json({ message: 'Maximum purchase amount is 5,00,000' });
+                res.status(statusCode.OK).json({ message: 'Maximum purchase amount is 5,00,000' });
             };
         } else {
             if ( cartData.total_price > 500000 ) {
-                res.status(200).json({ message: 'Maximum purchase amount is 5,00,000' });
+                res.status(statusCode.OK).json({ message: 'Maximum purchase amount is 5,00,000' });
             };
         };
 
@@ -231,7 +233,7 @@ const placeOrder = async (req, res) => {
 
                 if (order.order_total >= 10000) {
                     
-                    res.status(200).json({ message: 'change order method' });
+                    res.status(statusCode.OK).json({ message: 'change order method' });
 
                 } else {
 
@@ -249,9 +251,9 @@ const placeOrder = async (req, res) => {
                     const OrderData = await order.save();
     
                     if (OrderData) {
-                        res.status(200).json({ message: 'Success', orderId: OrderData._id });
+                        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS, orderId: OrderData._id });
                     } else {
-                        res.status(500).json({ message: 'Failed' });
+                        res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.FAILED });
                     };
 
                 };
@@ -277,7 +279,7 @@ const placeOrder = async (req, res) => {
 
                     await Cart.findByIdAndUpdate(cartData._id, { $pull: { products: { _id: { $in: cartData.products.map(p => p._id) } } }, $set: { total_price: 0, discount_amount: 0, coupon_claimed: 0, coupon_id: 'nothing' } });
 
-                    return res.status(200).json({
+                    return res.status(statusCode.OK).json({
                         message: 'Razorpay order created',
                         razorpayOrderId: razorpayOrder.id,
                         userName: userData.name,
@@ -289,7 +291,7 @@ const placeOrder = async (req, res) => {
 
                 } catch (err) {
                     console.error('Error creating Razorpay order:', err);
-                    return res.status(500).send(err);
+                    return res.status(statusCode.INTERNAL_SERVER_ERROR).send(err);
                 };
 
             } else if ( order.payment_type == 'payment-wallet' ) {
@@ -297,7 +299,7 @@ const placeOrder = async (req, res) => {
                 const walletBalance = userData.wallet_balance;
 
                 if (order.order_total > walletBalance) {
-                    res.status(200).json({ message: 'Not enough balance on wallet' });
+                    res.status(statusCode.OK).json({ message: 'Not enough balance on wallet' });
                 } else {
 
                     const wallet = new Wallet ({
@@ -326,19 +328,19 @@ const placeOrder = async (req, res) => {
                     const OrderData = await order.save();
 
                     if (OrderData) {
-                        res.status(200).json({ message: 'Success', orderId: OrderData._id });
+                        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS, orderId: OrderData._id });
                     } else {
-                        res.status(500).json({ message: 'Failed' });
+                        res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.FAILED });
                     };
 
                 };
 
             } else {
-                res.status(200).json({ message: 'Payment Method not Available' });
+                res.status(statusCode.OK).json({ message: 'Payment Method not Available' });
             };
 
         } else {
-            res.status(200).json({ message: 'Order Already Exists' });
+            res.status(statusCode.OK).json({ message: 'Order Already Exists' });
         };
         
     } catch (error) {
@@ -365,7 +367,7 @@ const placeOrderProfile = async (req, res, next) => {
 
         // await Cart.findByIdAndUpdate(cartData._id, { $pull: { products: { _id: { $in: cartData.products.map(p => p._id) } } }, $set: { total_price: 0, discount_amount: 0, coupon_claimed: 0, coupon_id: 'nothing' } });
 
-        return res.status(200).json({
+        return res.status(statusCode.OK).json({
             message: 'Razorpay order created',
             razorpayOrderId: razorpayOrder.id,
             userName: userData.name,
@@ -377,7 +379,7 @@ const placeOrderProfile = async (req, res, next) => {
 
     } catch (err) {
         console.error('Error creating Razorpay from profile:', err);
-        return res.status(500).send(err);
+        return res.status(statusCode.INTERNAL_SERVER_ERROR).send(err);
     };
 };
 
@@ -391,7 +393,7 @@ const confirmPayment = async (req, res) => {
         const order = await Order.findById(orderId);
 
         if (!order) {
-            return res.status(404).json({ message: 'Order not found' });
+            return res.status(statusCode.NOT_FOUND).json({ message: 'Order not found' });
         }
 
         // Create a HMAC using the orderId and razorpayPaymentId
@@ -406,13 +408,13 @@ const confirmPayment = async (req, res) => {
             order.order_status = 'Confirmed';
             await order.save();
 
-            res.status(200).json({ message: 'Success', orderId: order._id });
+            res.status(statusCode.OK).json({ message: responseMessage.SUCCESS, orderId: order._id });
         } else {
-            res.status(400).json({ message: 'Invalid signature' });
+            res.status(statusCode.BAD_REQUEST).json({ message: 'Invalid signature' });
         }
     } catch (error) {
         console.error('Error confirming payment:', error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
     }
 };
 
@@ -470,13 +472,13 @@ const cancelItem = async (req, res) => {
                 await wallet.save();
                 await userData.save();
 
-                res.status(200).json({ message: 'Success', orderData });
+                res.status(statusCode.OK).json({ message: responseMessage.SUCCESS, orderData });
                 return;
             };
 
-            res.status(200).json({ message: 'Success', orderData });
+            res.status(statusCode.OK).json({ message: responseMessage.SUCCESS, orderData });
         } else {
-            res.status(500).json({ message: 'Product Not Found' });
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: 'Product Not Found' });
         }
 
     } catch (error) {
@@ -519,16 +521,16 @@ const cancelOrder = async (req, res) => {
                 await wallet.save();
                 await userData.save();
 
-                res.status(200).json({ message: 'Success' });
+                res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
 
             };
 
             await orderData.save();
 
-            res.status(200).json({ message: 'Success' });
+            res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
 
         } else {
-            res.status(500).json({ message: 'Order Not Found' });
+            res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: 'Order Not Found' });
         }
 
     } catch (error) {
@@ -616,7 +618,7 @@ const requestToReturnOrder = async (req, res) => {
 
         const requestData = await notification.save();
 
-        res.status(200).json({ message: 'return order req send' })
+        res.status(statusCode.OK).json({ message: 'return order req send' })
         
     } catch (error) {
         console.log(error.messsage);
