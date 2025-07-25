@@ -27,9 +27,7 @@ const responseMessage = require('../constants/responseMessage');
 const loadCouponList = async(req, res) => {
     try {
 
-        const couponData = await Coupon.find();
-
-        res.render('couponList', {activeCouponMessage: 'active', couponData});
+        res.render('couponList', {activeCouponMessage: 'active', couponData: res.paginatedResults.results, pagination: res.paginatedResults});
         
     } catch (error) {
         console.log(error.message);;
@@ -53,7 +51,6 @@ const loadAddCoupon = async(req, res) => {
 const insertCoupon = async(req, res) => {
     try {
 
-        console.log(req.body, "this is the body-----------------")
         const { couponName, couponCode, minimumPrice, discountPrice, startDate, endDate, couponQuantity } = req.body;
 
         const coupon = new Coupon ({
@@ -103,7 +100,7 @@ const insertCoupon = async(req, res) => {
 
                 const couponSaved = await coupon.save();
 
-                let couponData = await Coupon.find().lean();;
+                let couponData = res.paginatedResults.results;
                 
                 couponData = couponData.map(coupon => ({
                     ...coupon,
@@ -111,9 +108,11 @@ const insertCoupon = async(req, res) => {
                     end_date: new Date(coupon.end_date)
                 }));
 
+                console.log(couponData, "This is the paginated coupon data")
+
                 if (couponSaved) {
     
-                    res.render('couponList', {activeCouponMessage: 'active', couponListSuccessMessage: 'Coupon Added Successfully.', couponData});
+                    res.render('couponList', {activeCouponMessage: 'active', couponListSuccessMessage: 'Coupon Added Successfully.', couponData, pagination: res.paginatedResults});
     
                 } else {
                     res.render('addCoupon', { activeCouponMessage: 'active', addCouponErrorMessage: 'Error While Adding the Coupon.', couponData: coupon  });

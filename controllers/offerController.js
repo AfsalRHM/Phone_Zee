@@ -16,10 +16,32 @@ const responseMessage = require('../constants/responseMessage');
 
 const loadProductOfferList = async (req, res) => {
     try {
+        
+        const page = parseInt(req.query.page) || 1; // Get the page number from the query parameters
+        const limit = parseInt(req.query.limit) || 5; // Get the limit from the query parameters
+        
+        // Calculate the skip value based on the page number and limit
+        const skip = (page - 1) * limit;
+        
+        const offerData = await Offer.find({offer_On: 'product'}).populate('item_Id').skip(skip).limit(limit);
 
-        const offerData = await Offer.find({offer_On: 'product'}).populate('item_Id');
+        // Count total number of products
+        const totalProducts = await Offer.countDocuments({offer_On: 'product'});
 
-        res.render('offerProductList', { activeOfferMessage: 'active', offerProducts: offerData });
+        // Calculate total pages
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        // Construct pagination object
+        const pagination = {
+            currentPage: page,
+            totalPages: totalPages,
+            hasPreviousPage: page > 1,
+            hasNextPage: page < totalPages,
+            previous: page > 1 ? { page: page - 1 } : null,
+            next: page < totalPages ? { page: page + 1 } : null
+        };
+
+        res.render('offerProductList', { activeOfferMessage: 'active', offerProducts: offerData, pagination });
         
     } catch (error) {
         console.log(error.message);
@@ -31,9 +53,32 @@ const loadProductOfferList = async (req, res) => {
 const loadCategoryOfferList = async (req, res) => {
     try {
 
-        const offerData = await Offer.find({offer_On: 'category'}).populate('item_Id');
+        const page = parseInt(req.query.page) || 1; // Get the page number from the query parameters
+        const limit = parseInt(req.query.limit) || 5; // Get the limit from the query parameters
         
-        res.render('offerCategoryList', { activeOfferMessage: 'active', offerCategories: offerData });
+        // Calculate the skip value based on the page number and limit
+        const skip = (page - 1) * limit;
+        
+        const offerData = await Offer.find({offer_On: 'category'}).populate('item_Id').skip(skip).limit(limit);
+
+        // Count total number of products
+        const totalProducts = await Offer.countDocuments({ offer_On: 'category' });
+
+        // Calculate total pages
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        // Construct pagination object
+        const pagination = {
+            currentPage: page,
+            totalPages: totalPages,
+            hasPreviousPage: page > 1,
+            hasNextPage: page < totalPages,
+            previous: page > 1 ? { page: page - 1 } : null,
+            next: page < totalPages ? { page: page + 1 } : null
+        };
+
+        
+        res.render('offerCategoryList', { activeOfferMessage: 'active', offerCategories: offerData, pagination });
         
     } catch (error) {
         console.log(error.message);
@@ -369,6 +414,8 @@ const deleteProductOffer = async (req, res) => {
         const { offerId, message } = req.body;
 
         const offerDeletionData = await Offer.deleteOne({ _id: offerId });
+
+        
 
         if (offerDeletionData) {
             res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });

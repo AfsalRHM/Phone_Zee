@@ -113,6 +113,25 @@
             </div>
         </div>
     </div>
+    <div class="pagination-area mt-15 mb-50">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+                <% if (pagination.previous) { %>
+                    <li ><a class="page-link" href="/admin/couponlist?page=<%= pagination.previous.page %>">Previous</a></li>
+                <% } else { %>
+                    <li class="disabled"><a class="page-link" href="#">Previous</a></li>
+                <% } %>
+                <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+                    <li class="page-item <% if (i === pagination.currentPage) { %>active<% } %>"><a class="page-link" href="/admin/couponlist?page=<%= i %>"><%= i %></a></li>
+                <% } %>
+                <% if (pagination.next) { %>
+                    <li ><a class="page-link" href="/admin/couponlist?page=<%= pagination.next.page %>">Next</a></li>
+                <% } else { %>
+                    <li class="disabled"><a class="page-link" href="#">Next</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    </div>
 </section>
 
 <%- include('../adminLayouts/pageFooter.ejs') %>

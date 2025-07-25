@@ -28,7 +28,8 @@ const paginate = (model) => {
                 };
             }
 
-            results.results = await model.find().limit(limit).skip(startIndex).exec(); // Fetch paginated results
+            results.results = await model.find().skip(startIndex).limit(limit).lean().exec(); // Fetch paginated results
+            console.log(results.results)
             res.paginatedResults = results;
             next();
         } catch (error) {

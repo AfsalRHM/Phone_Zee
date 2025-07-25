@@ -39,6 +39,7 @@ const paginate = require('../middlewares/pagination');
 const User = require('../models/userModel');
 const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
+const Coupon = require('../models/couponModel');
 
 const Notifications = require('../models/notificationModel');
 
@@ -82,7 +83,7 @@ admin_route.get('/categorylist', adminAuth.isLogin, categoryController.loadCateg
 admin_route.get('/login', adminAuth.isLogout, adminController.loadAdminLogin);
 admin_route.get('/editcategory', adminAuth.isLogin, categoryController.loadEditCategory);
 admin_route.get('/editproduct', adminAuth.isLogin, productController.loadEditProduct);
-admin_route.get('/couponlist', adminAuth.isLogin, couponController.loadCouponList);
+admin_route.get('/couponlist', adminAuth.isLogin, paginate(Coupon), couponController.loadCouponList);
 admin_route.get('/addcoupon', adminAuth.isLogin, couponController.loadAddCoupon);
 admin_route.get('/editcoupon', adminAuth.isLogin, couponController.loadEditCoupon);
 admin_route.get('/productofferlist', adminAuth.isLogin, offerController.loadProductOfferList);
@@ -109,7 +110,7 @@ admin_route.post('/orderdetail', adminAuth.isLogin, orderController.updateOrderS
 admin_route.post('/cancelOrderAdmin', adminAuth.isLogin, orderController.cancelOrderAdmin);
 admin_route.post('/orderlist', adminAuth.isLogin, orderController.cancelOrder);
 admin_route.post('/couponlist', adminAuth.isLogin, couponController.couponStatusChange, couponController.deleteCoupon);
-admin_route.post('/addCoupon', adminAuth.isLogin, couponController.insertCoupon);
+admin_route.post('/addCoupon', adminAuth.isLogin, paginate(Coupon), couponController.insertCoupon);
 admin_route.post('/editcoupon', adminAuth.isLogin, couponController.updateCoupon);
 admin_route.post('/addoffer', adminAuth.isLogin, offerController.createOffer);
 admin_route.post('/editoffer', adminAuth.isLogin, offerController.updateOffer);
