@@ -122,7 +122,6 @@ const generateInvoice = async (req, res) => {
         //Create your invoice! Easy!
         easyinvoice.createInvoice(data, async function (result) {
             //The response will contain a base64 encoded PDF file
-            // console.log('PDF base64 string: ', 'finsidhed');
 
             await fs.promises.mkdir(invoiceFolderPath, { recursive: true });
             await fs.promises.writeFile(invoiceFilePath, result.pdf, 'base64');

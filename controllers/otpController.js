@@ -212,11 +212,6 @@ const sendOtpForResetPassword = async (req, res) => {
 
       let ans = await passwordResetMail(emailOfUser).catch(console.error);
 
-      if (ans) {
-        console.log(ans);
-      } else {
-        console.log("Reset Email Success Delivered");
-      }
     }
   } catch (error) {
     console.log(error.message);

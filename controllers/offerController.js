@@ -189,6 +189,8 @@ const createOffer = async (req, res) => {
 
                 const offerData = await offer.save();
 
+                await Product.updateMany({ category: category.name },[{$set: {offer: 1,salePrice: {$ceil: {$subtract: ["$price",{ $multiply: ["$price", percentageOffer / 100] }]}}}}]);
+                  
                 if (offerData) {
 
                     res.redirect('/admin/categoryofferlist');
@@ -327,6 +329,8 @@ const updateOffer = async (req, res) => {
                     category.offer = 1
                 };
 
+                await Product.updateMany({ category: category.name },[{$set: {offer: 1,salePrice: {$ceil: {$subtract: ["$price",{ $multiply: ["$price", percentageOffer / 100] }]}}}}]);
+
                 await oldCategory.save();
                 await category.save();
 
@@ -390,13 +394,22 @@ const switchCategoryOfferStatus = async (req, res, next) => {
         const { offerId, message } = req.body;
         const offer = await Offer.findById(offerId);
 
+        const category = await Category.findById(offer.item_Id);
+
         if (message == 'offerDelete') {
             return next();
         };
 
         // Toggle the is_hide field
 
-        offer.is_hide = offer.is_hide === 1 ? 0 : 1;
+        if (offer.is_hide == 1) {
+            offer.is_hide = 0;
+            await Product.updateMany({ category: category.name }, [ { $set: { offer: 1, salePrice: { $ceil: { $subtract: [ "$price",{ $multiply: [ "$price", offer.offer_percentage / 100 ] } ] } } } } ] );
+        } else {
+            offer.is_hide = 1;
+            await Product.updateMany({ category: category.name }, { $set: { offer: 0, salePrice: 0 } } );
+        }
+
         await offer.save();
 
         res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
@@ -413,9 +426,16 @@ const deleteProductOffer = async (req, res) => {
         
         const { offerId, message } = req.body;
 
+        const offer = await Offer.findById(offerId);
+
         const offerDeletionData = await Offer.deleteOne({ _id: offerId });
 
-        
+        const product = await Product.findById( offer.item_Id );
+
+        product.offer = 0;
+        product.salePrice = 0;
+
+        await product.save()
 
         if (offerDeletionData) {
             res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
@@ -435,7 +455,13 @@ const deleteCategoryOffer = async (req, res) => {
         
         const { offerId, message } = req.body;
 
+        const offer = await Offer.findById(offerId);
+
+        const category = await Category.findById(offer.item_Id);
+
         const offerDeletionData = await Offer.deleteOne({ _id: offerId });
+
+        await Product.updateMany({ category: category.name }, { $set: { offer: 0, salePrice: 0 } } );
 
         if (offerDeletionData) {
             res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });

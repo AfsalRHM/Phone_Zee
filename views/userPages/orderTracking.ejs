@@ -243,12 +243,10 @@ function cancelItem(productId, orderId) {
     cancelButtonText: 'No, keep it'
   }).then((result) => {
     if (result.isConfirmed) {
-      console.log("Cancelled item with ID:", productId);
       axios.patch("/cancel-item", {
         productId,
         orderId
       }).then((data) => {
-        console.log(data, "this is the response");
         document.getElementById("order_total").innerHTML = `${data.data.orderData.order_total}.00`;
         document.getElementById(`${productId}-item-status`).innerHTML = '<strong class="text-danger" >Item Cancelled</strong>';
         if (data.data.orderData.order_status == "cancelOrder") {
@@ -320,7 +318,6 @@ function placeOrder (addressId, message, orderId) {
 											text: 'Your order has been successfully placed.',
 											confirmButtonText: 'OK'
 										}).then(() => {
-											console.log('Order Confirmed');
 											window.location.href = `/orderSuccess?id=${data.orderId}`;
 										});
 									} else if (data.message === 'Payment not confirmed') {
@@ -370,8 +367,6 @@ function placeOrder (addressId, message, orderId) {
 							text: 'Your order has been successfully placed.',
 							confirmButtonText: 'OK'
 						}).then(() => {
-							console.log('Order Confirmed');
-							console.log(data.orderId);
 							window.location.href = `/orderSuccess?id=${data.orderId}`;
 						});
                     } else if (data.message == 'change order method') {
@@ -380,9 +375,7 @@ function placeOrder (addressId, message, orderId) {
 							title: 'Choose another payment method',
 							text: "order above ₹10,000 can't be done by Cash On Delivery.",
 							confirmButtonText: 'OK'
-						}).then(() => {
-							console.log('change order method');	
-						});
+						})
                     } else if (data.message == 'Order Already Exists') {
                         Swal.fire({
 							icon: 'error',
@@ -390,7 +383,6 @@ function placeOrder (addressId, message, orderId) {
 							text: 'Order Already Exists.',
 							confirmButtonText: 'OK'
 						}).then(() => {
-							console.log('Order Failed');
 							window.location.href = '/checkout';
 						});
                     } else if (data.message == 'Not enough balance on wallet') {
@@ -400,7 +392,6 @@ function placeOrder (addressId, message, orderId) {
 							text: 'Not enough balance on wallet.',
 							confirmButtonText: 'OK'
 						}).then(() => {
-							console.log('Order Failed');
 							window.location.href = '/checkout';
 						});
                     } else if (data.message == 'Payment Method not Available') {
@@ -409,9 +400,7 @@ function placeOrder (addressId, message, orderId) {
 							title: 'Payment Method unAvailable',
 							text: 'Choose another payment gateway',
 							confirmButtonText: 'OK'
-						}).then(() => {
-							console.log('Payment Failed');
-						});
+						})
                     } else {
                         window.location.reload();
                     };

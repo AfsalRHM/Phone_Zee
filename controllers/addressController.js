@@ -214,13 +214,10 @@ const addressChange =  async (req, res, next) => {
         for (let i = 0; i < addressData.length; i++) {
             if (addressData[i]._id.toString() === addressId) { // Ensure IDs are compared correctly
                 userData.address = i;
-                console.log('Address Match');
                 await userData.save();
                 addressFound = true;
                 break;
-            } else {
-                console.log('Address not found');
-            };
+            }
         };
 
         if (!addressFound) {

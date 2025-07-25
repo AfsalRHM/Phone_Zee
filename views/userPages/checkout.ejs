@@ -312,7 +312,6 @@
 											text: 'Your order has been successfully placed.',
 											confirmButtonText: 'OK'
 										}).then(() => {
-											console.log('Order Confirmed');
 											window.location.href = `/orderSuccess?id=${data.orderId}`;
 										});
 									} else if (data.message === 'Payment not confirmed') {
@@ -369,8 +368,6 @@
 							text: 'Your order has been successfully placed.',
 							confirmButtonText: 'OK'
 						}).then(() => {
-							console.log('Order Confirmed');
-							console.log(data.orderId);
 							window.location.href = `/orderSuccess?id=${data.orderId}`;
 						});
                     } else if (data.message == 'change order method') {
@@ -380,8 +377,8 @@
 							text: "order above ₹10,000 can't be done by Cash On Delivery.",
 							confirmButtonText: 'OK'
 						}).then(() => {
-							console.log('change payment method');	
-						});
+							window.location.href = '/checkout';
+						})
                     } else if (data.message == 'Order Already Exists') {
                         Swal.fire({
 							icon: 'error',
@@ -389,7 +386,6 @@
 							text: 'Order Already Exists.',
 							confirmButtonText: 'OK'
 						}).then(() => {
-							console.log('Order Failed');
 							window.location.href = '/checkout';
 						});
                     } else if (data.message == 'Not enough balance on wallet') {
@@ -399,7 +395,6 @@
 							text: 'Not enough balance on wallet.',
 							confirmButtonText: 'OK'
 						}).then(() => {
-							console.log('Order Failed');
 							window.location.href = '/checkout';
 						});
                     } else if (data.message == 'Payment Method not Available') {
@@ -409,7 +404,7 @@
 							text: 'Choose another payment gateway',
 							confirmButtonText: 'OK'
 						}).then(() => {
-							console.log('Payment Failed');
+							window.location.href = '/checkout';
 						});
                     } else {
                         window.location.reload();
@@ -437,10 +432,6 @@
             if (selectedAddress) {
 				const add2 = selectedAddress.value
 				const address1 = JSON.parse(add2);
-
-				console.log('Address value - ', address1._id)
-				console.log('user value - ', address1.user)
-
 
 				const addressId = address1._id;
 				const userId = address1.user;
@@ -532,7 +523,7 @@
 						text: 'Check the coupon code again.',
 						confirmButtonText: 'OK'
 					}).then(() => {
-						console.log('Wrong Coupon Code');
+						window.location.href = '/checkout';
 					});
 				} else if (data.message === 'Success') {
 					Swal.fire({
@@ -560,29 +551,21 @@
 						title: 'Coupon Quantity Depleted!',
 						text: 'This coupon is no longer available.',
 						confirmButtonText: 'OK'
-					}).then(() => {
-						console.log('Coupon quantity depleted');
-						// Optionally, you can refresh the page or perform other actions here
-					});
+					})
 				} else if (data.message === 'Coupon expired') {
 					Swal.fire({
 						icon: 'error',
 						title: 'Coupon Expired!',
 						text: 'This coupon has expired and is no longer valid.',
 						confirmButtonText: 'OK'
-					}).then(() => {
-						console.log('Coupon expired');
-						// Optionally, you can refresh the page or perform other actions here
-					});
+					})
 				} else if (data.message === 'Minimum purchase amount not met') {
 					Swal.fire({
 						icon: 'error',
 						title: `Minimum Purchase Amount is ${data.minimumPurchaseAmount}!`,
 						text: 'Your cart total does not meet the minimum required for this coupon.',
 						confirmButtonText: 'OK'
-					}).then(() => {
-						console.log('Minimum purchase amount not met');
-					});
+					})
 				} else {
 					Swal.fire({
 						icon: 'error',
@@ -638,7 +621,6 @@
 						text: 'There was an error removing your coupon. Please try again.',
 						confirmButtonText: 'OK'
 					}).then(() => {
-						console.log('Coupon removal failed');
 						window.location.reload();
 					});
 				} else if (data.message === 'Success') {

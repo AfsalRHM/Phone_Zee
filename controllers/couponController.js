@@ -108,8 +108,6 @@ const insertCoupon = async(req, res) => {
                     end_date: new Date(coupon.end_date)
                 }));
 
-                console.log(couponData, "This is the paginated coupon data")
-
                 if (couponSaved) {
     
                     res.render('couponList', {activeCouponMessage: 'active', couponListSuccessMessage: 'Coupon Added Successfully.', couponData, pagination: res.paginatedResults});

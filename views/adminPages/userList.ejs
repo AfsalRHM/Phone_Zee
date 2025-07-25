@@ -111,46 +111,6 @@
                 </div>
             </section>
             <!-- content-main end// -->
-            
-        <!-- <script>
-
-
-            function blockOrActive(userId) {
-                console.log("*******userId***********",userId)
-
-                fetch('/blockUser', {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body:JSON.stringify({userId:userId}),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Update the button text and appearance based on the response
-                    const button = document.querySelector(`button[data-user-id="${userId}"]`);
-                    if (data.is_blocked === 1) {
-                        button.innerText = 'Unblock';
-                        button.classList.remove('btn-outline-danger');
-                        button.classList.add('btn-outline-success');
-                    } else {
-                        button.innerText = 'Block';
-                        button.classList.remove('btn-outline-success');
-                        button.classList.add('btn-outline-danger');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            };
-        
-        </script>         -->
-      
         
         <%- include('../adminLayouts/pageFooter.ejs') %>
  

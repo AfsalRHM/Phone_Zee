@@ -43,8 +43,6 @@ const Coupon = require('../models/couponModel');
 
 const Notifications = require('../models/notificationModel');
 
-// console.log('Here on adminRoute')
-
 admin_route.use(async (req, res, next) => {
     try {
         const adminNotificationsCount = await Notifications.find({ matter: 'returnOrderRequest' }).countDocuments();
