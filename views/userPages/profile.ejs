@@ -96,7 +96,7 @@
 																	<% if (order.products[i].product) { %>
 																		<div class="order-product">
 																			<a href="" class="product-name"><%= order.products[i].product.name %></a>
-																			<a href="" class="product-price">₹ <%= order.products[i].product.price %>.00 x <%= order.products[i].quantity %> = ₹ <%= order.products[i].product.price * order.products[i].quantity %>.00</a>
+																			<a href="" class="product-price">₹ <%= order.products[i].product_total / order.products[i].quantity %>.00 x <%= order.products[i].quantity %> = ₹ <%= order.products[i].product_total %>.00</a>
 																		</div>
 																	<% } else { %>
 																		<div class="product">
