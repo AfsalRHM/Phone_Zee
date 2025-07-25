@@ -104,6 +104,7 @@ admin_route.post('/editcategory', adminAuth.isLogin, categoryController.updateCa
 admin_route.post('/addproduct', adminAuth.isLogin, upload.array('image_1', 4), productController.insertProduct);
 admin_route.post('/productlist', adminAuth.isLogin, productController.activeOrInactive2);
 admin_route.post('/editproduct', adminAuth.isLogin, upload.array('image_1', 4), productController.updateProduct);
+admin_route.post("/product/:id/delete-image", adminAuth.isLogin, productController.deleteImage)
 admin_route.post('/orderdetail', adminAuth.isLogin, orderController.updateOrderStatus);
 admin_route.post('/cancelOrderAdmin', adminAuth.isLogin, orderController.cancelOrderAdmin);
 admin_route.post('/orderlist', adminAuth.isLogin, orderController.cancelOrder);

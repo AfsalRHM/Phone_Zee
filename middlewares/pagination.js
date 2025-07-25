@@ -29,7 +29,6 @@ const paginate = (model) => {
             }
 
             results.results = await model.find().skip(startIndex).limit(limit).lean().exec(); // Fetch paginated results
-            console.log(results.results)
             res.paginatedResults = results;
             next();
         } catch (error) {

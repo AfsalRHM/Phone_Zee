@@ -127,6 +127,8 @@ const insertProduct = async (req, res) => {
             res.render('addProductGeneral',{message: 'Add a Price to the Product', categories: categoryData})
         } else if (req.body.productStock == '') {
             res.render('addProductGeneral',{message: 'Add a Product Stock', categories: categoryData})
+        } else if (productImages.length < 4) {
+            res.render('addProductGeneral',{message: 'Add 4 Images', categories: categoryData})
         } else if (req.body.productRam == '') {
             res.render('addProductGeneral',{message: 'Add the Ram of the device', categories: categoryData})
         } else if (req.body.productStorage == '') {
@@ -138,7 +140,7 @@ const insertProduct = async (req, res) => {
         } else if (req.body.productRam <= 0) {
             res.render('addProductGeneral',{message: 'Enter a Valid Ram', categories: categoryData});
         } else if (req.body.productStorage <= 0) {
-            res.render('addProductGeneral',{message: 'Enter a Valid Ram', categories: categoryData});
+            res.render('addProductGeneral',{message: 'Enter a Valid Storage', categories: categoryData});
         } else if (req.body.productCategory == 'select category') {
             res.render('addProductGeneral',{message: 'Please select a category', categories: categoryData});
         } else {
@@ -189,6 +191,24 @@ const loadEditProduct = async (req, res) => {
     };
 };
 
+/*****************      To Delete Image of a Product     *********************/
+
+const deleteImage = async (req, res) => {
+    try {
+
+        const { image } = req.body;
+        const productId = req.params.id;
+
+        await Product.findByIdAndUpdate(productId, {
+            $pull: { product_image: image }
+        });
+
+        res.status(statusCode.OK).json({success: true, message: "Image Deleted"})
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 /*****************      To Update the Product     *********************/
 
 const updateProduct = async (req, res) => {
@@ -221,9 +241,9 @@ const updateProduct = async (req, res) => {
         } else if (req.body.productRam <= 0) {
             res.render('editProduct',{message: 'Enter a Valid Ram',product: product, categories: categoryData});
         } else if (req.body.productStorage <= 0) {
-            res.render('editProduct',{message: 'Enter a Valid Ram',product: product, categories: categoryData});
+            res.render('editProduct',{message: 'Enter a Valid Storage',product: product, categories: categoryData});
         }else {
-
+            
             let productImages = product.product_image; // Initialize with existing images
 
             // Handle newly uploaded images
@@ -235,6 +255,11 @@ const updateProduct = async (req, res) => {
             // Ensure not more than 4 images are saved
             if (productImages.length > 4) {
                 productImages = productImages.slice(0, 4);
+            }
+            
+            if (productImages.length < 4) {
+                res.render('editProduct',{message: 'Add 4 Images',product: product, categories: categoryData});
+                return;
             }
     
             const updatedData = {
@@ -301,5 +326,6 @@ module.exports = {
     insertProduct,
     loadEditProduct,
     updateProduct,
+    deleteImage,
     loadProduct
 };
