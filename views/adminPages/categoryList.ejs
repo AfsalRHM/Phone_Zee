@@ -54,26 +54,29 @@
                                                 <td><b><%= categories[i].name %></b></td>
                                                 <td><%= categories[i].description %></td>
                                                 <td><%= i * 7 %></td>
-                                                <% if (categories[i].is_hide == 0) { %>
-                                                    <td><span class="badge rounded-pill alert-success">Active</span></td>
-                                                <% } else { %>
-                                                    <td><span class="badge rounded-pill alert-danger">In Active</span></td>
-                                                <% } %>
+                                                <td id="status-<%= categories[i]._id %>">
+                                                    <% if (categories[i].is_hide == 0) { %>
+                                                        <span class="badge rounded-pill alert-success">Active</span>
+                                                    <% } else { %>
+                                                        <span class="badge rounded-pill alert-danger">Inactive</span>
+                                                    <% } %>
+                                                </td>
                                                 <td class="text-end ">
                                                     <div class="dropdown">
-                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> 
+                                                            <i class="material-icons md-more_horiz"></i> 
+                                                        </a>
                                                         <div class="dropdown-menu">
                                                             <a class="dropdown-item" href="#">View detail</a>
                                                             <a class="dropdown-item" href="/admin/editcategory?id=<%= categories[i]._id %>">Edit info</a>
                                                             <% if (categories[i].is_hide == 0) { %>
-                                                                <a class="dropdown-item text-danger" onclick="activeOrInactive('<%= categories[i]._id %>')">Hide</a>
+                                                                <a id="toggle-<%= categories[i]._id %>" class="dropdown-item text-danger" onclick="activeOrInactive('<%= categories[i]._id %>')">Hide</a>
                                                             <% } else { %>
-                                                                <a class="dropdown-item text-success" onclick="activeOrInactive('<%= categories[i]._id %>')">Show</a>  
+                                                                <a id="toggle-<%= categories[i]._id %>" class="dropdown-item text-success" onclick="activeOrInactive('<%= categories[i]._id %>')">Show</a>  
                                                             <% } %>
-                                                            <a class="dropdown-item text-danger" href="#">Delete</a>
+                                                            <!-- <a class="dropdown-item text-danger" href="#">Delete</a> -->
                                                         </div>
                                                     </div>
-                                                    <!-- dropdown //end -->
                                                 </td>
                                             </tr>
                                             <% } %>
@@ -110,11 +113,22 @@
                     return response.json();
                 })
                 .then(data => {
-                    if(data.message == 'Failed') {
-                        console.log('user Not Found')
+                    if (data.message === 'Success') {
+                        const statusCell = document.getElementById(`status-${data.categoryId}`);
+                        const toggleLink = document.getElementById(`toggle-${data.categoryId}`);
+
+                        if (data.newStatus === 'Active') {
+                            statusCell.innerHTML = `<span class="badge rounded-pill alert-success">Active</span>`;
+                            toggleLink.textContent = 'Hide';
+                            toggleLink.className = 'dropdown-item text-danger';
+                        } else {
+                            statusCell.innerHTML = `<span class="badge rounded-pill alert-danger">Inactive</span>`;
+                            toggleLink.textContent = 'Show';
+                            toggleLink.className = 'dropdown-item text-success';
+                        }
                     } else {
-                        window.location.reload();
-                    };
+                        console.error('Category not found');
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);

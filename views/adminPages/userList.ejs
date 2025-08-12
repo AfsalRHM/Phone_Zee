@@ -64,21 +64,25 @@
                                                 </a>
                                             </td>
                                             <td><%= users[i].email %></td>
-                                            <% if (users[i].is_blocked == 0) { %>
-                                            <td><span class="badge rounded-pill alert-success">Active</span></td>
-                                            <% } else { %>
-                                            <td><span class="badge rounded-pill alert-danger">Blocked</span></td>
-                                            <% } %>
+                                            <td id="status-<%= users[i]._id %>">
+                                                <% if (users[i].is_blocked == 0) { %>
+                                                    <span class="badge rounded-pill alert-success">Active</span>
+                                                <% } else { %>
+                                                    <span class="badge rounded-pill alert-danger">Blocked</span>
+                                                <% } %>
+                                            </td>
                                             <td><%= users[i].
                                                 created_at.getDate() %> - <%= users[i].
                                                 created_at.getMonth() + 1 %> - <%= users[i].
                                                 created_at.getFullYear() %>
                                             </td>
-                                            <% if (users[i].is_blocked == 0) { %>
-                                                <td><button class="btn btn-outline-danger" onclick="blockOrActive('<%= users[i]._id %>')" >Block</button></td>
-                                            <% } else { %>
-                                                <td><button class="btn btn-outline-success" onclick="blockOrActive('<%= users[i]._id %>')" >Un Block</button></td>
-                                            <% } %>
+                                            <td>
+                                                <% if (users[i].is_blocked == 0) { %>
+                                                    <button id="btn-<%= users[i]._id %>" class="btn btn-outline-danger" onclick="blockOrActive('<%= users[i]._id %>')">Block</button>
+                                                <% } else { %>
+                                                    <button id="btn-<%= users[i]._id %>" class="btn btn-outline-success" onclick="blockOrActive('<%= users[i]._id %>')">Un Block</button>
+                                                <% } %>
+                                            </td>
                                         </tr>
                                         <% } %>
                                     <% } %>
@@ -131,11 +135,22 @@
                     return response.json();
                 })
                 .then(data => {
-                    if(data.message == 'Failed') {
-                        console.log('user Not Found')
+                    if (data.message === 'Success') {
+                        const statusCell = document.getElementById(`status-${data.userId}`);
+                        const button = document.getElementById(`btn-${data.userId}`);
+                        
+                        if (data.newStatus === 'Active') {
+                            statusCell.innerHTML = `<span class="badge rounded-pill alert-success">Active</span>`;
+                            button.className = 'btn btn-outline-danger';
+                            button.textContent = 'Block';
+                        } else {
+                            statusCell.innerHTML = `<span class="badge rounded-pill alert-danger">Blocked</span>`;
+                            button.className = 'btn btn-outline-success';
+                            button.textContent = 'Un Block';
+                        }
                     } else {
-                        window.location.reload();
-                    };
+                        console.error('User not found');
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);

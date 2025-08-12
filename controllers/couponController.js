@@ -243,11 +243,10 @@ const couponStatusChange = async (req, res, next) => {
         };
 
         // Toggle the is_hide field
-
         coupon.is_hide = coupon.is_hide === 1 ? 0 : 1;
-        await coupon.save();
+        const updatedCoupon = await coupon.save();
 
-        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
+        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS, couponId: updatedCoupon._id, newStatus: updatedCoupon.is_hide ? "In Active" : "Active" });
     } catch (err) {
         console.error(err.message);
         res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });

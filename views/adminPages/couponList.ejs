@@ -78,17 +78,19 @@
                                     <td>₹ <%= couponData[i].discount_price %>.00</td>
                                     <td><%= couponData[i].start_date.getDate() %> - <%= couponData[i].start_date.getMonth() + 1 %> - <%= couponData[i].start_date.getFullYear() %></td>
                                     <td><%= couponData[i].end_date.getDate() %> - <%= couponData[i].end_date.getMonth() + 1 %> - <%= couponData[i].end_date.getFullYear() %></td>
-                                    <%
-                                        const now = new Date();
+                                    <% const now = new Date();
                                         const endDate = new Date(couponData[i].end_date);
                                     %>
-                                    <% if (couponData[i].is_hide == 0 && endDate >= now) { %>
-                                        <td><span class="badge rounded-pill alert-success">Active</span></td>
-                                    <% } else if (endDate < now) { %>
-                                        <td><span class="badge rounded-pill alert-warning">Expired</span></td>
-                                    <% } else { %>
-                                        <td><span class="badge rounded-pill alert-danger">InActive</span></td>
-                                    <% } %>
+
+                                    <td id="status-<%= couponData[i]._id %>">
+                                        <% if (couponData[i].is_hide == 0 && endDate >= now) { %>
+                                            <span class="badge rounded-pill alert-success">Active</span>
+                                        <% } else if (endDate < now) { %>
+                                            <span class="badge rounded-pill alert-warning">Expired</span>
+                                        <% } else { %>
+                                            <span class="badge rounded-pill alert-danger">Inactive</span>
+                                        <% } %>
+                                    </td>
                                     <td class="text-end">
                                         <div class="dropdown">
                                             <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm">
@@ -97,9 +99,11 @@
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item" href="/admin/editcoupon?couponId=<%= couponData[i]._id %>">Edit info</a>
                                                 <% if (couponData[i].is_hide == 0) { %>
-                                                    <a class="dropdown-item text-danger" onclick="couponStatusSwitch('<%= couponData[i]._id %>')">Deactivate</a>
+                                                    <a id="toggle-<%= couponData[i]._id %>" class="dropdown-item text-danger"
+                                                       onclick="couponStatusSwitch('<%= couponData[i]._id %>')">Deactivate</a>
                                                 <% } else { %>
-                                                    <a class="dropdown-item text-success" onclick="couponStatusSwitch('<%= couponData[i]._id %>')">Activate</a>
+                                                    <a id="toggle-<%= couponData[i]._id %>" class="dropdown-item text-success"
+                                                       onclick="couponStatusSwitch('<%= couponData[i]._id %>')">Activate</a>
                                                 <% } %>
                                                 <a class="dropdown-item text-danger" onclick="deleteCoupon('<%= couponData[i]._id %>', 'couponDelete')">Delete</a>
                                             </div>
@@ -153,11 +157,22 @@
             return response.json();
         })
         .then(data => {
-            if(data.message == 'Failed') {
-                console.log('user Not Found')
+            if (data.message === 'Success') {
+                const statusCell = document.getElementById(`status-${couponId}`);
+                const toggleLink = document.getElementById(`toggle-${couponId}`);
+
+                if (data.newStatus === 'Active') {
+                    statusCell.innerHTML = `<span class="badge rounded-pill alert-success">Active</span>`;
+                    toggleLink.textContent = 'Deactivate';
+                    toggleLink.className = 'dropdown-item text-danger';
+                } else if (data.newStatus === 'In Active') {
+                    statusCell.innerHTML = `<span class="badge rounded-pill alert-danger">Inactive</span>`;
+                    toggleLink.textContent = 'Activate';
+                    toggleLink.className = 'dropdown-item text-success';
+                }
             } else {
-                window.location.reload();
-            };
+                console.error('Coupon not found or failed to update');
+            }
         })
         .catch(error => {
             console.error('Error:', error);

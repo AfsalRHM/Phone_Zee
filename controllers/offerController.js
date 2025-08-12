@@ -378,9 +378,9 @@ const switchProductOfferStatus = async (req, res, next) => {
         }
 
         await product.save();
-        await offer.save();
+        const updatedOffer = await offer.save();
 
-        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
+        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS, offerId: updatedOffer._id, newStatus: updatedOffer.is_hide ? "In Active" : "Active" });
     } catch (err) {
         console.error(err.message);
         res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });
@@ -401,7 +401,6 @@ const switchCategoryOfferStatus = async (req, res, next) => {
         };
 
         // Toggle the is_hide field
-
         if (offer.is_hide == 1) {
             offer.is_hide = 0;
             await Product.updateMany({ category: category.name }, [ { $set: { offer: 1, salePrice: { $ceil: { $subtract: [ "$price",{ $multiply: [ "$price", offer.offer_percentage / 100 ] } ] } } } } ] );
@@ -410,9 +409,9 @@ const switchCategoryOfferStatus = async (req, res, next) => {
             await Product.updateMany({ category: category.name }, { $set: { offer: 0, salePrice: 0 } } );
         }
 
-        await offer.save();
+        const updatedOffer = await offer.save();
 
-        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
+        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS, offerId: updatedOffer._id, newStatus: updatedOffer.is_hide ? "In Active" : "Active"});
     } catch (err) {
         console.error(err.message);
         res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });

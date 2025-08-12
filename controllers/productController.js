@@ -7,6 +7,7 @@ const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
 const Offer = require('../models/offerModel');
 const statusCode = require('../constants/statusCode');
+const responseMessage = require('../constants/responseMessage');
 
 
 /*********************     
@@ -91,9 +92,9 @@ const activeOrInactive2 = async (req, res, next) => {
 
         // Toggle the is_hide field
         product.is_hide = product.is_hide === 1 ? 0 : 1;
-        await product.save();
+        const updatedProduct = await product.save();
 
-        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS });
+        res.status(statusCode.OK).json({ message: responseMessage.SUCCESS, productId: updatedProduct._id, newStatus: updatedProduct.is_hide ? "In Active" : "Active" });
     } catch (err) {
         console.error(err.message);
         res.status(statusCode.INTERNAL_SERVER_ERROR).json({ message: responseMessage.INTERNAL_SERVER_ERROR });

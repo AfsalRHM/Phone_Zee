@@ -58,11 +58,11 @@
                                     <div class="col-lg-2 col-sm-2 col-4 col-price"><span><%= product[i].category %></span></div>
                                     <div class="col-1 col-price"><span><%= product[i].stock %></span></div>
                                     <div class="col-lg-2 col-sm-2 col-4 col-price"><span>₹ <%= product[i].price %></span></div>
-                                    <div class="col-lg-2 col-sm-2 col-4 col-status">
+                                    <div class="col-lg-2 col-sm-2 col-4 col-status" id="status-<%= product[i]._id %>">
                                         <% if (product[i].is_hide == 0) { %>
                                             <span class="badge rounded-pill alert-success">Active</span>
                                         <% } else { %>
-                                            <span class="badge rounded-pill alert-danger">In Active</span>
+                                            <span class="badge rounded-pill alert-danger">Inactive</span>
                                         <% } %>
                                     </div>
                                     <div class="col-lg-1 col-sm-2 col-4 col-date">
@@ -72,11 +72,13 @@
                                             created_at.getFullYear() %></span>
                                     </div>
                                     <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                        <a href="/admin/editproduct?id=<%= product[i]._id %>" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
+                                        <a href="/admin/editproduct?id=<%= product[i]._id %>" class="btn btn-sm font-sm rounded btn-brand"> 
+                                            <i class="material-icons md-edit"></i> Edit 
+                                        </a>
                                         <% if (product[i].is_hide == 0) { %>
-                                            <a class="btn btn-sm font-sm btn-outline-danger rounded" onclick="activeOrInactive('<%= product[i]._id %>')">Unlist</a>
+                                            <a id="btn-<%= product[i]._id %>" class="btn btn-sm font-sm btn-outline-danger rounded" onclick="activeOrInactive('<%= product[i]._id %>')">Unlist</a>
                                         <% } else { %>
-                                            <a class="btn btn-sm font-sm btn-outline-success rounded" onclick="activeOrInactive('<%= product[i]._id %>')">list</a>
+                                            <a id="btn-<%= product[i]._id %>" class="btn btn-sm font-sm btn-outline-success rounded" onclick="activeOrInactive('<%= product[i]._id %>')">List</a>
                                         <% } %>
                                     </div>
                                 </div>
@@ -129,11 +131,22 @@
                     return response.json();
                 })
                 .then(data => {
-                    if(data.message == 'Failed') {
-                        console.log('user Not Found')
+                    if (data.message === 'Success') {
+                        const statusCell = document.getElementById(`status-${data.productId}`);
+                        const button = document.getElementById(`btn-${data.productId}`);
+
+                        if (data.newStatus === 'Active') {
+                            statusCell.innerHTML = `<span class="badge rounded-pill alert-success">Active</span>`;
+                            button.className = 'btn btn-sm font-sm btn-outline-danger rounded';
+                            button.textContent = 'Unlist';
+                        } else {
+                            statusCell.innerHTML = `<span class="badge rounded-pill alert-danger">Inactive</span>`;
+                            button.className = 'btn btn-sm font-sm btn-outline-success rounded';
+                            button.textContent = 'List';
+                        }
                     } else {
-                        window.location.reload();
-                    };
+                        console.error('Product not found');
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
