@@ -349,8 +349,10 @@
 							Swal.fire({
 								icon: 'error',
 								title: 'Payment Failed!',
-								text: 'There was an issue with your payment. Please try again.',
+								text: 'Continue payment from Profile',
 								confirmButtonText: 'OK'
+							}).then(() => {
+								window.location.href = `/profile`;
 							});
 						});
 						rzp1.open();
@@ -376,8 +378,6 @@
 							title: 'Choose another payment method',
 							text: "order above ₹10,000 can't be done by Cash On Delivery.",
 							confirmButtonText: 'OK'
-						}).then(() => {
-							window.location.href = '/checkout';
 						})
                     } else if (data.message == 'Order Already Exists') {
                         Swal.fire({
@@ -385,17 +385,22 @@
 							title: 'Order Cancelled!',
 							text: 'Order Already Exists.',
 							confirmButtonText: 'OK'
-						}).then(() => {
-							window.location.href = '/checkout';
-						});
+						})
                     } else if (data.message == 'Not enough balance on wallet') {
                         Swal.fire({
 							icon: 'error',
 							title: 'Choose another payment Method!',
 							text: 'Not enough balance on wallet.',
 							confirmButtonText: 'OK'
+						})
+                    } else if (data.message == 'Order already Created') {
+                        Swal.fire({
+							icon: 'warning',
+							title: data.message,
+							text: data.info,
+							confirmButtonText: 'OK'
 						}).then(() => {
-							window.location.href = '/checkout';
+							window.location.href = '/profile';
 						});
                     } else if (data.message == 'Payment Method not Available') {
                         Swal.fire({
@@ -403,9 +408,7 @@
 							title: 'Payment Method unAvailable',
 							text: 'Choose another payment gateway',
 							confirmButtonText: 'OK'
-						}).then(() => {
-							window.location.href = '/checkout';
-						});
+						})
                     } else {
                         window.location.reload();
                     };

@@ -186,6 +186,11 @@ const placeOrder = async (req, res) => {
 
         const orderExists = await Order.findOne({user: req.session.user_id, products: cartData.products.product});
 
+        if (!cartData || cartData.products.length == 0) {
+            res.status(statusCode.OK).json({message: "Order already Created", info: "Please verify through Order section on Profile"})
+            return;
+        }
+
         const length = cartData.products.length;
 
         if (cartData.discount_amount != 0) {
