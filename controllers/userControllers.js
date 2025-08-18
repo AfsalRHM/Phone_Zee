@@ -288,8 +288,40 @@ const loadCheckout = async (req, res) => {
         const addressData = await Address.find({user: req.session.user_id});
 
         const cartData = await Cart.findOne({user: req.session.user_id}).populate('products.product');
-
+        
         const cartDataForCount = await Cart.findOne({user: req.session.user_id}).populate('products');
+
+        let cartTotalPrice = 0;
+        if (cartData && cartData.products) {
+            for (let i = 0; i < cartData.products.length; i++) {
+                cartTotalPrice += cartData.products[i].product.price * cartData.products[i].quantity;
+            };
+        };
+
+        let outOfStockItems = [];
+        for (let item of cartData.products) {
+            if (!item.product) continue;
+            if (item.quantity > item.product.stock) {
+                outOfStockItems.push({
+                    name: item.product.name,
+                    availableStock: item.product.stock,
+                    requestedQty: item.quantity
+                });
+            }
+        }
+
+        if (outOfStockItems.length > 0) {
+            // return res.render('cart', {
+            //     pageTitle: 'My cart | PhoneZee',
+            //     loginOrCart: req.session,
+            //     cartItems: cartData,
+            //     cartTotalPrice: cartTotalPrice,
+            //     cartItemsForCartCount: cartDataForCount,
+            //     stockError: outOfStockItems.map(item => `${item.name} (Only ${item.availableStock} left)`)
+            // });
+            req.session.outOfStockItems = outOfStockItems;
+            return res.redirect('/cart');
+        }
         
         res.render('checkout', {pageTitle: 'checkout | PhoneZee', loginOrCart: req.session, address: addressData, cartItems: cartData, cartItemsForCartCount: cartDataForCount.products, user: userData });
 

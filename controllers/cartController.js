@@ -31,9 +31,15 @@ const loadCart = async (req, res) => {
         };
 
         if (cartDataForCount == null) {
-            res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session, cartItems: cartData, cartTotalPrice: cartTotalPrice, cartItemsForCartCount: cartDataForCount })
+            const outOfStockItems = req.session.outOfStockItems || [];
+            req.session.outOfStockItems = []; 
+        
+            res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session, cartItems: cartData, cartTotalPrice: cartTotalPrice, cartItemsForCartCount: cartDataForCount, outOfStockItems})
         } else {
-            res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session, cartItems: cartData, cartTotalPrice: cartTotalPrice, cartItemsForCartCount: cartDataForCount.products })
+            const outOfStockItems = req.session.outOfStockItems || [];
+            req.session.outOfStockItems = []; 
+        
+            res.render('cart', {pageTitle: 'My cart | PhoneZee', loginOrCart: req.session, cartItems: cartData, cartTotalPrice: cartTotalPrice, cartItemsForCartCount: cartDataForCount.products, outOfStockItems})
         };
 
     } catch (error) {

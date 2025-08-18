@@ -105,6 +105,16 @@
                                         </thead>
     
                                         <tbody>
+                                            <% if (outOfStockItems.length > 0) { %>
+                                                <div class="alert alert-warning">
+                                                  Some items are out of stock:
+                                                  <ul>
+                                                    <% outOfStockItems.forEach(item => { %>
+                                                      <li><%= item.name %></li>
+                                                    <% }) %>
+                                                  </ul>
+                                                </div>
+                                              <% } %>
                                             <% for (let i = 0; i < cartItems.products.length; i++) { %>
                                                 <tr>
                                                     <td class="product-col">

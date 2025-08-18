@@ -235,9 +235,11 @@ const updateProduct = async (req, res) => {
             res.render('editProduct',{message: 'Add the Ram capacity of the device',product: product, categories: categoryData})
         } else if (req.body.productStock == '') {
             res.render('editProduct',{message: 'Add a Product Stock', product: product, categories: categoryData});
-        } else if (req.body.productStock <= 0) {
-            res.render('editProduct',{message: 'Enter a Valid Stock', product: product, categories: categoryData});
-        } else if (req.body.productPrice <= 0) {
+        }
+        //  else if (req.body.productStock <= 0) {
+        //     res.render('editProduct',{message: 'Enter a Valid Stock', product: product, categories: categoryData});
+        // } 
+        else if (req.body.productPrice <= 0) {
             res.render('editProduct',{message: 'Enter a Valid Price', product: product, categories: categoryData});
         } else if (req.body.productRam <= 0) {
             res.render('editProduct',{message: 'Enter a Valid Ram',product: product, categories: categoryData});

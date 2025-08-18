@@ -31,13 +31,16 @@ const generateInvoice = async (req, res) => {
 
         const pageOrderId = pageOrderIdFull.substring(0, 8);
 
-        const products1 = orderData.products.map(item => ({
+        const products1 = orderData.products
+        .filter((item) => !item.item_cancelled) // keep only non-cancelled items
+        .map((item) => ({
             quantity: item.quantity,
             description: item.product.name,
-            price: item.product.offer == 0 ? item.product.price : item.product.salePrice // Assuming 'name' is the property in your Product model representing the product name
-            // Add tax rate and price properties if available in your Product model
-            // taxRate: item.product.taxRate,
-            // price: item.product.price,
+            price:
+            item.product.offer === 0
+                ? item.product.price
+                : item.product.salePrice,
+            // taxRate: item.product.taxRate, // uncomment if needed
         }));
 
         const data = {
@@ -132,8 +135,8 @@ const generateInvoice = async (req, res) => {
                 },
             }, (err) => {
                 if (err) {
-                    const downloadError = new CustomError(500, 'Error: Unable to download the PDF file');
-                    console.log(downloadError);
+                    // const downloadError = new CustomError(500, 'Error: Unable to download the PDF file');
+                    console.log(err, "Unable to download the PDF file");
                 }
             });
 
