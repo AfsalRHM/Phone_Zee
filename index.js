@@ -8,6 +8,11 @@ dotenv.config();
 const express = require("express");
 const app = express();
 
+app.use((req, res, next) => {
+  res.locals.CLOUDINARY_IMAGE_PREFIX = process.env.CLOUDINARY_IMAGE_PREFIX;
+  next();
+});
+
 mongoose.connect(process.env.MONGO_URL).then(() => {
     console.log("Mongo Connected...");
 });

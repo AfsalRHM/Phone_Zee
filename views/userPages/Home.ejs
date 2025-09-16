@@ -206,7 +206,7 @@
                                     <a href="/shop?cat=<%= categories[i].name %>" class="cat-block">
                                         <figure>
                                             <span>
-                                                <img src="/assets/images/productImages/<%= categoryImages[i] %>" alt="Category image">
+                                                <img src="<%= CLOUDINARY_IMAGE_PREFIX %><%= categoryImages[i] %>" alt="Category image">
                                             </span>
                                         </figure>
         
@@ -276,7 +276,7 @@
                                                 <span class="product-label label-circle label-new">New</span>
                                             <% } %>
                                             <a href="/product?id=<%= newArrivals[i]._id %>&photoNumber=0">
-                                                <img src="/assets/images/productImages/<%= newArrivals[i].product_image[0] %>" alt="Product image" class="product-image">
+                                                <img src="<%= CLOUDINARY_IMAGE_PREFIX %><%= newArrivals[i].product_image[0] %>" alt="Product image" class="product-image">
                                             </a>
         
                                             <div class="product-action-vertical">
@@ -454,7 +454,7 @@
                                                     <figure class="product-media">
                                                         <span class="product-label label-circle label-top">Top</span>
                                                         <a href="/product?id=<%= topSellingProducts[i]._id %>&photoNumber=0">
-                                                            <img src="/assets/images/productImages/<%= topSellingProducts[i].product_image[0] %>" alt="Product image" class="product-image">
+                                                            <img src="<%= CLOUDINARY_IMAGE_PREFIX %><%= topSellingProducts[i].product_image[0] %>" alt="Product image" class="product-image">
                                                         </a>
                                                     </figure><!-- End .product-media -->
         
@@ -536,7 +536,7 @@
                                                     <figure class="product-media">
                                                         <span class="product-label label-circle label-top">Top</span>
                                                         <a href="/shop?cat=<%= topSellingCategories[i].name %>">
-                                                            <img src="/assets/images/productImages/<%= topSellingCategoriesImage[i] %>" alt="Product image" class="product-image">
+                                                            <img src="<%= CLOUDINARY_IMAGE_PREFIX %><%= topSellingCategoriesImage[i] %>" alt="Product image" class="product-image">
                                                         </a>
                                                     </figure><!-- End .product-media -->
         

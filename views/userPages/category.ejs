@@ -130,7 +130,7 @@
                                                                     <% } %>
                                                                         <a
                                                                             href="/product?id=<%= product[i]._id %>&photoNumber=0">
-                                                                            <img src="/assets/images/productImages/<%=product[i].product_image[0] %>"
+                                                                            <img src="<%= CLOUDINARY_IMAGE_PREFIX %><%=product[i].product_image[0] %>"
                                                                                 alt="Product image"
                                                                                 class="product-image">
                                                                         </a>

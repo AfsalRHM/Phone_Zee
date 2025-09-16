@@ -20,15 +20,16 @@ admin_route.use(bodyParser.json());
 admin_route.use(bodyParser.urlencoded({extended: true}));
 
 // Using Multer
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, path.join(__dirname, '../public/assets/images/productImages'));
-    },
-    filename: function(req, file, cb) {
-        const name = Date.now() + '-' + file.originalname;
-        cb(null, name);
-    }
-});
+// const storage = multer.diskStorage({
+//     destination: function(req, file, cb) {
+//         cb(null, path.join(__dirname, '../public/assets/images/productImages'));
+//     },
+//     filename: function(req, file, cb) {
+//         const name = Date.now() + '-' + file.originalname;
+//         cb(null, name);
+//     }
+// });
+const storage = multer.memoryStorage(); // store files in memory
 
 const upload = multer({storage: storage});
 

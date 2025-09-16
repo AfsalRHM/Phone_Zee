@@ -88,7 +88,7 @@
                                                 <div id="image-preview-1" class="mt-3">
                                                     <% for(let i = 0; i < product.product_image.length; i++) { %>
                                                         <div class="image-container" style="display: inline-block; position: relative; margin: 10px;">
-                                                            <img src="/assets/images/productImages/<%= product.product_image[i] %>" 
+                                                            <img src="<%= CLOUDINARY_IMAGE_PREFIX %><%= product.product_image[i] %>" 
                                                                  style="width: 100px; height: 100px;" 
                                                                  class="img-fluid img-thumbnail" />
                                                 

@@ -9,6 +9,8 @@ const Offer = require("../models/offerModel");
 const statusCode = require("../constants/statusCode");
 const responseMessage = require("../constants/responseMessage");
 
+const cloudinary = require("../utils/cloudinary");
+
 /*********************
  *
  *
@@ -159,6 +161,27 @@ const insertProduct = async (req, res) => {
     } else if (req.body.productCategory == "select category") {
       return res.status(400).json({ message: "Please select a category" });
     } else {
+      const productImageUrls = [];
+
+      for (let i = 0; i < 4; i++) {
+        const file = req.files[i];
+
+        const result = await new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            { folder: "phonezee/product_images" },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          );
+
+          stream.end(file.buffer);
+        });
+
+        const imagePublicId = result.secure_url.split("upload/")[1];
+        productImageUrls.push(imagePublicId);
+      }
+
       const product = new Product({
         name: req.body.productName,
         description: req.body.productDescription,
@@ -167,7 +190,7 @@ const insertProduct = async (req, res) => {
         stock: req.body.productStock,
         ram: req.body.productRam,
         storage: req.body.productStorage,
-        product_image: productImages,
+        product_image: productImageUrls,
       });
 
       const productData = await product.save();
@@ -301,8 +324,26 @@ const updateProduct = async (req, res) => {
 
       // Handle newly uploaded images
       if (req.files && req.files.length > 0) {
-        const newImages = req.files.map((file) => file.filename);
-        productImages = [...productImages, ...newImages]; // Concatenate existing and new images
+        const uploadPromises = req.files.map((file) => {
+          return new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+              { folder: "phonezee/product_images" },
+              (error, result) => {
+                if (error) reject(error);
+                else {
+                  const imagePublicId = result.secure_url.split("upload/")[1];
+                  resolve(imagePublicId);
+                }
+              }
+            );
+
+            stream.end(file.buffer);
+          });
+        });
+
+        const newImages = await Promise.all(uploadPromises);
+
+        productImages = [...productImages, ...newImages]; // concatenate
       }
 
       // Ensure not more than 4 images are saved

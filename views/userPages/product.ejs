@@ -36,28 +36,28 @@
                                 <div class="product-gallery">
                                     <div class="product-images">
                                         <figure class="main-image" id="main-image">
-                                            <img id="product-zoom" src="/assets/images/productImages/<%= product.product_image[imagePos] %>" data-zoom-image="assets/images/products/single/extended/3-big.jpg" alt="Image Unavailable">
-                                            <a href="#" id="btn-product-gallery" class="btn-product-gallery">
+                                            <img id="product-zoom" src="<%= CLOUDINARY_IMAGE_PREFIX %><%= product.product_image[imagePos] %>" data-zoom-image="assets/images/products/single/extended/3-big.jpg" alt="Image Unavailable">
+                                            <!-- <a href="#" id="btn-product-gallery" class="btn-product-gallery">
                                                 <i class="icon-arrows"></i>
-                                            </a>
+                                            </a> -->
                                         </figure><!-- End .product-main-image -->
                                     </div>
                                     
                                     <div id="product-zoom-gallery" class="product-image-gallery">
                                         <a class="product-gallery-item" href="/product?id=<%= product._id %>&photoNumber=0" data-image="assets/images/products/single/extended/1.jpg" data-zoom-image="assets/images/products/single/extended/1-big.jpg">
-                                            <img src="/assets/images/productImages/<%= product.product_image[0] %>" alt="Image Unavailable">
+                                            <img src="<%= CLOUDINARY_IMAGE_PREFIX %><%= product.product_image[0] %>" alt="Image Unavailable">
                                         </a>
 
                                         <a class="product-gallery-item" href="/product?id=<%= product._id %>&photoNumber=1" data-image="assets/images/products/single/extended/2.jpg" data-zoom-image="assets/images/products/single/extended/2-big.jpg">
-                                            <img src="/assets/images/productImages/<%= product.product_image[1] %>" alt="Image Unavailable">
+                                            <img src="<%= CLOUDINARY_IMAGE_PREFIX %><%= product.product_image[1] %>" alt="Image Unavailable">
                                         </a>
 
                                         <a class="product-gallery-item" href="/product?id=<%= product._id %>&photoNumber=2" data-image="assets/images/products/single/extended/3.jpg" data-zoom-image="assets/images/products/single/extended/3-big.jpg">
-                                            <img src="/assets/images/productImages/<%= product.product_image[2] %>" alt="Image Unavailable">
+                                            <img src="<%= CLOUDINARY_IMAGE_PREFIX %><%= product.product_image[2] %>" alt="Image Unavailable">
                                         </a>
 
                                         <a class="product-gallery-item" href="/product?id=<%= product._id %>&photoNumber=3" data-image="assets/images/products/single/extended/4.jpg" data-zoom-image="assets/images/products/single/extended/4-big.jpg">
-                                            <img src="/assets/images/productImages/<%= product.product_image[3] %>" alt="Image Unavailable">
+                                            <img src="<%= CLOUDINARY_IMAGE_PREFIX %><%= product.product_image[3] %>" alt="Image Unavailable">
                                         </a>
 
                                     </div><!-- End .product-image-gallery -->
@@ -67,13 +67,6 @@
                             <div class="col-md-6">
                                 <div class="product-details">
                                     <h1 class="product-title"><%= product.name %></h1><!-- End .product-title -->
-
-                                    <div class="ratings-container">
-                                        <div class="ratings">
-                                            <div class="ratings-val" style="width: 80%;"></div><!-- End .ratings-val -->
-                                        </div><!-- End .ratings -->
-                                        <a class="ratings-text" href="#product-review-link" id="review-link">( 2 Reviews )</a>
-                                    </div><!-- End .rating-container -->
 
                                     <% if ( product.offer !== 0 ) { %>
                                         <div class="product-price">
@@ -299,7 +292,7 @@
                                 <figure class="product-media">
                                     <span class="product-label label-new">New</span>
                                     <a href="/product?id=<%= relatedProducts[i]._id %>&photoNumber=0">
-                                        <img src="/assets/images/productImages/<%= relatedProducts[i].product_image[0] %>" alt="Product image" class="product-image">
+                                        <img src="<%= CLOUDINARY_IMAGE_PREFIX %><%= relatedProducts[i].product_image[0] %>" alt="Product image" class="product-image">
                                     </a>
     
                                     <div class="product-action-vertical">
@@ -321,12 +314,6 @@
                                     <div class="product-price">
                                         ₹ <%= relatedProducts[i].price %>
                                     </div><!-- End .product-price -->
-                                    <div class="ratings-container">
-                                        <div class="ratings">
-                                            <div class="ratings-val" style="width: 20%;"></div><!-- End .ratings-val -->
-                                        </div><!-- End .ratings -->
-                                        <span class="ratings-text">( 2 Reviews )</span>
-                                    </div><!-- End .rating-container -->
     
                                     <div class="product-nav product-nav-dots">
                                         <a href="#" class="active" style="background: #cc9966;"><span class="sr-only">Color name</span></a>
