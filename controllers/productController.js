@@ -168,7 +168,13 @@ const insertProduct = async (req, res) => {
 
         const result = await new Promise((resolve, reject) => {
           const stream = cloudinary.uploader.upload_stream(
-            { folder: "phonezee/product_images" },
+            {
+              folder: "phonezee/product_images",
+              quality: "auto:best", // ensures best possible quality
+              fetch_format: "auto", // keeps modern format (like WebP/AVIF) where possible
+              overwrite: true,
+              resource_type: "image",
+            },
             (error, result) => {
               if (error) reject(error);
               else resolve(result);
@@ -327,7 +333,13 @@ const updateProduct = async (req, res) => {
         const uploadPromises = req.files.map((file) => {
           return new Promise((resolve, reject) => {
             const stream = cloudinary.uploader.upload_stream(
-              { folder: "phonezee/product_images" },
+              {
+                folder: "phonezee/product_images",
+                quality: "auto:best", // ensures best possible quality
+                fetch_format: "auto", // keeps modern format (like WebP/AVIF) where possible
+                overwrite: true,
+                resource_type: "image",
+              },
               (error, result) => {
                 if (error) reject(error);
                 else {
