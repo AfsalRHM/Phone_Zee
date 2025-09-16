@@ -1,39 +1,50 @@
-const passport = require('passport');
+const passport = require("passport");
 
 // Google Auth
-const googleStrategy = require('passport-google-oauth2').Strategy;
+const googleStrategy = require("passport-google-oauth2").Strategy;
 
 // Facebook Auth
 const facebookStrategy = require("passport-facebook").Strategy;
 
+const GOOGLE_CALLBACK_URL =
+  process.env.NODE_ENV !== "Production"
+    ? process.env.GOOGLE_CALLBACK_URL_DEV
+    : process.env.GOOGLE_CALLBACK_URL;
+
 passport.serializeUser((user, done) => {
-    done(null, user);
+  done(null, user);
 });
 
-passport.deserializeUser(function(user, done) {
-    done(null, user);
+passport.deserializeUser(function (user, done) {
+  done(null, user);
 });
 
 // Google Middleware
-passport.use(new googleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL,
-    passReqToCallback: true
-},
-function(request, accessToken, refreshToken, profile, done) {
-    return done(null, profile);
-}
-));
+passport.use(
+  new googleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: GOOGLE_CALLBACK_URL,
+      passReqToCallback: true,
+    },
+    function (request, accessToken, refreshToken, profile, done) {
+      return done(null, profile);
+    }
+  )
+);
 
 // Facebook Middleware
-passport.use(new facebookStrategy({
-    clientID: process.env.FACEBOOK_CLIENT_ID,
-    clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/facebook/callback",
-    passReqToCallback: true
-},
-function(request, accessToken, refreshToken, profile, done) {
-    return done(null, profile);
-}
-));
+passport.use(
+  new facebookStrategy(
+    {
+      clientID: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+      callbackURL: "http://localhost:3000/auth/facebook/callback",
+      passReqToCallback: true,
+    },
+    function (request, accessToken, refreshToken, profile, done) {
+      return done(null, profile);
+    }
+  )
+);
